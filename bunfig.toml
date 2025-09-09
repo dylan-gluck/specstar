@@ -1,0 +1,11 @@
+[test]
+# Root directory for tests
+root = "./"
+
+# Coverage reporting
+coverageThreshold = 0.8
+coverageReporter = ["text", "lcov"]
+
+# Test runner settings
+preload = ["./tests/setup.ts"]
+timeout = 5000

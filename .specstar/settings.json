@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "sessionPath": ".specstar/sessions",
+  "hooks": [
+    "beforeSession",
+    "afterSession",
+    "onFileChange"
+  ],
+  "theme": "dark",
+  "autoStart": false,
+  "logLevel": "info"
+}

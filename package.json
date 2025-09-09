@@ -1,20 +1,47 @@
 {
   "name": "specstar",
-  "module": "index.ts",
+  "module": "src/index.ts",
   "type": "module",
   "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
-    "compile": "bun build --compile --outfile=dist/specstar src/cli.tsx"
+    "dev": "bun run src/cli.tsx",
+    "build": "bun run build:main && bun run build:libs",
+    "build:main": "bun build --compile --outfile=dist/specstar src/cli.tsx",
+    "build:libs": "bun run build:session-monitor && bun run build:document-viewer && bun run build:hook-integrator && bun run build:config-manager",
+    "build:session-monitor": "bun build --compile --outfile=dist/session-monitor src/lib/session-monitor/cli.ts",
+    "build:document-viewer": "bun build --compile --outfile=dist/document-viewer src/lib/document-viewer/cli.ts",
+    "build:hook-integrator": "bun build --compile --outfile=dist/hook-integrator src/lib/hook-integrator/cli.ts",
+    "build:config-manager": "bun build --compile --outfile=dist/config-manager src/lib/config-manager/cli.ts",
+    "compile": "bun run build:main",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "test:coverage": "bun test --coverage",
+    "test:e2e": "bun test e2e",
+    "validate": "bun run scripts/validate-quickstart.ts",
+    "clean": "rm -rf dist .specstar/logs .test-specstar",
+    "install:global": "bun run build && sudo cp dist/specstar /usr/local/bin/",
+    "uninstall:global": "sudo rm -f /usr/local/bin/specstar"
   },
   "dependencies": {
+    "@types/minimatch": "^6.0.0",
+    "cli-highlight": "^2.1.11",
     "fullscreen-ink": "^0.1.0",
+    "gray-matter": "^4.0.3",
     "ink": "^6.3.0",
+    "ink-big-text": "^2.0.0",
+    "ink-gradient": "^3.0.0",
     "ink-table": "^3.1.0",
+    "marked": "^16.2.1",
     "meow": "^13.2.0",
+    "minimatch": "^10.0.3",
     "react": "^19.1.1"
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/marked": "^6.0.0",
     "chalk": "^5.6.2",
     "ink-testing-library": "^4.0.0",
     "react-devtools-core": "^6.1.5"
