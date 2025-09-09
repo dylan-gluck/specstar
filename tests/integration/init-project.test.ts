@@ -3,7 +3,10 @@ import { describe, test, expect, beforeEach, afterEach } from 'bun:test';
 import { $ } from 'bun';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
+
+// Path to the built specstar binary
+const SPECSTAR_BIN = resolve(process.cwd(), 'dist/specstar');
 
 describe('Project Initialization', () => {
   let tempDir: string;
@@ -24,7 +27,7 @@ describe('Project Initialization', () => {
 
   test('should initialize specstar in a new project', async () => {
     // Initialize specstar
-    const result = await $`specstar --init`.quiet();
+    const result = await $`${SPECSTAR_BIN} --init`.quiet();
     
     // Verify .specstar directory structure was created
     const specstarDir = join(tempDir, '.specstar');
@@ -56,7 +59,7 @@ describe('Project Initialization', () => {
     await Bun.write(join(specstarDir, 'settings.json'), JSON.stringify(customSettings, null, 2));
     
     // Try to initialize again
-    const result = await $`specstar --init`.quiet();
+    const result = await $`${SPECSTAR_BIN} --init`.quiet();
     
     // Verify original settings were preserved
     const settings = await Bun.file(join(specstarDir, 'settings.json')).json();
@@ -65,7 +68,7 @@ describe('Project Initialization', () => {
   });
 
   test('should create Claude Code lifecycle hooks', async () => {
-    await $`specstar --init`.quiet();
+    await $`${SPECSTAR_BIN} --init`.quiet();
     
     const hooksFile = join(tempDir, '.specstar', 'hooks.ts');
     const hooksContent = await Bun.file(hooksFile).text();
@@ -84,7 +87,7 @@ describe('Project Initialization', () => {
     await $`git config user.name "Test User"`.quiet();
     
     // Initialize specstar
-    await $`specstar --init`.quiet();
+    await $`${SPECSTAR_BIN} --init`.quiet();
     
     // Verify .gitignore was updated
     const gitignore = await Bun.file('.gitignore').text();
@@ -97,7 +100,7 @@ describe('Project Initialization', () => {
 
   test('should support custom session directory path', async () => {
     // Initialize with custom path
-    await $`specstar --init --session-path="../custom-sessions"`.quiet();
+    await $`${SPECSTAR_BIN} --init --session-path="../custom-sessions"`.quiet();
     
     const settings = await Bun.file(join(tempDir, '.specstar', 'settings.json')).json();
     expect(settings.sessionPath).toBe('../custom-sessions');
@@ -113,7 +116,7 @@ describe('Project Initialization', () => {
     process.chdir(deepPath);
     
     // Initialize in nested directory
-    await $`specstar --init`.quiet();
+    await $`${SPECSTAR_BIN} --init`.quiet();
     
     // Verify initialization succeeded
     const specstarDir = join(deepPath, '.specstar');
@@ -129,7 +132,7 @@ describe('Project Initialization', () => {
     
     try {
       // Attempt initialization in read-only directory
-      const result = await $`specstar --init`.quiet().nothrow();
+      const result = await $`${SPECSTAR_BIN} --init`.quiet().nothrow();
       const errorOutput = result.stderr.toString();
       expect(errorOutput).toContain('Permission denied');
     } finally {
@@ -153,7 +156,7 @@ describe('Project Initialization', () => {
     await Bun.write(claudeSessionPath, JSON.stringify(sessionData, null, 2));
     
     // Initialize specstar
-    await $`specstar --init`.quiet();
+    await $`${SPECSTAR_BIN} --init`.quiet();
     
     // Verify specstar detected existing session
     const settings = await Bun.file(join(tempDir, '.specstar', 'settings.json')).json();

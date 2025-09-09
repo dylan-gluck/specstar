@@ -17,7 +17,8 @@ Currently the TUI opens to the Help page, instead there should be a configuratio
 
 There are some config settings that do not make sense currently and some that we need to implement the functionality.
 
-* Remove `"sessionPath": ".specstar/sessions",`, this should not be customizable. 
+* Remove `"sessionPath": ".specstar/sessions",`, this should not be customizable.
+* Update "theme" to accept an object with properties for colors and styles. Apply the theme to the TUI
 
 ## TUI Lists Display
 

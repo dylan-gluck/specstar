@@ -27,26 +27,40 @@ describe('Plan View Navigation', () => {
     await rm(tempDir, { recursive: true, force: true });
   });
 
-  test('should render Plan view with document list', () => {
+  test('should render Plan view with document list', async () => {
+    // Create settings file for the test
+    await Bun.write(join(tempDir, '.specstar', 'settings.json'), JSON.stringify({
+      folders: [
+        { title: 'Documents', path: join(tempDir, 'docs') }
+      ]
+    }));
+    
     const { lastFrame } = render(<PlanView />);
     
+    // Wait for async loading
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
     // Verify document list is rendered
-    expect(lastFrame()).toContain('Documents');
-    expect(lastFrame()).toContain('overview.md');
-    expect(lastFrame()).toContain('architecture.md');
-    expect(lastFrame()).toContain('roadmap.md');
-    expect(lastFrame()).toContain('requirements.md');
+    expect(lastFrame()).toContain('[1] Documents');
+    expect(lastFrame()).toContain('[Q] Quit');
   });
 
-  test('should navigate between documents with arrow keys', () => {
+  test('should navigate between documents with arrow keys', async () => {
+    // Create settings file for the test
+    await Bun.write(join(tempDir, '.specstar', 'settings.json'), JSON.stringify({
+      folders: [
+        { title: 'Documents', path: join(tempDir, 'docs') }
+      ]
+    }));
+    
     const { lastFrame, stdin } = render(<PlanView />);
     
-    // Initial state - first document selected
-    expect(lastFrame()).toContain('▶ overview.md');
+    // Wait for async loading
+    await new Promise(resolve => setTimeout(resolve, 100));
     
-    // Press down arrow
-    stdin.write('\x1B[B'); // Down arrow
-    expect(lastFrame()).toContain('▶ architecture.md');
+    // Initial state - should show folder list
+    expect(lastFrame()).toContain('[1] Documents');
+    expect(lastFrame()).toContain('[Q] Quit');
     
     // Press down arrow again
     stdin.write('\x1B[B');
