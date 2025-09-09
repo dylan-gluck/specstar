@@ -131,7 +131,7 @@ export default function App() {
               justifyContent="center"
               flexGrow={1}
             >
-              <Gradient name="rainbow">
+              <Gradient name="vice">
                 <BigText text="SPECSTAR" />
               </Gradient>
               <Text color="cyan" bold>

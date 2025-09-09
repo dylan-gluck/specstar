@@ -14,18 +14,37 @@ export interface SessionMonitorOptions {
   debounceDelay?: number;  // Debounce delay for file changes (default: 50)
 }
 
-// Session data structures
+// Session data structures - matching actual .specstar/sessions/*/state.json
 export interface SessionData {
-  id: string;
-  startTime: string;
-  endTime?: string;
-  status?: 'active' | 'completed' | 'error';
-  user?: string;
-  project?: string;
-  files?: FileChange[];
-  commands?: CommandExecution[];
-  agents?: any[];
-  timestamp?: string;
+  session_id: string;
+  session_title: string;
+  session_active: boolean;
+  created_at: string;
+  updated_at: string;
+  agents: string[];
+  agents_history: Array<{
+    name: string;
+    started_at: string;
+    completed_at?: string;
+  }>;
+  files: {
+    new: string[];
+    edited: string[];
+    read: string[];
+  };
+  tools_used: Record<string, number>;
+  errors: Array<{
+    timestamp: string;
+    error: string;
+  }>;
+  prompts: Array<{
+    timestamp: string;
+    prompt: string;
+  }>;
+  notifications?: Array<{
+    timestamp: string;
+    message: string;
+  }>;
 }
 
 export interface FileChange {
@@ -46,6 +65,7 @@ export interface SessionStats {
   filesCreated: number;
   filesModified: number;
   filesDeleted: number;
+  filesRead: number;
   commandsExecuted: number;
   commandsSucceeded: number;
   commandsFailed: number;
@@ -137,9 +157,9 @@ export class SessionMonitor extends EventEmitter {
       return null;
     }
 
-    // Sort by start time and return the most recent
+    // Sort by created_at time and return the most recent
     return activeSessions.sort((a, b) => 
-      new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     )[0];
   }
 
@@ -148,18 +168,18 @@ export class SessionMonitor extends EventEmitter {
     const history: SessionData[] = [];
     
     try {
-      const files = await readdir(this.options.sessionPath);
+      // Read session directories from .specstar/sessions/*
+      const sessionDirs = await readdir(this.options.sessionPath);
       
-      for (const file of files) {
-        if (!file.endsWith('.json')) continue;
+      for (const dir of sessionDirs) {
+        const stateFile = join(this.options.sessionPath, dir, 'state.json');
         
         try {
-          const content = await readFile(join(this.options.sessionPath, file), 'utf-8');
+          const content = await readFile(stateFile, 'utf-8');
           const session = JSON.parse(content) as SessionData;
           history.push(session);
         } catch (error) {
-          // Skip corrupted files
-          console.error(`Failed to read session file ${file}:`, error);
+          // Skip invalid session directories
         }
       }
     } catch (error) {
@@ -170,14 +190,14 @@ export class SessionMonitor extends EventEmitter {
     }
 
     return history.sort((a, b) => 
-      new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
   }
 
   // Get all active sessions
   getActiveSessions(): SessionData[] {
     return Array.from(this.sessions.values()).filter(
-      session => !session.endTime && session.status !== 'completed'
+      session => session.session_active === true
     );
   }
 
@@ -193,23 +213,27 @@ export class SessionMonitor extends EventEmitter {
       return null;
     }
 
-    const startTime = new Date(session.startTime).getTime();
-    const endTime = session.endTime ? new Date(session.endTime).getTime() : Date.now();
+    const startTime = new Date(session.created_at).getTime();
+    const endTime = Date.now();
     const duration = endTime - startTime;
 
-    const filesCreated = session.files?.filter(f => f.action === 'created').length ?? 0;
-    const filesModified = session.files?.filter(f => f.action === 'modified').length ?? 0;
-    const filesDeleted = session.files?.filter(f => f.action === 'deleted').length ?? 0;
+    // Map from actual session data structure
+    const filesCreated = session.files?.new?.length ?? 0;
+    const filesModified = session.files?.edited?.length ?? 0;
+    const filesDeleted = 0; // Not tracked in current structure
+    const filesRead = session.files?.read?.length ?? 0;
 
-    const commandsExecuted = session.commands?.length ?? 0;
-    const commandsSucceeded = session.commands?.filter(c => c.exitCode === 0).length ?? 0;
-    const commandsFailed = commandsExecuted - commandsSucceeded;
+    // Calculate command stats from tools_used
+    const commandsExecuted = Object.values(session.tools_used || {}).reduce((sum, count) => sum + count, 0);
+    const commandsSucceeded = commandsExecuted - (session.errors?.length ?? 0);
+    const commandsFailed = session.errors?.length ?? 0;
 
     return {
       duration,
       filesCreated,
       filesModified,
       filesDeleted,
+      filesRead,
       commandsExecuted,
       commandsSucceeded,
       commandsFailed
@@ -278,14 +302,16 @@ export class SessionMonitor extends EventEmitter {
   }
 
   private async scanForSessions(): Promise<void> {
-    // Scan for existing Claude session files
+    // Scan for existing session state files in .specstar/sessions/*/state.json
     try {
-      const files = await readdir(this.options.claudePath);
+      const sessionDirs = await readdir(this.options.sessionPath);
       
-      for (const file of files) {
-        // Process any JSON file that might be a session
-        if (file.endsWith('.json')) {
-          await this.processSessionFile(join(this.options.claudePath, file));
+      for (const dir of sessionDirs) {
+        const stateFile = join(this.options.sessionPath, dir, 'state.json');
+        try {
+          await this.processSessionFile(stateFile);
+        } catch (error) {
+          // Skip invalid session directories
         }
       }
     } catch (error) {
@@ -297,17 +323,17 @@ export class SessionMonitor extends EventEmitter {
   }
 
   private setupWatchers(): void {
-    // Watch the Claude directory for session files
+    // Watch the sessions directory for changes in state.json files
     const watcher = watch(
-      this.options.claudePath,
-      { recursive: false },
+      this.options.sessionPath,
+      { recursive: true },
       (eventType, filename) => {
         if (!filename || !this.isRunning) return;
         
-        // Only process JSON files
-        if (!filename.endsWith('.json')) return;
+        // Only process state.json files
+        if (!filename.endsWith('state.json')) return;
 
-        const fullPath = join(this.options.claudePath, filename);
+        const fullPath = join(this.options.sessionPath, filename);
         
         // Process file immediately without debouncing for new files
         // but debounce for changes to existing files
@@ -325,7 +351,7 @@ export class SessionMonitor extends EventEmitter {
       }
     );
 
-    this.watchers.set(this.options.claudePath, watcher);
+    this.watchers.set(this.options.sessionPath, watcher);
   }
 
   private debounceFileChange(path: string, callback: () => Promise<void>): void {
@@ -376,17 +402,17 @@ export class SessionMonitor extends EventEmitter {
         return;
       }
       
-      // Ensure the data has required session fields
-      if (!sessionData.id || !sessionData.startTime) {
+      // Ensure the data has required session fields (updated for actual structure)
+      if (!sessionData.session_id || !sessionData.created_at) {
         // Not a valid session file, skip it
         return;
       }
 
       // Get previous version of this session
-      const previousSession = this.sessions.get(sessionData.id);
+      const previousSession = this.sessions.get(sessionData.session_id);
       
       // Update session in memory
-      this.sessions.set(sessionData.id, sessionData);
+      this.sessions.set(sessionData.session_id, sessionData);
 
       // Detect and emit various events
       if (!previousSession) {
@@ -396,8 +422,8 @@ export class SessionMonitor extends EventEmitter {
         // Check for changes
         this.detectChanges(previousSession, sessionData);
         
-        // Check if session ended
-        if (!previousSession.endTime && sessionData.endTime) {
+        // Check if session ended (session_active changed from true to false)
+        if (previousSession.session_active && !sessionData.session_active) {
           this.handleSessionEnd(sessionData);
         }
       }
@@ -434,9 +460,9 @@ export class SessionMonitor extends EventEmitter {
 
   private handleSessionEnd(session: SessionData): void {
     const endData = {
-      id: session.id,
-      endTime: session.endTime,
-      status: session.status || 'completed'
+      id: session.session_id,
+      endTime: session.updated_at,
+      status: 'completed'
     };
 
     const event: SessionEvent = {
@@ -455,33 +481,38 @@ export class SessionMonitor extends EventEmitter {
   }
 
   private detectChanges(oldSession: SessionData, newSession: SessionData): void {
-    // Detect file changes
-    const oldFiles = oldSession.files || [];
-    const newFiles = newSession.files || [];
+    // Detect file changes - check all file arrays
+    const oldNewFiles = oldSession.files?.new?.length || 0;
+    const newNewFiles = newSession.files?.new?.length || 0;
+    const oldEditedFiles = oldSession.files?.edited?.length || 0;
+    const newEditedFiles = newSession.files?.edited?.length || 0;
+    const oldReadFiles = oldSession.files?.read?.length || 0;
+    const newReadFiles = newSession.files?.read?.length || 0;
     
-    if (newFiles.length > oldFiles.length) {
-      // New files added
-      const addedFiles = newFiles.slice(oldFiles.length);
-      for (const file of addedFiles) {
-        const event: SessionEvent = {
-          type: 'file_change',
-          timestamp: new Date().toISOString(),
-          data: file
-        };
-
-        this.emit('fileChange', file);
-        this.emitToStream(event);
-
-        // Trigger hook if available
-        if (this.hookIntegrator) {
-          (this.hookIntegrator as any).onFileChange?.(file);
+    if (newNewFiles > oldNewFiles || newEditedFiles > oldEditedFiles || newReadFiles > oldReadFiles) {
+      // Files have been added/edited/read
+      const event: SessionEvent = {
+        type: 'file_change',
+        timestamp: new Date().toISOString(),
+        data: {
+          new: newSession.files?.new || [],
+          edited: newSession.files?.edited || [],
+          read: newSession.files?.read || []
         }
+      };
+
+      this.emit('fileChange', event.data);
+      this.emitToStream(event);
+
+      // Trigger hook if available
+      if (this.hookIntegrator) {
+        (this.hookIntegrator as any).onFileChange?.(event.data);
       }
     }
 
-    // Detect command executions
-    const oldCommands = oldSession.commands || [];
-    const newCommands = newSession.commands || [];
+    // Detect tool usage changes (instead of commands)
+    const oldTools = Object.values(oldSession.tools_used || {}).reduce((sum, v) => sum + v, 0);
+    const newTools = Object.values(newSession.tools_used || {}).reduce((sum, v) => sum + v, 0);
     
     if (newCommands.length > oldCommands.length) {
       // New commands executed

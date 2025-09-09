@@ -122,7 +122,7 @@ export default function ObserveView() {
   };
 
   const updateStats = (session: SessionData) => {
-    const stats = monitor.getSessionStats(session.id);
+    const stats = monitor.getSessionStats(session.session_id);
     setSessionStats(stats);
   };
 
@@ -215,28 +215,43 @@ export default function ObserveView() {
             {currentSession ? (
               <Box flexDirection="column" marginTop={1}>
                 <Text>
-                  ID: <Text color="yellow">{currentSession.id}</Text>
+                  ID: <Text color="yellow">{currentSession.session_id.slice(0, 8)}...</Text>
+                </Text>
+                <Text>
+                  Title: <Text color="cyan">{currentSession.session_title || "(untitled)"}</Text>
                 </Text>
                 <Text>
                   Started:{" "}
                   <Text color="green">
-                    {formatTimestamp(currentSession.startTime)}
+                    {formatTimestamp(currentSession.created_at)}
+                  </Text>
+                </Text>
+                <Text>
+                  Updated:{" "}
+                  <Text color="blue">
+                    {formatTimestamp(currentSession.updated_at)}
                   </Text>
                 </Text>
                 <Text>
                   Status:{" "}
-                  <Text color="green">{currentSession.status || "active"}</Text>
+                  <Text color={currentSession.session_active ? "green" : "yellow"}>
+                    {currentSession.session_active ? "Active" : "Inactive"}
+                  </Text>
                 </Text>
-                {currentSession.project && (
-                  <Text>
-                    Project: <Text color="blue">{currentSession.project}</Text>
+                <Text>
+                  Active Agents:{" "}
+                  <Text color="magenta">
+                    {currentSession.agents.length > 0 
+                      ? currentSession.agents.join(", ")
+                      : "None"}
                   </Text>
-                )}
-                {currentSession.user && (
-                  <Text>
-                    User: <Text color="magenta">{currentSession.user}</Text>
-                  </Text>
-                )}
+                </Text>
+                <Text>
+                  Files:{" "}
+                  <Text color="green">+{currentSession.files?.new?.length || 0}</Text>{" "}
+                  <Text color="yellow">~{currentSession.files?.edited?.length || 0}</Text>{" "}
+                  <Text color="blue">⟳{currentSession.files?.read?.length || 0}</Text>
+                </Text>
               </Box>
             ) : (
               <Text color="gray">No active session</Text>
@@ -300,16 +315,17 @@ export default function ObserveView() {
               <Box flexDirection="column" marginTop={1}>
                 {sessionHistory.slice(0, 5).map((session, index) => (
                   <Box
-                    key={session.id}
+                    key={session.session_id}
                     backgroundColor={
                       activePane === "history" && selectedHistoryIndex === index
                         ? "gray"
                         : undefined
                     }
                   >
-                    <Text color={index === 0 ? "yellow" : "white"}>
-                      {formatTimestamp(session.startTime)} -{" "}
-                      {session.id.slice(0, 8)}
+                    <Text color={session.session_active ? "green" : "white"}>
+                      {formatTimestamp(session.created_at)} -{" "}
+                      {session.session_id.slice(0, 8)}
+                      {session.session_active && <Text color="green"> [ACTIVE]</Text>}
                     </Text>
                   </Box>
                 ))}
@@ -339,7 +355,7 @@ export default function ObserveView() {
                 <Text>
                   Files: <Text color="green">+{sessionStats.filesCreated}</Text>{" "}
                   <Text color="yellow">~{sessionStats.filesModified}</Text>{" "}
-                  <Text color="red">-{sessionStats.filesDeleted}</Text>
+                  <Text color="blue">⟳{sessionStats.filesRead || 0}</Text>
                 </Text>
                 <Text>
                   Commands:{" "}
