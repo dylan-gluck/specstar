@@ -4,6 +4,7 @@ import { type File, FileList } from "../components/file-list";
 import { MarkdownViewer } from "../components/markdown-viewer";
 import { LoadingOverlay } from "../components/loading-spinner";
 import { Logger } from "../lib/logger/index";
+import { loadSettings, loadFolderFiles, type FolderConfig } from "../lib/config/settings-loader";
 import { join } from "node:path";
 
 export default function PlanView() {
@@ -12,31 +13,22 @@ export default function PlanView() {
   const logger = new Logger('PlanView');
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [activePane, setActivePane] = useState<'docs' | 'specs' | 'templates' | 'viewer'>('specs');
+  const [activePane, setActivePane] = useState<string>('1');
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
-
-  // Directory paths - using project root
-  const projectRoot = process.cwd();
-  const specsDir = join(projectRoot, 'specs');
-  const docsDir = join(projectRoot, 'docs');
-  const templatesDir = join(projectRoot, 'templates');
+  const [folders, setFolders] = useState<FolderConfig[]>([]);
+  const [folderFiles, setFolderFiles] = useState<Record<string, File[]>>({});
 
   useInput((input) => {
-    // Pane navigation
-    if (input === "1") {
-      setActivePane('docs');
-      focus("1");
+    // Pane navigation for numbered folders
+    const folderIndex = parseInt(input) - 1;
+    if (folderIndex >= 0 && folderIndex < folders.length) {
+      setActivePane(input);
+      focus(input);
     }
-    if (input === "2") {
-      setActivePane('specs');
-      focus("2");
-    }
-    if (input === "3") {
-      setActivePane('templates');
-      focus("3");
-    }
-    if (input === "4" || input === "v") {
+    
+    // Viewer pane
+    if (input === "v") {
       setActivePane('viewer');
       focus("markdown-viewer");
     }
@@ -48,8 +40,37 @@ export default function PlanView() {
   });
 
   useEffect(() => {
-    // Focus on specs by default
-    focus("2");
+    // Load settings and folder files on mount
+    const loadConfiguration = async () => {
+      setIsLoading(true);
+      setLoadingMessage("Loading configuration...");
+      
+      try {
+        const settings = await loadSettings();
+        setFolders(settings.folders);
+        
+        // Load files for each folder
+        const files: Record<string, File[]> = {};
+        for (const folder of settings.folders) {
+          setLoadingMessage(`Loading ${folder.title}...`);
+          files[folder.path] = await loadFolderFiles(folder.path);
+        }
+        setFolderFiles(files);
+        
+        // Focus on first folder by default
+        if (settings.folders.length > 0) {
+          setActivePane('1');
+          focus('1');
+        }
+      } catch (error) {
+        logger.error('Failed to load configuration', error as Error);
+      } finally {
+        setIsLoading(false);
+        setLoadingMessage("");
+      }
+    };
+    
+    loadConfiguration();
   }, []);
 
   const handleFileSelect = async (file: File) => {
@@ -65,7 +86,11 @@ export default function PlanView() {
       setSelectedFile(file);
       // Auto-switch to viewer when file is selected
       setActivePane('viewer');
-      focus("markdown-viewer");
+      
+      // Delay focus switch slightly to ensure the viewer is rendered
+      setTimeout(() => {
+        focus("markdown-viewer");
+      }, 50);
       
       logger.info('File selected', { 
         fileName: file.name, 
@@ -80,20 +105,6 @@ export default function PlanView() {
     }
   };
 
-  // Static files for docs (can be replaced with dynamic loading)
-  const filesDocs: File[] = [
-    { name: "README.md", path: join(docsDir, "README.md") },
-    { name: "project-plan.md", path: join(docsDir, "project-plan.md") },
-    { name: "prd.md", path: join(docsDir, "prd.md") },
-    { name: "architecture.md", path: join(docsDir, "architecture.md") },
-  ];
-
-  // Static files for templates (can be replaced with dynamic loading)
-  const filesTemplates: File[] = [
-    { name: "plan-template.md", path: join(templatesDir, "plan-template.md") },
-    { name: "spec-template.md", path: join(templatesDir, "spec-template.md") },
-    { name: "task-template.md", path: join(templatesDir, "task-template.md") },
-  ];
 
   // Show loading overlay when needed
   if (isLoading) {
@@ -113,31 +124,24 @@ export default function PlanView() {
         {selectedFile && (
           <Text color="gray"> - {selectedFile.name}</Text>
         )}
+        {activePane === 'viewer' && (
+          <Text color="green"> [Viewer Focused]</Text>
+        )}
       </Box>
 
       {/* Main content */}
       <Box flexGrow={1} marginX={1} gap={1}>
         {/* Left column - File Lists */}
         <Box width="30%" flexGrow={1} flexDirection="column">
-          <FileList 
-            id="1" 
-            title="Docs" 
-            files={filesDocs}
-            onSelect={handleFileSelect}
-          />
-          <FileList 
-            id="2" 
-            title="Specs" 
-            directory={specsDir}
-            pattern={/\.(md|txt)$/}
-            onSelect={handleFileSelect}
-          />
-          <FileList 
-            id="3" 
-            title="Templates" 
-            files={filesTemplates}
-            onSelect={handleFileSelect}
-          />
+          {folders.map((folder, index) => (
+            <FileList
+              key={`${folder.path}-${index}`}
+              id={String(index + 1)}
+              title={folder.title}
+              files={folderFiles[folder.path] || []}
+              onSelect={handleFileSelect}
+            />
+          ))}
         </Box>
         
         {/* Right column - Markdown Viewer */}
@@ -154,7 +158,12 @@ export default function PlanView() {
       {/* Footer */}
       <Box marginTop={1} marginX={1}>
         <Text color="gray" dimColor>
-          [1-3] Select List • [4/V] View Document • [Q] Quit
+          {activePane === 'viewer' ? (
+            <>↑↓/jk Scroll • [1-{folders.length}] Back to List • [Q] Quit</>
+          ) : (
+            <>{folders.length > 0 && `[1-${folders.length}] Select List • `}
+            [Enter] Open File • [V] View Document • [Q] Quit</>
+          )}
         </Text>
       </Box>
     </Box>

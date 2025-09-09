@@ -7,15 +7,15 @@ import BigText from "ink-big-text";
 import { ErrorBoundary } from "./components/error-boundary";
 import { Logger } from "./lib/logger/index";
 
-type View = 'plan' | 'observe' | 'welcome';
+type View = "plan" | "observe" | "welcome";
 
 export default function App() {
-  const [activeView, setActiveView] = useState<View>('welcome');
+  const [activeView, setActiveView] = useState<View>("welcome");
   const [dimensions, setDimensions] = useState({ width: 80, height: 24 });
   const [error, setError] = useState<Error | null>(null);
   const { exit } = useApp();
   const { stdout } = useStdout();
-  const logger = new Logger('App');
+  const logger = new Logger("App");
 
   useInput((input) => {
     // Global navigation
@@ -36,7 +36,7 @@ export default function App() {
       handleErrorRecovery();
     }
     // Global exit (when not in a specific view)
-    if (input === "q" && activeView === 'welcome') {
+    if (input === "q" && activeView === "welcome") {
       logger.info("Exiting application");
       exit();
     }
@@ -47,14 +47,14 @@ export default function App() {
     if (stdout) {
       setDimensions({
         width: stdout.columns || 80,
-        height: stdout.rows || 24
+        height: stdout.rows || 24,
       });
     }
 
     // Show welcome screen briefly, then go to plan view
     const timer = setTimeout(() => {
-      setActiveView('plan');
-      logger.info('Auto-switched to plan view after welcome');
+      setActiveView("plan");
+      logger.info("Auto-switched to plan view after welcome");
     }, 2000);
 
     return () => clearTimeout(timer);
@@ -67,30 +67,32 @@ export default function App() {
     const handleResize = () => {
       const newDimensions = {
         width: stdout.columns || 80,
-        height: stdout.rows || 24
+        height: stdout.rows || 24,
       };
       setDimensions(newDimensions);
-      logger.debug('Terminal resized', newDimensions);
+      logger.debug("Terminal resized", newDimensions);
     };
 
-    stdout.on('resize', handleResize);
+    stdout.on("resize", handleResize);
     return () => {
-      stdout.off('resize', handleResize);
+      stdout.off("resize", handleResize);
     };
   }, [stdout]);
 
   // Error recovery handler
   const handleErrorRecovery = useCallback(() => {
     setError(null);
-    setActiveView('welcome');
-    logger.info('Error recovered, returning to welcome screen');
+    setActiveView("welcome");
+    logger.info("Error recovered, returning to welcome screen");
   }, []);
 
   // Global error fallback
   if (error) {
     return (
       <Box flexDirection="column" padding={1}>
-        <Text color="red" bold>Fatal Error</Text>
+        <Text color="red" bold>
+          Fatal Error
+        </Text>
         <Text>{error.message}</Text>
         <Text color="gray">Press R to restart</Text>
       </Box>
@@ -98,11 +100,13 @@ export default function App() {
   }
 
   return (
-    <ErrorBoundary 
-      name="App" 
+    <ErrorBoundary
+      name="App"
       fallback={(err, reset) => (
         <Box flexDirection="column" padding={1}>
-          <Text color="red" bold>Application Error</Text>
+          <Text color="red" bold>
+            Application Error
+          </Text>
           <Text>{err.message}</Text>
           <Text color="gray">Press R to retry • Q to quit</Text>
         </Box>
@@ -110,7 +114,7 @@ export default function App() {
     >
       <Box flexDirection="column" flexGrow={1}>
         {/* Terminal size indicator in development */}
-        {process.env.NODE_ENV === 'development' && (
+        {process.env.NODE_ENV === "development" && (
           <Box position="absolute" marginLeft={dimensions.width - 20}>
             <Text color="gray" dimColor>
               {dimensions.width}x{dimensions.height}
@@ -119,37 +123,66 @@ export default function App() {
         )}
 
         {/* Welcome/Help Screen */}
-        {activeView === 'welcome' && (
+        {activeView === "welcome" && (
           <ErrorBoundary name="WelcomeView">
-            <Box flexDirection="column" alignItems="center" justifyContent="center" flexGrow={1}>
-          <Gradient name="rainbow">
-            <BigText text="SPECSTAR" />
-          </Gradient>
-          <Text color="cyan" bold>Terminal UI for Claude Code Sessions</Text>
-          <Box marginTop={2} flexDirection="column" alignItems="center">
-            <Text>Press <Text bold color="green">P</Text> for Plan View</Text>
-            <Text>Press <Text bold color="blue">O</Text> for Observe View</Text>
-            <Text>Press <Text bold color="red">Q</Text> to Quit</Text>
-          </Box>
-            <Box marginTop={2}>
-              <Text color="gray" dimColor>Loading Plan View...</Text>
+            <Box
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              flexGrow={1}
+            >
+              <Gradient name="rainbow">
+                <BigText text="SPECSTAR" />
+              </Gradient>
+              <Text color="cyan" bold>
+                Terminal UI for Claude Code Sessions
+              </Text>
+              <Box marginTop={2} flexDirection="column" alignItems="center">
+                <Text>
+                  Press{" "}
+                  <Text bold color="green">
+                    P
+                  </Text>{" "}
+                  for Plan View
+                </Text>
+                <Text>
+                  Press{" "}
+                  <Text bold color="blue">
+                    O
+                  </Text>{" "}
+                  for Observe View
+                </Text>
+                <Text>
+                  Press{" "}
+                  <Text bold color="red">
+                    Q
+                  </Text>{" "}
+                  to Quit
+                </Text>
+              </Box>
+              <Box marginTop={2}>
+                <Text color="gray" dimColor>
+                  Loading Plan View...
+                </Text>
+              </Box>
             </Box>
-          </Box>
           </ErrorBoundary>
         )}
 
         {/* Plan View */}
-        {activeView === 'plan' && (
+        {activeView === "plan" && (
           <ErrorBoundary name="PlanView">
             <Box flexDirection="column" flexGrow={1}>
-              <Box 
-                borderStyle="round" 
+              <Box
+                borderStyle="round"
                 borderColor="green"
                 paddingX={1}
-                marginBottom={1}
+                marginTop={1}
                 justifyContent="space-between"
               >
-                <Text bold color="green">📋 PLAN MODE</Text>
+                <Text bold color="green">
+                  📋 PLAN MODE
+                </Text>
                 <Text color="gray">Press O for Observe • H for Help</Text>
               </Box>
               <PlanView />
@@ -158,17 +191,19 @@ export default function App() {
         )}
 
         {/* Observe View */}
-        {activeView === 'observe' && (
+        {activeView === "observe" && (
           <ErrorBoundary name="ObserveView">
             <Box flexDirection="column" flexGrow={1}>
-              <Box 
-                borderStyle="round" 
+              <Box
+                borderStyle="round"
                 borderColor="blue"
                 paddingX={1}
-                marginBottom={1}
+                marginTop={1}
                 justifyContent="space-between"
               >
-                <Text bold color="blue">👁 OBSERVE MODE</Text>
+                <Text bold color="blue">
+                  👁 OBSERVE MODE
+                </Text>
                 <Text color="gray">Press P for Plan • H for Help</Text>
               </Box>
               <ObserveView />

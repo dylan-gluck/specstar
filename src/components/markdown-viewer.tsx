@@ -90,7 +90,8 @@ export function MarkdownViewer({
     if (!isFocused || !scrollable) return;
     
     const lines = renderedContent.split('\n');
-    const maxOffset = Math.max(0, lines.length - 20);
+    const viewportHeight = frontmatter && Object.keys(frontmatter).length > 0 ? 14 : 18;
+    const maxOffset = Math.max(0, lines.length - viewportHeight);
     
     if (key.upArrow || input === 'k') {
       setScrollOffset(Math.max(0, scrollOffset - 1));
@@ -117,15 +118,27 @@ export function MarkdownViewer({
     if (!renderedContent) return "";
     
     const lines = renderedContent.split('\n');
-    const visibleLines = lines.slice(scrollOffset, scrollOffset + 20);
+    // Account for frontmatter display if present
+    const viewportHeight = frontmatter && Object.keys(frontmatter).length > 0 ? 14 : 18;
+    const visibleLines = lines.slice(scrollOffset, scrollOffset + viewportHeight);
+    
+    // Ensure we don't have empty space at the bottom
+    if (visibleLines.length < viewportHeight) {
+      const padding = viewportHeight - visibleLines.length;
+      for (let i = 0; i < padding; i++) {
+        visibleLines.push('');
+      }
+    }
+    
     return visibleLines.join('\n');
   };
 
   const displayTitle = title || (filePath ? filePath.split('/').pop() : 'Markdown Viewer');
   const lines = renderedContent.split('\n');
   const totalLines = lines.length;
-  const currentLine = scrollOffset + 1;
-  const endLine = Math.min(scrollOffset + 20, totalLines);
+  const viewportHeight = frontmatter && Object.keys(frontmatter).length > 0 ? 14 : 18;
+  const currentLine = Math.min(scrollOffset + 1, totalLines);
+  const endLine = Math.min(scrollOffset + viewportHeight, totalLines);
 
   return (
     <Box
@@ -134,12 +147,13 @@ export function MarkdownViewer({
       flexGrow={1}
       paddingX={1}
       flexDirection="column"
+      overflow="hidden"
     >
       {/* Header */}
       <Box
         backgroundColor="gray"
         width="100%"
-        flexGrow={0}
+        height={1}
         justifyContent="space-between"
         paddingX={1}
       >
@@ -151,35 +165,42 @@ export function MarkdownViewer({
         </Text>
       </Box>
 
-      {/* Frontmatter display */}
-      {frontmatter && Object.keys(frontmatter).length > 0 && (
-        <Box flexDirection="column" marginTop={1} marginBottom={1}>
-          <Text color="cyan" dimColor>── Frontmatter ──</Text>
-          {Object.entries(frontmatter).map(([key, value], index) => (
-            <Box key={`${key}-${index}`}>
-              <Text color="yellow">{key}:</Text>
-              <Text> {JSON.stringify(value)}</Text>
-            </Box>
-          ))}
-          <Text color="cyan" dimColor>─────────────────</Text>
-        </Box>
-      )}
+      {/* Content area with fixed height */}
+      <Box 
+        flexDirection="column" 
+        height={scrollable ? 20 : undefined}
+        overflow="hidden"
+        marginTop={1}
+      >
+        {/* Frontmatter display (if present, included in scrollable area) */}
+        {frontmatter && Object.keys(frontmatter).length > 0 && !loading && !error && (
+          <>
+            <Text color="cyan" dimColor>── Frontmatter ──</Text>
+            {Object.entries(frontmatter).slice(0, 3).map(([key, value], index) => (
+              <Box key={`${key}-${index}`}>
+                <Text color="yellow">{key}:</Text>
+                <Text> {String(value).substring(0, 50)}</Text>
+              </Box>
+            ))}
+            <Text color="cyan" dimColor>─────────────────</Text>
+            <Text> </Text>
+          </>
+        )}
 
-      {/* Content area */}
-      <Box flexGrow={1} flexDirection="column" marginTop={1}>
+        {/* Main content */}
         {loading && <Text color="gray">Loading document...</Text>}
         {error && <Text color="red">Error: {error}</Text>}
         {!loading && !error && !renderedContent && (
           <Text color="gray">No content to display</Text>
         )}
         {!loading && !error && renderedContent && (
-          <Text>{getVisibleContent()}</Text>
+          <Text wrap="truncate-end">{getVisibleContent()}</Text>
         )}
       </Box>
 
       {/* Footer with controls */}
       {isFocused && scrollable && (
-        <Box marginTop={1}>
+        <Box height={1} marginTop={1}>
           <Text color="gray" dimColor>
             ↑↓/jk Navigate • PgUp/PgDn/ud Page • g/G Top/Bottom
           </Text>

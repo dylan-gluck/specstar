@@ -22,7 +22,7 @@ npm i -g specstar
 
 ```json
 {
-	"docs": [
+	"folders": [
 		{
 			"title": "Docs",
 			"path": "docs"
