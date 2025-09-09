@@ -22,10 +22,15 @@ export interface ConfigManagerOptions {
   configPath?: string;
 }
 
+export interface FolderConfig {
+  title: string;
+  path: string;
+}
+
 export interface SpecstarConfig {
   version: string;
   sessionPath?: string;
-  hooks?: string[];
+  folders?: FolderConfig[];
   theme?: 'light' | 'dark';
   autoStart?: boolean;
   logLevel?: 'debug' | 'info' | 'warn' | 'error';
@@ -50,7 +55,20 @@ export interface ClaudeCodeSettings {
 const DEFAULT_CONFIG: SpecstarConfig = {
   version: '1.0.0',
   sessionPath: '.specstar/sessions',
-  hooks: ['beforeSession', 'afterSession', 'onFileChange'],
+  folders: [
+    {
+      title: 'Docs',
+      path: 'docs'
+    },
+    {
+      title: 'Specs',
+      path: 'specs'
+    },
+    {
+      title: 'Templates',
+      path: 'templates'
+    }
+  ],
   theme: 'dark',
   autoStart: false,
   logLevel: 'info'
@@ -230,12 +248,16 @@ export class ConfigManager {
       return false;
     }
     
-    // Optional field: hooks (array of strings)
-    if (config.hooks !== undefined) {
-      if (!Array.isArray(config.hooks)) {
+    // Optional field: folders (array of folder configs)
+    if (config.folders !== undefined) {
+      if (!Array.isArray(config.folders)) {
         return false;
       }
-      if (!config.hooks.every((hook: any) => typeof hook === 'string')) {
+      if (!config.folders.every((folder: any) => 
+        folder && typeof folder === 'object' &&
+        typeof folder.title === 'string' &&
+        typeof folder.path === 'string'
+      )) {
         return false;
       }
     }

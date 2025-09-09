@@ -110,12 +110,25 @@ Edit `.specstar/settings.json` to customize:
 
 ```json
 {
-  "specsDirectory": "specs",
-  "sessionsDirectory": ".specstar/sessions",
-  "logLevel": "info",
-  "autoRefresh": true,
-  "refreshInterval": 1000,
-  "theme": "default"
+  "version": "1.0.0",
+  "sessionPath": ".specstar/sessions",
+  "folders": [
+    {
+      "title": "Docs",
+      "path": "docs"
+    },
+    {
+      "title": "Specs",
+      "path": "specs"
+    },
+    {
+      "title": "Templates",
+      "path": "templates"
+    }
+  ],
+  "theme": "dark",
+  "autoStart": false,
+  "logLevel": "info"
 }
 ```
 

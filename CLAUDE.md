@@ -67,12 +67,13 @@ src/
 ### Current Implementation Status
 - ✅ Plan view layout with focus management
 - ✅ React Ink TUI framework setup
-- ⚠️ Dynamic file loading (uses hardcoded data)
+- ✅ Dynamic file loading from settings.json folders
+- ✅ Settings.json with folders configuration
+- ✅ Initialization command (--init)
 - ⚠️ Document rendering (placeholder only)
 - ❌ Observe view (not implemented)
 - ❌ Session monitoring
 - ❌ Hook integration
-- ❌ Initialization command
 
 ### Testing Approach
 Follow TDD with this order:
@@ -83,3 +84,4 @@ Follow TDD with this order:
 
 ### Recent Changes
 - 001-docs-specstar-plan: Added TypeScript + React Ink TUI framework
+- 002-fix-session-monitoring-hooks: Fixed settings.json to use folders instead of hooks
