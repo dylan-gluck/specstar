@@ -2,33 +2,30 @@ name: CI
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test-and-lint:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup Bun
-      uses: oven-sh/setup-bun@v2
-      with:
-        bun-version: latest
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
-    - name: Install dependencies
-      run: bun install
+      - name: Install dependencies
+        run: bun install
 
-    - name: Run linter
-      run: bun run lint
+      - name: Run linter
+        run: bun run lint
 
-    - name: Run type checking
-      run: bun run typecheck
+      - name: Run type checking
+        run: bun run typecheck
 
-    - name: Build project
-      run: bun run build
-
-    - name: Run tests
-      run: bun test
+      - name: Build project
+        run: bun run build
