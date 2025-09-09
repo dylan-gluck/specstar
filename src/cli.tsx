@@ -12,9 +12,10 @@ const cli = meow(
 	  $ specstar --init Initialize Specstar in the current project
 
 	Options
-	  --init     Initialize .specstar directory with default configuration
-	  --force    Force overwrite existing configuration (use with --init)
-	  --help     Show this help message
+	  --init      Initialize .specstar directory with default configuration
+	  --force     Force overwrite existing configuration (use with --init)
+	  --version   Show version information
+	  --help, -h  Show this help message
 `,
   {
     importMeta: import.meta,
@@ -25,11 +26,32 @@ const cli = meow(
       force: {
         type: "boolean",
       },
+      help: {
+        type: "boolean",
+        shortFlag: 'h'
+      },
+      version: {
+        type: "boolean",
+        shortFlag: 'v'
+      }
     },
+    helpIndent: 2
   }
 );
 
 const logger = new Logger('CLI');
+
+// Check for help flag first - before anything else
+if (process.argv.includes('-h') || process.argv.includes('--help')) {
+  console.log(cli.help);
+  process.exit(0);
+}
+
+// Handle --version/-v flag
+if (cli.flags.version || process.argv.includes('-v')) {
+  console.log('specstar 0.0.1');
+  process.exit(0);
+}
 
 // Handle --init flag
 if (cli.flags.init) {

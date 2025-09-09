@@ -2,6 +2,7 @@
 import { describe, test, expect, beforeEach, afterEach } from 'bun:test';
 import React from 'react';
 import { render } from 'ink-testing-library';
+import { Text } from 'ink';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -38,7 +39,7 @@ const DocumentViewerComponent = ({ path, theme, watch }: { path: string; theme?:
     }
   }, [path, theme, watch]);
 
-  return <>{content}</>;
+  return <Text>{content}</Text>;
 };
 
 describe('Document Rendering', () => {

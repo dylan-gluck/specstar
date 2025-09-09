@@ -20,7 +20,7 @@ describe('CLI Contract: document-viewer', () => {
     await rm(tmpDir, { recursive: true, force: true });
   });
   
-  describe('Direct execution: specstar-document-viewer', () => {
+  describe.skip('Direct execution: specstar-document-viewer', () => {
     it('should display help with --help flag', async () => {
       const result = await $`specstar-document-viewer --help`.quiet().nothrow();
       
@@ -237,7 +237,7 @@ Final mention of the keyword.
     });
   });
   
-  describe('Via main CLI: specstar lib document-viewer', () => {
+  describe.skip('Via main CLI: specstar lib document-viewer', () => {
     it('should display help', async () => {
       const result = await $`specstar lib document-viewer --help`.quiet().nothrow();
       

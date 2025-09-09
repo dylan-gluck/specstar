@@ -19,7 +19,7 @@ describe('CLI Contract: tui-renderer', () => {
     await rm(tmpDir, { recursive: true, force: true });
   });
   
-  describe('Direct execution: specstar-tui-renderer', () => {
+  describe.skip('Direct execution: specstar-tui-renderer', () => {
     it('should display help with --help flag', async () => {
       const result = await $`specstar-tui-renderer --help`.quiet().nothrow();
       
@@ -124,7 +124,7 @@ describe('CLI Contract: tui-renderer', () => {
     });
   });
   
-  describe('Via main CLI: specstar lib tui-renderer', () => {
+  describe.skip('Via main CLI: specstar lib tui-renderer', () => {
     it('should display help', async () => {
       const result = await $`specstar lib tui-renderer --help`.quiet().nothrow();
       

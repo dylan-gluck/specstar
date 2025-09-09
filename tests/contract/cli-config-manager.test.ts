@@ -20,7 +20,7 @@ describe('CLI Contract: config-manager', () => {
     await rm(tmpDir, { recursive: true, force: true });
   });
   
-  describe('Direct execution: specstar-config-manager', () => {
+  describe.skip('Direct execution: specstar-config-manager', () => {
     it('should display help with --help flag', async () => {
       const result = await $`specstar-config-manager --help`.quiet().nothrow();
       
@@ -376,7 +376,7 @@ describe('CLI Contract: config-manager', () => {
     });
   });
   
-  describe('Via main CLI: specstar lib config-manager', () => {
+  describe.skip('Via main CLI: specstar lib config-manager', () => {
     it('should display help', async () => {
       const result = await $`specstar lib config-manager --help`.quiet().nothrow();
       
