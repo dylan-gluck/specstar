@@ -78,12 +78,16 @@ process.on('unhandledRejection', (reason, promise) => {
 
 // Launch TUI if no flags provided
 try {
+  logger.debug('Debug: Starting TUI initialization');
   logger.info('Launching Specstar TUI');
+  logger.debug('Debug: Creating Ink instance');
   const ink = withFullScreen(<App />);
 
+  logger.debug('Debug: Starting Ink render');
   await ink.start();
   await ink.waitUntilExit();
   
+  logger.debug('Debug: TUI cleanup complete');
   logger.info('Specstar TUI exited normally');
 } catch (error) {
   logger.error('Failed to launch TUI', error as Error);

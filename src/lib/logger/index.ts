@@ -20,7 +20,7 @@ export class Logger {
   private static logDir: string = join(process.cwd(), '.specstar', 'logs');
   private static maxFileSize = 10 * 1024 * 1024; // 10MB
   private static maxFiles = 5;
-  private static logLevel: LogLevel = (process.env.LOG_LEVEL as LogLevel) || 'info';
+  private static logLevel: LogLevel = Logger.getInitialLogLevel();
   private static loggers = new Map<string, Logger>();
   private static fileHandle: any = null;
   private static currentLogFile: string = '';
@@ -32,6 +32,23 @@ export class Logger {
     this.module = module;
     Logger.loggers.set(module, this);
     this.ensureInitialized();
+  }
+  
+  private static getInitialLogLevel(): LogLevel {
+    try {
+      const settingsPath = join(process.cwd(), '.specstar', 'settings.json');
+      if (existsSync(settingsPath)) {
+        const fs = require('fs');
+        const content = fs.readFileSync(settingsPath, 'utf-8');
+        const settings = JSON.parse(content);
+        if (settings.logLevel) {
+          return settings.logLevel as LogLevel;
+        }
+      }
+    } catch (error) {
+      // Fallback to env variable or default
+    }
+    return (process.env.LOG_LEVEL as LogLevel) || 'info';
   }
 
   private async ensureInitialized() {
@@ -82,9 +99,10 @@ export class Logger {
     const rotatedPath = join(Logger.logDir, rotatedFileName);
     
     try {
-      const currentContent = await Bun.file(Logger.currentLogFile).text();
-      await Bun.write(rotatedPath, currentContent);
-      await Bun.write(Logger.currentLogFile, ''); // Clear current file
+      // Move the current file to the rotated name instead of copying
+      const { rename } = await import('fs/promises');
+      await rename(Logger.currentLogFile, rotatedPath);
+      // The next write will create a new file with append: true
     } catch (error) {
       console.error('Error rotating logs:', error);
     }
@@ -114,8 +132,7 @@ export class Logger {
         // Remove oldest files
         const toRemove = fileStats.slice(0, files.length - Logger.maxFiles);
         for (const file of toRemove) {
-          await Bun.write(file.path, ''); // Clear file first
-          // Note: Bun.file().unlink() is not available, use fs.unlink instead
+          // Just delete the file directly without clearing it first
           const { unlink } = await import("node:fs/promises");
           await unlink(file.path);
         }
@@ -141,9 +158,10 @@ export class Logger {
     const logLine = JSON.stringify(entry) + '\n';
     
     try {
-      // Write to file
+      // Write to file using fs.appendFile for proper appending
       if (Logger.currentLogFile) {
-        await Bun.write(Logger.currentLogFile, logLine, { append: true });
+        const { appendFile } = await import('fs/promises');
+        await appendFile(Logger.currentLogFile, logLine);
       }
       
       // Also write to console in development
@@ -227,6 +245,10 @@ export class Logger {
 
   static setLogLevel(level: LogLevel) {
     Logger.logLevel = level;
+  }
+  
+  static getLogLevel(): LogLevel {
+    return Logger.logLevel;
   }
 
   static async getLogs(filter?: {
