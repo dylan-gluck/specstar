@@ -96,12 +96,12 @@ describe('CLI Contract: tui-renderer', () => {
         const preview = $`specstar-tui-renderer preview ${componentFile}`.quiet().nothrow();
         
         await new Promise(resolve => setTimeout(resolve, 1000));
-        preview.kill();
+        (preview as any).kill?.();
         
         const result = await preview;
         
         // Preview should be killed gracefully
-        expect(result.signal).toBeDefined();
+        expect((result as any).signal).toBeDefined();
       });
     });
     

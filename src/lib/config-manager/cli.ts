@@ -159,14 +159,17 @@ async function main() {
         
         for (let i = 0; i < keys.length - 1; i++) {
           const k = keys[i];
-          if (!(k in current) || typeof current[k] !== 'object') {
-            current[k] = {};
+          if (!k) continue;
+          if (!(k in current) || typeof current[k as keyof typeof current] !== 'object') {
+            (current as any)[k] = {};
           }
-          current = current[k];
+          current = (current as any)[k];
         }
         
         const lastKey = keys[keys.length - 1];
-        current[lastKey] = parsedValue;
+        if (lastKey) {
+          (current as any)[lastKey] = parsedValue;
+        }
         
         // Validate and save
         if (!manager.validate(config)) {
@@ -219,7 +222,7 @@ async function main() {
         const defaultConfig: SpecstarConfig = {
           version: '1.0.0',
           sessionPath: '.specstar/sessions',
-          hooks: ['beforeSession', 'afterSession', 'onFileChange'],
+          folders: [],
           theme: 'dark',
           autoStart: false,
           logLevel: 'info'

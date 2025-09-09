@@ -1,4 +1,5 @@
-import React, { Component, ReactNode, ErrorInfo } from "react";
+import React, { Component } from "react";
+import type { ReactNode, ErrorInfo } from "react";
 import { Box, Text } from "ink";
 import { Logger } from "../lib/logger/index.ts";
 
@@ -27,7 +28,7 @@ export class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error, errorInfo: null };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     this.logger.error('Component error caught', {
       error: error.message,
       stack: error.stack,
@@ -46,7 +47,7 @@ export class ErrorBoundary extends Component<Props, State> {
     this.setState({ hasError: false, error: null, errorInfo: null });
   };
 
-  render() {
+  override render() {
     if (this.state.hasError && this.state.error) {
       if (this.props.fallback) {
         return this.props.fallback(this.state.error, this.resetError);

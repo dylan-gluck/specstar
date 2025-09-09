@@ -102,8 +102,8 @@ function formatDuration(ms: number): string {
 function formatSession(session: SessionData, stats?: SessionStats): string {
   const lines: string[] = [];
   
-  lines.push(`Session ID: ${session.id}`);
-  lines.push(`Start Time: ${new Date(session.startTime).toLocaleString()}`);
+  lines.push(`Session ID: ${session.id || session.session_id}`);
+  lines.push(`Start Time: ${new Date(session.startTime || session.created_at).toLocaleString()}`);
   
   if (session.endTime) {
     lines.push(`End Time: ${new Date(session.endTime).toLocaleString()}`);
@@ -127,30 +127,26 @@ function formatSession(session: SessionData, stats?: SessionStats): string {
     lines.push(`  Commands: ${stats.commandsExecuted} executed (${stats.commandsSucceeded} succeeded, ${stats.commandsFailed} failed)`);
   }
   
-  if (session.files && session.files.length > 0) {
+  const totalFiles = (session.files?.new?.length || 0) + (session.files?.edited?.length || 0) + (session.files?.read?.length || 0);
+  if (session.files && totalFiles > 0) {
     lines.push('');
-    lines.push(`Files Changed (${session.files.length}):`);
-    const recentFiles = session.files.slice(-5);
+    lines.push(`Files Changed (${totalFiles}):`);
+    const allFiles = [
+      ...(session.files.new || []).map(f => ({ path: f, action: 'new' })),
+      ...(session.files.edited || []).map(f => ({ path: f, action: 'edited' })),
+      ...(session.files.read || []).map(f => ({ path: f, action: 'read' }))
+    ];
+    const recentFiles = allFiles.slice(-5);
     for (const file of recentFiles) {
       lines.push(`  ${file.action}: ${file.path}`);
     }
-    if (session.files.length > 5) {
-      lines.push(`  ... and ${session.files.length - 5} more`);
+    if (allFiles.length > 5) {
+      lines.push(`  ... and ${allFiles.length - 5} more`);
     }
   }
   
-  if (session.commands && session.commands.length > 0) {
-    lines.push('');
-    lines.push(`Commands Executed (${session.commands.length}):`);
-    const recentCommands = session.commands.slice(-5);
-    for (const cmd of recentCommands) {
-      const status = cmd.exitCode === 0 ? '✓' : '✗';
-      lines.push(`  ${status} ${cmd.command}`);
-    }
-    if (session.commands.length > 5) {
-      lines.push(`  ... and ${session.commands.length - 5} more`);
-    }
-  }
+  // Commands section - will be implemented when commands tracking is added
+  // TODO: Add commands tracking
   
   return lines.join('\n');
 }
@@ -267,7 +263,7 @@ async function main() {
           if (cli.flags.stats) {
             const sessionsWithStats = sessions.map(session => ({
               ...session,
-              stats: monitor.getSessionStats(session.id)
+              stats: monitor.getSessionStats(session.id || session.session_id)
             }));
             output(sessionsWithStats, true);
           } else {
@@ -280,8 +276,8 @@ async function main() {
             console.log(`Found ${sessions.length} ${cli.flags.active ? 'active' : ''} session(s):\n`);
             
             for (const session of sessions) {
-              const stats = cli.flags.stats ? monitor.getSessionStats(session.id) : undefined;
-              console.log(formatSession(session, stats));
+              const stats = cli.flags.stats ? monitor.getSessionStats(session.id || session.session_id) : undefined;
+              console.log(formatSession(session, stats ?? undefined));
               console.log('---');
             }
           }
@@ -313,31 +309,28 @@ async function main() {
         // Add start event
         events.push({
           type: 'start',
-          time: session.startTime,
+          time: session.startTime || session.created_at,
           data: { project: session.project, user: session.user }
         });
         
         // Add file events
         if (session.files) {
-          for (const file of session.files) {
+          const allFiles = [
+            ...(session.files.new || []).map(f => ({ path: f, action: 'new' })),
+            ...(session.files.edited || []).map(f => ({ path: f, action: 'edited' })),
+            ...(session.files.read || []).map(f => ({ path: f, action: 'read' }))
+          ];
+          for (const file of allFiles) {
             events.push({
               type: 'file',
-              time: file.timestamp || session.startTime,
+              time: (file as any).timestamp || session.startTime || session.created_at,
               data: file
             });
           }
         }
         
-        // Add command events
-        if (session.commands) {
-          for (const cmd of session.commands) {
-            events.push({
-              type: 'command',
-              time: cmd.timestamp || session.startTime,
-              data: cmd
-            });
-          }
-        }
+        // Command events - will be implemented when commands tracking is added
+        // TODO: Add commands tracking
         
         // Add end event
         if (session.endTime) {
@@ -428,7 +421,7 @@ async function main() {
           if (cli.flags.stats) {
             const sessionsWithStats = history.map(session => ({
               ...session,
-              stats: monitor.getSessionStats(session.id)
+              stats: monitor.getSessionStats(session.id || session.session_id)
             }));
             output(sessionsWithStats, cli.flags.json);
           } else {

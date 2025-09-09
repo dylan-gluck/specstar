@@ -198,7 +198,7 @@ describe("post_tool_use hook contract", () => {
     expect(logs).toHaveLength(numCalls);
     
     // Verify all tools are present
-    const toolNames = updatedState.tools_used.map(t => t.tool_name).sort();
+    const toolNames = updatedState.tools_used.map((t: any) => t.tool_name).sort();
     const expectedNames = Array.from({length: numCalls}, (_, i) => `Tool${i}`).sort();
     expect(toolNames).toEqual(expectedNames);
   });

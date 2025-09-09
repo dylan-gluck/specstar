@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 import { EventEmitter } from 'node:events';
-import { watch, FSWatcher } from 'node:fs';
+import { watch } from 'node:fs';
+import type { FSWatcher } from 'node:fs';
 import { readFile, readdir, mkdir, unlink } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { Readable } from 'node:stream';
@@ -16,6 +17,15 @@ export interface SessionMonitorOptions {
 
 // Session data structures - matching actual .specstar/sessions/*/state.json
 export interface SessionData {
+  // Legacy properties (for compatibility)
+  id?: string;
+  startTime?: string;
+  endTime?: string;
+  status?: string;
+  project?: string;
+  user?: string;
+  
+  // Current properties
   session_id: string;
   session_title: string;
   session_active: boolean;
@@ -162,7 +172,7 @@ export class SessionMonitor extends EventEmitter {
     // Sort by created_at time and return the most recent
     return activeSessions.sort((a, b) => 
       new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    )[0];
+    )[0] || null;
   }
 
   // Get historical session data

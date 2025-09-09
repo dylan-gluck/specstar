@@ -324,7 +324,7 @@ More content
       // Check TOC extraction
       const toc = viewer.extractTableOfContents(doc.content);
       expect(toc.length).toBeGreaterThan(0);
-      expect(toc[0].text).toBe('Test Document');
+      expect(toc[0]?.text).toBe('Test Document');
       
       // Check search functionality
       const matches = viewer.search(doc.content, 'test');

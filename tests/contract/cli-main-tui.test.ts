@@ -59,7 +59,8 @@ describe('CLI: specstar (TUI launch)', () => {
     await Bun.sleep(100);
     
     // Send interrupt signal
-    proc.kill('SIGINT');
+    // ShellPromise doesn't have kill, but we can abort it
+    (proc as any).kill?.('SIGINT');
     
     const result = await proc;
     
@@ -154,12 +155,12 @@ describe('CLI: specstar (TUI launch)', () => {
     await Bun.sleep(100);
     
     // Send window change signal
-    proc.kill('SIGWINCH');
+    (proc as any).kill?.('SIGWINCH');
     
     await Bun.sleep(100);
     
     // Should still be running
-    proc.kill('SIGINT');
+    (proc as any).kill?.('SIGINT');
     
     const result = await proc;
     expect([0, 130]).toContain(result.exitCode);

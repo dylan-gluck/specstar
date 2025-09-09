@@ -314,10 +314,9 @@ export class DocumentViewer {
     const tokens = marked.lexer(content, {
       breaks: true,
       gfm: true,
-      tables: true,
       smartLists: true,
       smartypants: false,
-    });
+    } as any);
 
     // Render tokens to terminal format
     const rendered = this.terminalRenderer.render(tokens);
@@ -442,7 +441,7 @@ export class DocumentViewer {
 
     lines.forEach((line, index) => {
       const match = line.match(/^(#{1,6})\s+(.+)$/);
-      if (match) {
+      if (match && match[1] && match[2]) {
         toc.push({
           level: match[1].length,
           text: match[2],

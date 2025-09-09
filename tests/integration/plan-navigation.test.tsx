@@ -6,7 +6,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import App from '../../src/app';
-import { PlanView } from '../../src/views/plan';
+import PlanView from '../../src/views/plan-view';
 
 describe('Plan View Navigation', () => {
   let tempDir: string;
@@ -28,7 +28,7 @@ describe('Plan View Navigation', () => {
   });
 
   test('should render Plan view with document list', () => {
-    const { lastFrame } = render(<PlanView specsPath={join(tempDir, 'specs')} />);
+    const { lastFrame } = render(<PlanView />);
     
     // Verify document list is rendered
     expect(lastFrame()).toContain('Documents');
@@ -39,7 +39,7 @@ describe('Plan View Navigation', () => {
   });
 
   test('should navigate between documents with arrow keys', () => {
-    const { lastFrame, stdin } = render(<PlanView specsPath={join(tempDir, 'specs')} />);
+    const { lastFrame, stdin } = render(<PlanView />);
     
     // Initial state - first document selected
     expect(lastFrame()).toContain('▶ overview.md');
@@ -58,7 +58,7 @@ describe('Plan View Navigation', () => {
   });
 
   test('should wrap navigation at boundaries', () => {
-    const { lastFrame, stdin } = render(<PlanView specsPath={join(tempDir, 'specs')} />);
+    const { lastFrame, stdin } = render(<PlanView />);
     
     // Navigate to last document
     stdin.write('\x1B[B'); // Down
@@ -76,7 +76,7 @@ describe('Plan View Navigation', () => {
   });
 
   test('should load document content on Enter key', async () => {
-    const { lastFrame, stdin } = render(<PlanView specsPath={join(tempDir, 'specs')} />);
+    const { lastFrame, stdin } = render(<PlanView />);
     
     // Select architecture.md
     stdin.write('\x1B[B'); // Down arrow
@@ -95,7 +95,7 @@ describe('Plan View Navigation', () => {
   });
 
   test('should support vim-style navigation (j/k)', () => {
-    const { lastFrame, stdin } = render(<PlanView specsPath={join(tempDir, 'specs')} />);
+    const { lastFrame, stdin } = render(<PlanView />);
     
     // Press 'j' to move down
     stdin.write('j');
@@ -111,7 +111,7 @@ describe('Plan View Navigation', () => {
   });
 
   test('should scroll document content with Page Up/Down', async () => {
-    const { lastFrame, stdin } = render(<PlanView specsPath={join(tempDir, 'specs')} />);
+    const { lastFrame, stdin } = render(<PlanView />);
     
     // Create a long document
     const longContent = Array.from({ length: 100 }, (_, i) => `Line ${i + 1}`).join('\n');
@@ -137,7 +137,7 @@ describe('Plan View Navigation', () => {
   });
 
   test('should search within documents with /', () => {
-    const { lastFrame, stdin } = render(<PlanView specsPath={join(tempDir, 'specs')} />);
+    const { lastFrame, stdin } = render(<PlanView />);
     
     // Load a document
     stdin.write('\x1B[B'); // Select architecture.md
@@ -156,7 +156,7 @@ describe('Plan View Navigation', () => {
   });
 
   test('should switch focus between panes with Tab', () => {
-    const { lastFrame, stdin } = render(<PlanView specsPath={join(tempDir, 'specs')} />);
+    const { lastFrame, stdin } = render(<PlanView />);
     
     // Initial focus on document list
     expect(lastFrame()).toContain('▶ overview.md');
@@ -177,7 +177,7 @@ describe('Plan View Navigation', () => {
   });
 
   test('should handle keyboard shortcuts for common actions', () => {
-    const { lastFrame, stdin, rerender } = render(<PlanView specsPath={join(tempDir, 'specs')} />);
+    const { lastFrame, stdin, rerender } = render(<PlanView />);
     
     // Press 'r' to refresh document list
     stdin.write('r');
@@ -188,7 +188,7 @@ describe('Plan View Navigation', () => {
     expect(lastFrame()).toContain('Main Menu'); // Should exit to main menu
     
     // Press '?' for help
-    rerender(<PlanView specsPath={join(tempDir, 'specs')} />);
+    rerender(<PlanView />);
     stdin.write('?');
     expect(lastFrame()).toContain('Keyboard Shortcuts');
     expect(lastFrame()).toContain('↑/↓ or j/k - Navigate');
@@ -196,7 +196,7 @@ describe('Plan View Navigation', () => {
   });
 
   test('should maintain scroll position when switching documents', async () => {
-    const { lastFrame, stdin } = render(<PlanView specsPath={join(tempDir, 'specs')} />);
+    const { lastFrame, stdin } = render(<PlanView />);
     
     // Load first document and scroll down
     stdin.write('\r'); // Load overview.md
@@ -216,11 +216,11 @@ describe('Plan View Navigation', () => {
     stdin.write('\r'); // Load it
     
     // Verify scroll position was maintained
-    expect(lastFrame()).toBe(scrolledPosition);
+    expect(lastFrame()).toBe(scrolledPosition ?? '');
   });
 
   test('should handle rapid navigation without errors', () => {
-    const { lastFrame, stdin } = render(<PlanView specsPath={join(tempDir, 'specs')} />);
+    const { lastFrame, stdin } = render(<PlanView />);
     
     // Rapidly press navigation keys
     for (let i = 0; i < 20; i++) {

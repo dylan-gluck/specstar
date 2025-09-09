@@ -224,7 +224,7 @@ describe('Contract Test: session_end hook', () => {
       // Count how many concurrent sessions were successfully logged
       let successfulLogs = 0;
       for (const concurrentId of sessionIds) {
-        const entry = updatedLogs.find(log => log.session_id === concurrentId);
+        const entry = updatedLogs.find((log: any) => log.session_id === concurrentId);
         if (entry) {
           successfulLogs++;
           expect(entry.reason).toBe('clear');
@@ -338,7 +338,7 @@ describe('Contract Test: session_end hook', () => {
       
       // Verify logs
       const sessionEndLog = JSON.parse(await Bun.file(join(process.cwd(), '.specstar', 'logs', 'session_end.json')).text());
-      const endEntry = sessionEndLog.find(log => log.session_id === workflowId);
+      const endEntry = sessionEndLog.find((log: any) => log.session_id === workflowId);
       expect(endEntry).toBeDefined();
       expect(endEntry.reason).toBe('prompt_input_exit');
       

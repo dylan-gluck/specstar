@@ -6,7 +6,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { watch, FSWatcher, existsSync, readFileSync } from 'node:fs';
+import { watch, existsSync, readFileSync } from 'node:fs';
+import type { FSWatcher } from 'node:fs';
 import { join } from 'node:path';
 
 export interface WatcherOptions {

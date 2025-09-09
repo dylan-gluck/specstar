@@ -28,7 +28,7 @@ async function validatePrerequisites() {
     const version = await $`bun --version`.text();
     const [major, minor] = version.trim().split('.').map(Number);
     
-    if (major >= 1 && minor >= 1) {
+    if (major !== undefined && minor !== undefined && major >= 1 && minor >= 1) {
       console.log(green("✓ Bun version is compatible: " + version.trim()));
     } else {
       errors.push(`Bun version ${version.trim()} is below required 1.1+`);

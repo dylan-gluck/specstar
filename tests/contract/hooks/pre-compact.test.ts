@@ -286,7 +286,7 @@ describe('Contract Test: pre_compact hook', () => {
       
       // Execute hook multiple times
       await mockHook(input);
-      await mockHook({ ...input, trigger: 'manual' as const });
+      await mockHook({ ...input, trigger: 'auto' });
       
       // Verify log file exists and contains entries
       expect(existsSync(logFile)).toBe(true);
@@ -354,7 +354,7 @@ describe('Contract Test: pre_compact hook', () => {
       const logs = JSON.parse(logContent);
       
       expect(logs).toHaveLength(2);
-      expect(logs[0]).toMatchObject(existingLogs[0]);
+      expect(logs[0]).toMatchObject(existingLogs[0] ?? {});
       expect(logs[1]).toMatchObject(input);
     });
     

@@ -33,8 +33,8 @@ export function appendToLog(
   
   // Ensure entry has timestamp
   const logEntry: LogEntry = {
-    timestamp: new Date().toISOString(),
-    ...entry
+    ...entry,
+    timestamp: entry.timestamp || new Date().toISOString()
   };
   
   // Ensure directory exists

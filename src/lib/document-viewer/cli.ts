@@ -191,7 +191,9 @@ async function interactiveView(viewer: DocumentViewer, document: Document) {
           if (searchResults.length > 0) {
             // Jump to first result
             const firstResultLine = searchResults[0];
-            currentPage = Math.ceil(firstResultLine / cli.flags.pageSize);
+            if (firstResultLine !== undefined) {
+              currentPage = Math.ceil(firstResultLine / cli.flags.pageSize);
+            }
             console.log(chalk.green(`Found ${searchResults.length} results. Press Enter to see next.`));
           } else {
             console.log(chalk.red('No results found.'));
@@ -244,7 +246,9 @@ async function interactiveView(viewer: DocumentViewer, document: Document) {
         if (searchResults.length > 0) {
           searchIndex = (searchIndex + 1) % searchResults.length;
           const resultLine = searchResults[searchIndex];
-          currentPage = Math.ceil(resultLine / cli.flags.pageSize);
+          if (resultLine !== undefined) {
+            currentPage = Math.ceil(resultLine / cli.flags.pageSize);
+          }
           renderPage();
         }
         break;
@@ -398,6 +402,8 @@ async function main() {
             for (const lineNum of results.slice(0, 10)) {
               const lineIndex = lineNum - 1;
               const line = lines[lineIndex];
+              
+              if (!line) continue;
               
               // Show line with context
               if (lineIndex > 0) {

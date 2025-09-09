@@ -152,7 +152,7 @@ export class StateManager<T = any> extends EventEmitter {
       useWAL: options.useWAL ?? true,
       serializer: options.serializer || ((state) => JSON.stringify(state, null, 2)),
       deserializer: options.deserializer || ((data) => JSON.parse(data)),
-      validator: options.validator,
+      validator: options.validator || undefined as any,
       autoSaveInterval: options.autoSaveInterval ?? 0
     };
     
@@ -544,7 +544,7 @@ export class StateManager<T = any> extends EventEmitter {
    */
   private async writeToWAL(transaction: StateTransaction<T>): Promise<void> {
     const walEntry = JSON.stringify(transaction) + '\n';
-    await Bun.write(this.walPath, walEntry, { append: true });
+    await Bun.write(Bun.file(this.walPath), walEntry);
   }
 
   /**
@@ -765,13 +765,17 @@ class Transaction<T> {
     
     for (let i = 0; i < path.length - 1; i++) {
       const key = path[i];
+      if (!key) continue;
       if (!current[key] || typeof current[key] !== 'object') {
         current[key] = {};
       }
       current = current[key];
     }
     
-    current[path[path.length - 1]] = value;
+    const lastKey = path[path.length - 1];
+    if (lastKey) {
+      current[lastKey] = value;
+    }
   }
 
   /**
@@ -782,13 +786,16 @@ class Transaction<T> {
     
     for (let i = 0; i < path.length - 1; i++) {
       const key = path[i];
-      if (!current[key] || typeof current[key] !== 'object') {
+      if (!key || !current[key] || typeof current[key] !== 'object') {
         return;
       }
       current = current[key];
     }
     
-    delete current[path[path.length - 1]];
+    const lastKey = path[path.length - 1];
+    if (lastKey) {
+      delete current[lastKey];
+    }
   }
 }
 

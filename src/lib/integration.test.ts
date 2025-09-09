@@ -69,9 +69,6 @@ describe("Specstar Integration Tests", () => {
       const config = await configManager.load();
       expect(config.version).toBe("1.0.0");
       expect(config.sessionPath).toBe(".specstar/sessions");
-      expect(config.hooks).toContain("beforeSession");
-      expect(config.hooks).toContain("afterSession");
-      expect(config.hooks).toContain("onFileChange");
       
       // Check hooks.ts content
       const hooksFile = await Bun.file(join(SPECSTAR_DIR, "hooks.ts")).text();
@@ -94,7 +91,7 @@ describe("Specstar Integration Tests", () => {
       const validConfig = {
         version: "1.0.0",
         sessionPath: ".specstar/sessions",
-        hooks: ["beforeSession", "afterSession"],
+        folders: [{title: "Docs", path: "docs"}],  // Replace hooks with folders
         theme: "dark" as const,
         autoStart: true,
         logLevel: "info" as const
@@ -329,7 +326,7 @@ describe("Specstar Integration Tests", () => {
       // Verify state
       const state = stateManager.getState();
       expect(state.counter).toBe(1);
-      expect(state.items).toEqual(["item1", "item2"]);
+      expect((state as any).items).toEqual(["item1", "item2"]);
       
       // Check history
       const history = stateManager.getHistory();
@@ -507,7 +504,7 @@ describe("Specstar Integration Tests", () => {
       // Verify integration
       const finalState = stateManager.getState();
       expect(fileChangeCount).toBeGreaterThan(0);
-      expect(finalState.stats?.lastFileChange).toContain("integration-test.js");
+      expect((finalState.stats as any)?.lastFileChange).toContain("integration-test.js");
       
       // Clean up
       await fileWatcher.stop();

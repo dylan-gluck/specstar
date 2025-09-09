@@ -10,7 +10,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { watch, FSWatcher, statSync } from 'node:fs';
+import { watch, statSync } from 'node:fs';
+import type { FSWatcher } from 'node:fs';
 import { readdir, stat } from 'node:fs/promises';
 import { join, relative, resolve, basename, dirname } from 'node:path';
 import { minimatch } from 'minimatch';
@@ -126,7 +127,7 @@ export class FileWatcher extends EventEmitter {
       emitInitial: options.emitInitial ?? false,
       maxDepth: options.maxDepth ?? Infinity,
       followSymlinks: options.followSymlinks ?? false,
-      filter: options.filter
+      filter: options.filter || (() => true)
     };
     
     this.ignorePatterns = this.options.ignore;

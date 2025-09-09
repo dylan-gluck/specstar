@@ -115,7 +115,7 @@ describe('Integration: Session State Tracking', () => {
       // Verify prompt is tracked
       const afterPrompt = sessionMonitor.getCurrentSession();
       expect(afterPrompt?.prompts).toHaveLength(1);
-      expect(afterPrompt?.prompts[0].prompt).toBe('Test prompt');
+      expect(afterPrompt?.prompts[0]?.prompt).toBe('Test prompt');
 
       // 3. Tool Use
       const toolState: SessionData = {
@@ -325,7 +325,7 @@ describe('Integration: Session State Tracking', () => {
       const persistedContent = await readFile(stateFile, 'utf-8');
       const persistedState = JSON.parse(persistedContent) as SessionData;
       expect(persistedState.session_id).toBe(sessionId);
-      expect(persistedState.notifications?.[0].message).toBe('Session started');
+      expect(persistedState.notifications?.[0]?.message).toBe('Session started');
 
       // Second hook invocation (user_prompt_submit)
       const newMonitor = new SessionMonitor({
@@ -352,8 +352,8 @@ describe('Integration: Session State Tracking', () => {
 
       // Verify both old and new data exist
       const currentSession = newMonitor.getCurrentSession();
-      expect(currentSession?.notifications?.[0].message).toBe('Session started');
-      expect(currentSession?.prompts[0].prompt).toBe('User query');
+      expect(currentSession?.notifications?.[0]?.message).toBe('Session started');
+      expect(currentSession?.prompts[0]?.prompt).toBe('User query');
 
       await newMonitor.stop();
     });
@@ -394,11 +394,11 @@ describe('Integration: Session State Tracking', () => {
 
       const history = await sessionMonitor.getSessionHistory();
       expect(history).toHaveLength(3);
-      expect(history[0].session_title).toBe('Session 2'); // Most recent first
+      expect(history[0]?.session_title).toBe('Session 2'); // Most recent first
       
       const activeSessions = sessionMonitor.getActiveSessions();
       expect(activeSessions).toHaveLength(1);
-      expect(activeSessions[0].session_id).toBe(sessions[2]);
+      expect(activeSessions[0]?.session_id).toBe(sessions[2] ?? '');
     });
   });
 

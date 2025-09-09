@@ -99,9 +99,9 @@ describe('File Watching Integration', () => {
     expect(changeEvents.length).toBeGreaterThan(0);
     
     const lastChange = changeEvents[changeEvents.length - 1];
-    expect(lastChange.data).toBeDefined();
-    expect(lastChange.data?.files).toEqual(['test.ts']);
-    expect(lastChange.data?.commands).toEqual(['bun test']);
+    expect(lastChange?.data).toBeDefined();
+    expect(lastChange?.data?.files).toEqual(['test.ts']);
+    expect(lastChange?.data?.commands).toEqual(['bun test']);
   });
 
   test('debounces multiple rapid changes', async () => {
@@ -146,7 +146,7 @@ describe('File Watching Integration', () => {
     expect(changeEvents.length).toBe(1);
     
     // Should have the last written data
-    expect(changeEvents[0].data?.commands).toEqual(['command-5']);
+    expect(changeEvents[0]?.data?.commands).toEqual(['command-5']);
   });
 
   test('recovers from file deletion errors', async () => {
@@ -187,7 +187,7 @@ describe('File Watching Integration', () => {
     // Should have detected the recreated file
     const changeEvents = emittedEvents.filter(e => e.type === 'change');
     const lastEvent = changeEvents[changeEvents.length - 1];
-    expect(lastEvent.data?.files).toContain('test.ts');
+    expect(lastEvent?.data?.files).toContain('test.ts');
   });
 
   test('handles permission changes gracefully', async () => {
@@ -249,7 +249,7 @@ describe('File Watching Integration', () => {
     // Should have recovered and detected the change
     const changeEvents = emittedEvents.filter(e => e.type === 'change');
     const lastChange = changeEvents[changeEvents.length - 1];
-    expect(lastChange.data?.commands).toContain('successful-write');
+    expect(lastChange?.data?.commands).toContain('successful-write');
   });
 
   test('prevents duplicate processing of identical content', async () => {
@@ -301,7 +301,7 @@ describe('File Watching Integration', () => {
     // Should detect the actual change
     const newChangeEvents = emittedEvents.filter(e => e.type === 'change');
     expect(newChangeEvents.length).toBe(1);
-    expect(newChangeEvents[0].data?.files).toContain('utils.ts');
+    expect(newChangeEvents[0]?.data?.files).toContain('utils.ts');
   });
 
   test('handles new session creation', async () => {
@@ -373,7 +373,7 @@ describe('File Watching Integration', () => {
     // Should emit error event
     const errorEvents = emittedEvents.filter(e => e.type === 'error');
     expect(errorEvents.length).toBeGreaterThan(0);
-    expect(errorEvents[0].error).toBeDefined();
+    expect(errorEvents[0]?.error).toBeDefined();
     
     // Fix the JSON
     const validData: SessionData = {
@@ -392,7 +392,7 @@ describe('File Watching Integration', () => {
     // Should recover and process the valid JSON
     const changeEvents = emittedEvents.filter(e => e.type === 'change' || e.type === 'new-session');
     const lastEvent = changeEvents[changeEvents.length - 1];
-    expect(lastEvent.data?.id).toBe('fixed-session');
+    expect(lastEvent?.data?.id).toBe('fixed-session');
   });
 
   test('stops watching on command', async () => {

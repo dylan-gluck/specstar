@@ -69,12 +69,12 @@ describe('CLI Contract: session-monitor', () => {
         }));
         
         await new Promise(resolve => setTimeout(resolve, 500));
-        watcher.kill();
+        (watcher as any).kill?.();
         
         const result = await watcher;
         
         // Watcher should be killed gracefully
-        expect(result.signal).toBeDefined();
+        expect((result as any).signal).toBeDefined();
       });
       
       it('should error on invalid directory', async () => {

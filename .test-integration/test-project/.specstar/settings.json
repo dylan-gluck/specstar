@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "sessionPath": ".specstar/sessions",
+  "folders": [
+    {
+      "title": "Docs",
+      "path": "docs"
+    },
+    {
+      "title": "Specs",
+      "path": "specs"
+    },
+    {
+      "title": "Templates",
+      "path": "templates"
+    }
+  ],
+  "theme": "dark",
+  "autoStart": false,
+  "logLevel": "info"
+}

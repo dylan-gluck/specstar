@@ -5,6 +5,7 @@
 
 // Re-export SessionData from session-monitor to maintain consistency
 export type { SessionData } from '../lib/session-monitor';
+import type { SessionData as SessionDataType } from '../lib/session-monitor';
 
 export interface Agent {
   id: string;
@@ -205,7 +206,7 @@ export function deserializeSession(data: string): Session {
 /**
  * Deserialize SessionData from hooks JSON format
  */
-export function deserializeSessionData(data: string): SessionData {
+export function deserializeSessionData(data: string): SessionDataType {
   const parsed = JSON.parse(data);
   if (!isValidSessionData(parsed)) {
     throw new Error('Invalid session data from hooks');
@@ -216,7 +217,7 @@ export function deserializeSessionData(data: string): SessionData {
 /**
  * Validate SessionData structure
  */
-export function isValidSessionData(data: unknown): data is SessionData {
+export function isValidSessionData(data: unknown): data is SessionDataType {
   if (typeof data !== 'object' || data === null) return false;
   const d = data as Record<string, unknown>;
   
@@ -242,8 +243,8 @@ export function isValidSessionData(data: unknown): data is SessionData {
 /**
  * Convert SessionData from hooks to Session model
  */
-export function sessionDataToSession(data: SessionData): Session {
-  const agents: Agent[] = data.agents_history.map(a => ({
+export function sessionDataToSession(data: SessionDataType): Session {
+  const agents: Agent[] = data.agents_history.map((a: any) => ({
     id: `${a.name}-${a.started_at}`,
     name: a.name,
     role: a.name,  // Use name as role for now
@@ -254,17 +255,17 @@ export function sessionDataToSession(data: SessionData): Session {
   }));
   
   const files: FileOperation[] = [
-    ...data.files.new.map(path => ({
+    ...data.files.new.map((path: any) => ({
       path,
       operation: 'create' as const,
       timestamp: data.created_at  // We don't have exact timestamps
     })),
-    ...data.files.edited.map(path => ({
+    ...data.files.edited.map((path: any) => ({
       path,
       operation: 'edit' as const,
       timestamp: data.created_at
     })),
-    ...data.files.read.map(path => ({
+    ...data.files.read.map((path: any) => ({
       path,
       operation: 'read' as const,
       timestamp: data.created_at

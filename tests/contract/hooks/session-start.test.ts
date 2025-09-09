@@ -353,7 +353,7 @@ describe('Contract: session_start hook', () => {
       const sessionId = randomUUID();
       
       // Run hook with timeout flag (simulating slow operation)
-      const result = await $`${hookPath} --session_id ${sessionId} --source startup --simulate_slow 5000`.cwd(tmpDir).timeout(1000).quiet().nothrow();
+      const result = await $`timeout 1 ${hookPath} --session_id ${sessionId} --source startup --simulate_slow 5000`.cwd(tmpDir).quiet().nothrow();
       
       // Should exit with error due to timeout
       expect(result.exitCode).not.toBe(0);

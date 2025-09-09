@@ -69,7 +69,7 @@ describe('Claude Code Session Monitoring', () => {
     await new Promise(resolve => setTimeout(resolve, 200));
 
     // Update session with file change
-    sessionData.files.push({
+    (sessionData as any).files.push({
       path: '/test/file.ts',
       action: 'modified',
       timestamp: new Date().toISOString()
@@ -103,7 +103,7 @@ describe('Claude Code Session Monitoring', () => {
     await new Promise(resolve => setTimeout(resolve, 200));
 
     // Add command to session
-    sessionData.commands.push({
+    (sessionData as any).commands.push({
       command: 'bun test',
       timestamp: new Date().toISOString(),
       exitCode: 0,
@@ -320,6 +320,7 @@ export function onSessionEnd(session) {
       filesCreated: 1,
       filesModified: 1,
       filesDeleted: 1,
+      filesRead: 0,  // Added missing property
       commandsExecuted: 2,
       commandsSucceeded: 2,
       commandsFailed: 0

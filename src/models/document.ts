@@ -124,7 +124,7 @@ export function extractMetadata(path: string, content: string): DocumentMetadata
   const headings: DocumentMetadata['headings'] = [];
   lines.forEach((line, index) => {
     const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
-    if (headingMatch) {
+    if (headingMatch && headingMatch[1] && headingMatch[2]) {
       headings.push({
         level: headingMatch[1].length,
         text: headingMatch[2].trim(),

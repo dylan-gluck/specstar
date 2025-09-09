@@ -1,5 +1,6 @@
 import { describe, test, expect, beforeEach, afterEach, mock } from "bun:test";
-import { HookIntegrator, HookEvent } from "./index";
+import { HookIntegrator } from "./index";
+import type { HookEvent } from "./index";
 import path from "path";
 import { mkdtemp, rm, writeFile } from "fs/promises";
 import { tmpdir } from "os";
@@ -73,8 +74,8 @@ describe("HookIntegrator", () => {
       await integrator.triggerHook("beforeSession");
       
       expect(handler).toHaveBeenCalledTimes(1);
-      const call = handler.mock.calls[0];
-      expect(call[0]).toMatchObject({
+      const call = handler.mock.calls[0] as any;
+      expect(call?.[0]).toMatchObject({
         type: "beforeSession",
         data: {}
       });
@@ -158,10 +159,10 @@ describe("HookIntegrator", () => {
       await integrator.triggerHook("beforeSession");
       
       expect(onErrorHandler).toHaveBeenCalledTimes(1);
-      const errorEvent = onErrorHandler.mock.calls[0][0];
-      expect(errorEvent.type).toBe("onError");
-      expect(errorEvent.data.originalEvent).toBe("beforeSession");
-      expect(errorEvent.data.error.message).toBe("Test error");
+      const errorEvent = (onErrorHandler.mock.calls[0] as any)?.[0];
+      expect(errorEvent?.type).toBe("onError");
+      expect(errorEvent?.data.originalEvent).toBe("beforeSession");
+      expect(errorEvent?.data.error.message).toBe("Test error");
     });
   });
 
