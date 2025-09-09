@@ -1,6 +1,5 @@
 {
   "version": "1.0.0",
-  "sessionPath": ".specstar/sessions",
   "folders": [
     {
       "title": "Docs",
@@ -17,5 +16,6 @@
   ],
   "theme": "dark",
   "autoStart": false,
-  "logLevel": "debug"
+  "startPage": "plan",
+  "logLevel": "info"
 }

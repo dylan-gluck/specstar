@@ -4,7 +4,7 @@
 
 * Session state "session_active" is set to `false` prematurely.
 * The only hook that should update session_active is session_start and session_end
-* Do not set session_active to false on stop
+* Do not set session_active to false on any other hooks
 
 ## TUI Loading
 

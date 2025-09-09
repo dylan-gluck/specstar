@@ -115,11 +115,13 @@ export function FileList({ id, title, files: staticFiles, directory, pattern, on
 }
 
 function FileItem({ file, selected }: { file: File; selected: boolean }) {
-  const displayName = file.isDirectory ? `📁 ${file.name}` : `📄 ${file.name}`;
+  // Use prefix indicators instead of emojis
+  const prefix = file.isDirectory ? '● ' : '  ';
+  const displayName = `${prefix}${file.name}`;
   
   return (
-    <Box backgroundColor={selected ? "green" : undefined}>
-      <Text color={selected ? "white" : undefined}>
+    <Box backgroundColor={undefined}>
+      <Text color={selected ? "green" : undefined}>
         {displayName}
       </Text>
     </Box>

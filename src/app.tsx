@@ -6,8 +6,9 @@ import Gradient from "ink-gradient";
 import BigText from "ink-big-text";
 import { ErrorBoundary } from "./components/error-boundary";
 import { Logger } from "./lib/logger/index";
+import { loadSettings } from "./lib/config/settings-loader";
 
-type View = "plan" | "observe" | "welcome";
+type View = "plan" | "observe" | "help" | "welcome";
 
 export default function App() {
   const [activeView, setActiveView] = useState<View>("welcome");
@@ -51,10 +52,18 @@ export default function App() {
       });
     }
 
-    // Show welcome screen briefly, then go to plan view
-    const timer = setTimeout(() => {
-      setActiveView("plan");
-      logger.info("Auto-switched to plan view after welcome");
+    // Show welcome screen briefly, then go to configured start page
+    const timer = setTimeout(async () => {
+      try {
+        const settings = await loadSettings();
+        const startView = settings.startPage === 'help' ? 'welcome' : settings.startPage;
+        setActiveView(startView as View);
+        logger.info(`Auto-switched to ${startView} view after welcome (from settings.startPage: ${settings.startPage})`);
+      } catch (error) {
+        // Fall back to plan if settings fail to load
+        setActiveView("plan");
+        logger.info("Auto-switched to plan view after welcome (fallback due to settings error)");
+      }
     }, 2000);
 
     return () => clearTimeout(timer);
@@ -162,7 +171,7 @@ export default function App() {
               </Box>
               <Box marginTop={2}>
                 <Text color="gray" dimColor>
-                  Loading Plan View...
+                  Loading start page...
                 </Text>
               </Box>
             </Box>

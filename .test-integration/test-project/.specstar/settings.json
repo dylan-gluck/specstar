@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "sessionPath": ".specstar/sessions",
+  "startPage": "plan",
   "folders": [
     {
       "title": "Docs",
