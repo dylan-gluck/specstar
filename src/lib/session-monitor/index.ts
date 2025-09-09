@@ -35,7 +35,9 @@ export interface SessionData {
   tools_used: Record<string, number>;
   errors: Array<{
     timestamp: string;
-    error: string;
+    type: string;
+    message: string;
+    context?: any;
   }>;
   prompts: Array<{
     timestamp: string;
@@ -275,9 +277,9 @@ export class SessionMonitor extends EventEmitter {
           const content = await readFile(filePath, 'utf-8');
           const session = JSON.parse(content) as SessionData;
           
-          const sessionTime = session.endTime 
-            ? new Date(session.endTime).getTime()
-            : new Date(session.startTime).getTime();
+          const sessionTime = session.updated_at 
+            ? new Date(session.updated_at).getTime()
+            : new Date(session.created_at).getTime();
           
           if (sessionTime < cutoffTime) {
             await unlink(filePath);
@@ -514,26 +516,26 @@ export class SessionMonitor extends EventEmitter {
     const oldTools = Object.values(oldSession.tools_used || {}).reduce((sum, v) => sum + v, 0);
     const newTools = Object.values(newSession.tools_used || {}).reduce((sum, v) => sum + v, 0);
     
-    if (newCommands.length > oldCommands.length) {
-      // New commands executed
-      const addedCommands = newCommands.slice(oldCommands.length);
-      for (const command of addedCommands) {
-        const event: SessionEvent = {
-          type: 'command',
-          timestamp: new Date().toISOString(),
-          data: command
-        };
+    if (newTools > oldTools) {
+      // New tools used - emit as command event
+      const event: SessionEvent = {
+        type: 'command',
+        timestamp: new Date().toISOString(),
+        data: {
+          tools_used: newSession.tools_used,
+          count: newTools
+        }
+      };
 
-        this.emit('command', command);
-        this.emitToStream(event);
-      }
+      this.emit('command', event.data);
+      this.emitToStream(event);
     }
   }
 
   private async saveSessionToHistory(session: SessionData): Promise<void> {
     try {
-      const historyFile = join(this.options.sessionPath, `${session.id}.json`);
-      await Bun.write(historyFile, JSON.stringify(session, null, 2));
+      // Session history is already saved by hooks in .specstar/sessions/<id>/state.json
+      // We don't need to duplicate it
     } catch (error) {
       console.error(`Failed to save session ${session.id} to history:`, error);
     }

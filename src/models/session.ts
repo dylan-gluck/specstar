@@ -3,6 +3,9 @@
  * Represents a Claude Code session with agents, files, and commands
  */
 
+// Re-export SessionData from session-monitor to maintain consistency
+export type { SessionData } from '../lib/session-monitor';
+
 export interface Agent {
   id: string;
   name: string;
@@ -197,6 +200,98 @@ export function deserializeSession(data: string): Session {
     throw new Error('Invalid session data');
   }
   return parsed;
+}
+
+/**
+ * Deserialize SessionData from hooks JSON format
+ */
+export function deserializeSessionData(data: string): SessionData {
+  const parsed = JSON.parse(data);
+  if (!isValidSessionData(parsed)) {
+    throw new Error('Invalid session data from hooks');
+  }
+  return parsed;
+}
+
+/**
+ * Validate SessionData structure
+ */
+export function isValidSessionData(data: unknown): data is SessionData {
+  if (typeof data !== 'object' || data === null) return false;
+  const d = data as Record<string, unknown>;
+  
+  return (
+    typeof d.session_id === 'string' &&
+    typeof d.session_title === 'string' &&
+    typeof d.session_active === 'boolean' &&
+    typeof d.created_at === 'string' &&
+    typeof d.updated_at === 'string' &&
+    Array.isArray(d.agents) && d.agents.every(a => typeof a === 'string') &&
+    Array.isArray(d.agents_history) &&
+    typeof d.files === 'object' && d.files !== null &&
+    Array.isArray((d.files as any).new) &&
+    Array.isArray((d.files as any).edited) &&
+    Array.isArray((d.files as any).read) &&
+    typeof d.tools_used === 'object' &&
+    Array.isArray(d.errors) &&
+    Array.isArray(d.prompts) &&
+    Array.isArray(d.notifications)
+  );
+}
+
+/**
+ * Convert SessionData from hooks to Session model
+ */
+export function sessionDataToSession(data: SessionData): Session {
+  const agents: Agent[] = data.agents_history.map(a => ({
+    id: `${a.name}-${a.started_at}`,
+    name: a.name,
+    role: a.name,  // Use name as role for now
+    status: a.completed_at ? 'completed' as const : 
+            data.agents.includes(a.name) ? 'active' as const : 'idle' as const,
+    startTime: a.started_at,
+    endTime: a.completed_at
+  }));
+  
+  const files: FileOperation[] = [
+    ...data.files.new.map(path => ({
+      path,
+      operation: 'create' as const,
+      timestamp: data.created_at  // We don't have exact timestamps
+    })),
+    ...data.files.edited.map(path => ({
+      path,
+      operation: 'edit' as const,
+      timestamp: data.created_at
+    })),
+    ...data.files.read.map(path => ({
+      path,
+      operation: 'read' as const,
+      timestamp: data.created_at
+    }))
+  ];
+  
+  // Map tools_used to commands (approximation)
+  const commands: Command[] = Object.entries(data.tools_used).map(([tool, count]) => ({
+    command: `Tool: ${tool} (used ${count} times)`,
+    timestamp: data.updated_at
+  }));
+  
+  return {
+    id: data.session_id,
+    agents,
+    timestamp: data.created_at,
+    status: data.session_active ? SessionStatus.Active : SessionStatus.Completed,
+    files,
+    commands,
+    metadata: {
+      title: data.session_title,
+      prompts: data.prompts,
+      errors: data.errors,
+      notifications: data.notifications,
+      tools_used: data.tools_used
+    }
+  };
 }
 
 /**
