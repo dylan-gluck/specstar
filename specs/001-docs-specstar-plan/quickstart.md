@@ -159,24 +159,25 @@ Edit `.specstar/settings.json` to configure which folders appear in Plan view:
 
 ```json
 {
-  "docs": [
+  "version": "1.0.0",
+  "sessionPath": ".specstar/sessions",
+  "folders": [
     {
-      "title": "Documentation",
-      "path": "docs",
-      "recursive": true
+      "title": "Docs",
+      "path": "docs"
     },
     {
-      "title": "Specifications",
-      "path": "specs",
-      "recursive": true,
-      "glob": "**/*.md"
+      "title": "Specs",
+      "path": "specs"
     },
     {
       "title": "Templates",
-      "path": "templates",
-      "recursive": false
+      "path": "templates"
     }
-  ]
+  ],
+  "theme": "dark",
+  "autoStart": false,
+  "logLevel": "info"
 }
 ```
 

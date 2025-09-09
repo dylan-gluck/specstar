@@ -1,0 +1,727 @@
+{
+  "version": "0.1.0",
+  "created": 1757431092,
+  "updated": 1757433579,
+  "files": {
+    "./.specstar/sessions/a30dddc5-d038-48d8-80b7-8b6621d8a780/state.json": {
+      "path": "./.specstar/sessions/a30dddc5-d038-48d8-80b7-8b6621d8a780/state.json",
+      "hash": "1c2a36a6fff267c692601ae2a95e7557ce0cbb0448c47508b765cd0ff7134bad",
+      "last_modified": 1757433167,
+      "size": 705
+    },
+    "./src/components/loading-spinner.tsx": {
+      "path": "./src/components/loading-spinner.tsx",
+      "hash": "78c5a3844016983d3639afa5e1d9e9b1ea377817b1330ef5b935061777da2d4a",
+      "last_modified": 1757397621,
+      "size": 2115
+    },
+    "./specs/002-fix-session-monitoring-hooks/spec.md": {
+      "path": "./specs/002-fix-session-monitoring-hooks/spec.md",
+      "hash": "dad8df84d20c3cc4d9a3dc68b7ad6aed3111b1e4cca2a4dafba5a249c78fa7ce",
+      "last_modified": 1757432300,
+      "size": 5764
+    },
+    "./.specstar/settings.json": {
+      "path": "./.specstar/settings.json",
+      "hash": "11dc840fb78076cbfecaacfa55645881503cd6b7b54d2a852b2abbad4868d8ab",
+      "last_modified": 1757397621,
+      "size": 328
+    },
+    "./scripts/update-agent-context.sh": {
+      "path": "./scripts/update-agent-context.sh",
+      "hash": "b82d4380d5144bc83fa7fb076a1cfc9e44cd25f804ab75bc8ef06f27d8ec16f8",
+      "last_modified": 1757397621,
+      "size": 9752
+    },
+    "./scripts/get-feature-paths.sh": {
+      "path": "./scripts/get-feature-paths.sh",
+      "hash": "b3ac5a2f0d09820f8a5b5c19836946cbeec57194ebd614ae67b1569f17a0f61c",
+      "last_modified": 1757349262,
+      "size": 609
+    },
+    "./tests/integration/document-render.test.ts": {
+      "path": "./tests/integration/document-render.test.ts",
+      "hash": "2deceb2d5b83f0437f246031c45e24e2794343ba84b3ca390ae399628d1f638b",
+      "last_modified": 1757397621,
+      "size": 10618
+    },
+    "./src/models/session.ts": {
+      "path": "./src/models/session.ts",
+      "hash": "a723f47a0b056e9236587beb9593e41c44bdcd0c563213561d53a5872f66ad7c",
+      "last_modified": 1757397621,
+      "size": 6319
+    },
+    "./CLAUDE.md": {
+      "path": "./CLAUDE.md",
+      "hash": "3878e1429e19a11b70d18f2967e0a83401b4c006571f4db9b09d0b763342ca53",
+      "last_modified": 1757397621,
+      "size": 2754
+    },
+    "./tests/integration/error-recovery.test.ts": {
+      "path": "./tests/integration/error-recovery.test.ts",
+      "hash": "5bae085b41d4fba33b4b3a0f746b7b2336b186055825088b01281b78fec0444a",
+      "last_modified": 1757397621,
+      "size": 13817
+    },
+    "./src/views/plan-view.tsx": {
+      "path": "./src/views/plan-view.tsx",
+      "hash": "4afdecf26e92a2697bc7aaa97c116f0ca01874d278061ce3f58603d0ae341430",
+      "last_modified": 1757397621,
+      "size": 5219
+    },
+    "./tsconfig.json": {
+      "path": "./tsconfig.json",
+      "hash": "f1ba558d607a05f16660a6cc5fc16f08f396d06ea354ceafa7c57271ec58f4d5",
+      "last_modified": 1757356451,
+      "size": 713
+    },
+    "./.specstar/logs/post_tool_use.json": {
+      "path": "./.specstar/logs/post_tool_use.json",
+      "hash": "12b288503720f1d5cdbe1bef726673e00181bf01fdf3446f9274ed0930a898c3",
+      "last_modified": 1757433537,
+      "size": 1191485
+    },
+    "./src/lib/document-viewer/test-document.md": {
+      "path": "./src/lib/document-viewer/test-document.md",
+      "hash": "c49078de00fead6da95bedca914f952e0cb4d6ff5c772771237358e7e86160d5",
+      "last_modified": 1757397621,
+      "size": 1055
+    },
+    "./specs/001-docs-specstar-plan/quickstart.md": {
+      "path": "./specs/001-docs-specstar-plan/quickstart.md",
+      "hash": "a680af5f95e89f58f16a11829941f2422bb3bca2939a98e745d3274bb50536ed",
+      "last_modified": 1757397621,
+      "size": 8106
+    },
+    "./src/lib/tui-renderer/index.tsx": {
+      "path": "./src/lib/tui-renderer/index.tsx",
+      "hash": "5c3a6236b3ec13c9d26a95d93507bf4fc678f66b0c53a38c6cb89ed28dfdfe9f",
+      "last_modified": 1757397621,
+      "size": 7595
+    },
+    "./specs/002-fix-session-monitoring-hooks/tasks.md": {
+      "path": "./specs/002-fix-session-monitoring-hooks/tasks.md",
+      "hash": "4847f3ebd0d4796cbc6d8cb4efd56bc7b0f8bf6a90f2cc60e5e4cd3e4fec8797",
+      "last_modified": 1757433028,
+      "size": 8779
+    },
+    "./.specstar/logs/stop.json": {
+      "path": "./.specstar/logs/stop.json",
+      "hash": "b49be7cd96cac29d6cfcc915565fea9bf41c66ef392e49016158978e6ec84d45",
+      "last_modified": 1757432928,
+      "size": 3386
+    },
+    "./src/lib/config-manager/templates/hooks.ts": {
+      "path": "./src/lib/config-manager/templates/hooks.ts",
+      "hash": "e1881af8e1e36301c9c971d0cb1fb9ce1134dc102bf55b683094fa37ba3b5298",
+      "last_modified": 1757397621,
+      "size": 12960
+    },
+    "./src/lib/tui-renderer/README.md": {
+      "path": "./src/lib/tui-renderer/README.md",
+      "hash": "fd335b3ef42f8c57de8352fe784e78d27f6074a600d0641bbc4c902d9ef1f74b",
+      "last_modified": 1757397621,
+      "size": 5022
+    },
+    "./src/models/settings.ts": {
+      "path": "./src/models/settings.ts",
+      "hash": "ae671100908489cf6c59ce5d680a585f623dcb6e0ec9fcaccde6a93fda84dfd4",
+      "last_modified": 1757397621,
+      "size": 8080
+    },
+    "./.specstar/sessions/6dae295f-b17b-436e-9d64-4857d04044f3/state.json": {
+      "path": "./.specstar/sessions/6dae295f-b17b-436e-9d64-4857d04044f3/state.json",
+      "hash": "33c69c560e093884bbe886c4be98223e76b6b27ffc08f044caa7c20546814210",
+      "last_modified": 1757431720,
+      "size": 378
+    },
+    "./docs/specstar-hooks.md": {
+      "path": "./docs/specstar-hooks.md",
+      "hash": "43a0c55d0723c55ac3a26e3739e88c13eafc59642a7b91cd35dc81594c186f61",
+      "last_modified": 1757387385,
+      "size": 14463
+    },
+    "./tests/integration/session-monitor.test.ts": {
+      "path": "./tests/integration/session-monitor.test.ts",
+      "hash": "d6c30b637672e96d92b2e74aac4b455b6c2cfc5e0e5d8bbf93cf4814cc1106c0",
+      "last_modified": 1757397621,
+      "size": 11847
+    },
+    "./tests/contract/cli-config-manager.test.ts": {
+      "path": "./tests/contract/cli-config-manager.test.ts",
+      "hash": "256d2ed360d58234ec1a8ef3dc8bf46ae8790fdcad70f025e5251297608f86e0",
+      "last_modified": 1757397621,
+      "size": 17234
+    },
+    "./tests/contract/cli-tui-renderer.test.ts": {
+      "path": "./tests/contract/cli-tui-renderer.test.ts",
+      "hash": "0048e5b5741102c83b970fa7d138f18439d23a39497cbb0dcd5fd1316612850d",
+      "last_modified": 1757397621,
+      "size": 5614
+    },
+    "./.claude/settings.json": {
+      "path": "./.claude/settings.json",
+      "hash": "a92d7226b5969e48aeb625c3937fd31def5a334720b99e30b3c8acddba5640b4",
+      "last_modified": 1757398018,
+      "size": 1934
+    },
+    "./templates/spec-template.md": {
+      "path": "./templates/spec-template.md",
+      "hash": "632eb76154811a97c42acf3e1553dc40bbd96b7765f8df501e3316efaa85df95",
+      "last_modified": 1757354604,
+      "size": 4174
+    },
+    "./scripts/create-new-feature.sh": {
+      "path": "./scripts/create-new-feature.sh",
+      "hash": "041caf9782fbc4fc349314178bb9bac412ea0186ffc56cfdcec71dc00d831c8b",
+      "last_modified": 1757349262,
+      "size": 2490
+    },
+    "./.specstar/logs/session_end.json": {
+      "path": "./.specstar/logs/session_end.json",
+      "hash": "096b306c6536cc92532399110a3ab374c14c184de6a842f61f4e46cceccadad9",
+      "last_modified": 1757433167,
+      "size": 1414
+    },
+    "./src/index.ts": {
+      "path": "./src/index.ts",
+      "hash": "6d60f8713c067fe44a8856f48652aa68eeafa912a9590fbf4f7111fa36f507d3",
+      "last_modified": 1757397621,
+      "size": 651
+    },
+    "./tests/integration/plan-navigation.test.ts": {
+      "path": "./tests/integration/plan-navigation.test.ts",
+      "hash": "34e08183f57a26d33b1b7694df1e0b63d8b490283d72b7dbaee5bd21e363c402",
+      "last_modified": 1757397621,
+      "size": 8440
+    },
+    "./specs/001-docs-specstar-plan/plan.md": {
+      "path": "./specs/001-docs-specstar-plan/plan.md",
+      "hash": "139634e3e86dd0cc4dcfa65b27559efb810cf7af16c9f1763eaafa278aa2511b",
+      "last_modified": 1757397621,
+      "size": 11762
+    },
+    "./.specstar/logs/session_start.json": {
+      "path": "./.specstar/logs/session_start.json",
+      "hash": "656033089d43f4db08cd331f75ae07d86600cbb944c5f66af35b3a12775eb3e1",
+      "last_modified": 1757433461,
+      "size": 1602
+    },
+    "./src/lib/document-viewer/index.ts": {
+      "path": "./src/lib/document-viewer/index.ts",
+      "hash": "dd8246ae7f09895cfe50ad1df9bb665d9838a73cedeeaee17af26aed9d7a5b4e",
+      "last_modified": 1757397621,
+      "size": 12404
+    },
+    "./scripts/validate-quickstart.ts": {
+      "path": "./scripts/validate-quickstart.ts",
+      "hash": "c38387004d726d2b3e62d7e9539e9b485272f89003d30c23ce5efe38195b39dd",
+      "last_modified": 1757397621,
+      "size": 9446
+    },
+    "./.specstar/sessions/1b5535d1-c6d1-4840-903e-cc98792a8ee5/state.json": {
+      "path": "./.specstar/sessions/1b5535d1-c6d1-4840-903e-cc98792a8ee5/state.json",
+      "hash": "ba2e3fc182690ec368a14c548e56a87e90e8a60e1d989812b14497df4567d4bd",
+      "last_modified": 1757429728,
+      "size": 378
+    },
+    "./src/lib/document-viewer/index.test.ts": {
+      "path": "./src/lib/document-viewer/index.test.ts",
+      "hash": "9bfd6b9bd2b029627f17379d4be445c95b56bac428792f790c5b259fb3ff438e",
+      "last_modified": 1757397621,
+      "size": 9955
+    },
+    "./.claude/commands/context/prime.md": {
+      "path": "./.claude/commands/context/prime.md",
+      "hash": "a7912b76b43530b52aab36764d8370f910f41216bdee2d6851c070a5527438aa",
+      "last_modified": 1757431824,
+      "size": 2862
+    },
+    "./.specstar/logs/pre_tool_use.json": {
+      "path": "./.specstar/logs/pre_tool_use.json",
+      "hash": "3d4eacc9c6265a250379d7897d2c467827a385c97b42e92ed6ba02df60adb9e2",
+      "last_modified": 1757433532,
+      "size": 149228
+    },
+    "./src/lib/tui-renderer/cli.ts": {
+      "path": "./src/lib/tui-renderer/cli.ts",
+      "hash": "d0ef9ddb934347ae0c02a300afcc72e3b4cbfbcd94228083b76b4655f696ee9a",
+      "last_modified": 1757397621,
+      "size": 11503
+    },
+    "./quickstart.md": {
+      "path": "./quickstart.md",
+      "hash": "1841960c72b27903860259303fa7f6ee3b303b443261d32cba98206d2009c085",
+      "last_modified": 1757428927,
+      "size": 5222
+    },
+    "./src/models/hook-event.ts": {
+      "path": "./src/models/hook-event.ts",
+      "hash": "bd823e9f358ed845dedc07b8f1d0ccd68baca8b7e2a499ef6f08d5a519806f56",
+      "last_modified": 1757397621,
+      "size": 12783
+    },
+    "./.specstar/sessions/undefined.json": {
+      "path": "./.specstar/sessions/undefined.json",
+      "hash": "89ad1b947ea3fc95b4705a86c03fd39ed287f88f40231c704f5a068f0fc007af",
+      "last_modified": 1757433461,
+      "size": 377
+    },
+    "./tests/integration/init-project.test.ts": {
+      "path": "./tests/integration/init-project.test.ts",
+      "hash": "258e1aae2c1a7f01f52de0655d3ac41ae892f9a74a4df33a8efae4b7f94fd23c",
+      "last_modified": 1757397621,
+      "size": 6087
+    },
+    "./package.json": {
+      "path": "./package.json",
+      "hash": "c5aee2de34e28b4248c9384b0389240e0c5a15bef83405b09fb0008c945e75f7",
+      "last_modified": 1757397621,
+      "size": 1954
+    },
+    "./src/components/file-list.tsx": {
+      "path": "./src/components/file-list.tsx",
+      "hash": "8c3317845be6a2feafe0032363389ce5dac5b890502f9e96413b5f1a38ef9db4",
+      "last_modified": 1757397621,
+      "size": 3664
+    },
+    "./specs/002-fix-session-monitoring-hooks/data-model.md": {
+      "path": "./specs/002-fix-session-monitoring-hooks/data-model.md",
+      "hash": "1d8b319e3a08bcae3a60814fd10b84e2d9133ca4ce9067a2f25624eccfb26ffa",
+      "last_modified": 1757432490,
+      "size": 7513
+    },
+    "./.specstar/sessions/c40dfd2a-0814-45e1-9649-976fce69fe73/state.json": {
+      "path": "./.specstar/sessions/c40dfd2a-0814-45e1-9649-976fce69fe73/state.json",
+      "hash": "4b91fc8b771c205c73bde516d15ef6c9c68b942336beee486369871f4397f1b6",
+      "last_modified": 1757396550,
+      "size": 2980
+    },
+    "./src/lib/logger/index.ts": {
+      "path": "./src/lib/logger/index.ts",
+      "hash": "1469758270b6d2725dd6f7239d6fc1e089319a9e91289ee6607810c754c75078",
+      "last_modified": 1757397621,
+      "size": 8047
+    },
+    "./memory/constitution_update_checklist.md": {
+      "path": "./memory/constitution_update_checklist.md",
+      "hash": "946c0239aca665b83ba017d7ea198cd551971346734de90ab702818444929d2e",
+      "last_modified": 1757354604,
+      "size": 2809
+    },
+    "./src/components/markdown-viewer.tsx": {
+      "path": "./src/components/markdown-viewer.tsx",
+      "hash": "b6b240fc5947f9d6d408a905768dcde9ef4f4b25e6901079230720205fb33599",
+      "last_modified": 1757397621,
+      "size": 6605
+    },
+    "./src/lib/config-manager/index.ts": {
+      "path": "./src/lib/config-manager/index.ts",
+      "hash": "eaeca71f3fd5914942b27e03167b83f6c10ac00d489a0e731074a680f079cdb8",
+      "last_modified": 1757397621,
+      "size": 12454
+    },
+    "./templates/tasks-template.md": {
+      "path": "./templates/tasks-template.md",
+      "hash": "706caacaaac5d7087b1ae43633f63f1cb385ab0df37ec45c79944f863198d13f",
+      "last_modified": 1757354604,
+      "size": 4663
+    },
+    "./.specstar/sessions/c71d3ce4-bc45-4abe-baaa-3b7c33f94b61/state.json": {
+      "path": "./.specstar/sessions/c71d3ce4-bc45-4abe-baaa-3b7c33f94b61/state.json",
+      "hash": "40d1b705a78bbce9f061ea9c71a358ef5aa3d869c2912c38d182bf340ac0fa14",
+      "last_modified": 1757429284,
+      "size": 378
+    },
+    "./.specstar/hooks.ts": {
+      "path": "./.specstar/hooks.ts",
+      "hash": "e1881af8e1e36301c9c971d0cb1fb9ce1134dc102bf55b683094fa37ba3b5298",
+      "last_modified": 1757397621,
+      "size": 12960
+    },
+    "./.specstar/sessions/7a480bc8-085b-4626-bc80-41fe6f50b5be/state.json": {
+      "path": "./.specstar/sessions/7a480bc8-085b-4626-bc80-41fe6f50b5be/state.json",
+      "hash": "f044629a3ef2c7aa403e4a94d5873991ce5b7baf232157e39078f7955e18b08b",
+      "last_modified": 1757433532,
+      "size": 566
+    },
+    "./specs/001-docs-specstar-plan/tasks.md": {
+      "path": "./specs/001-docs-specstar-plan/tasks.md",
+      "hash": "6491af134f112cfde48bde26642e7d2e7842f3dd81bec44f8e58e8f07150489b",
+      "last_modified": 1757397621,
+      "size": 9872
+    },
+    "./tests/contract/cli-hook-integrator.test.ts": {
+      "path": "./tests/contract/cli-hook-integrator.test.ts",
+      "hash": "8b7d347c4a9617f81e005ccdd1e394cfa83485f3764fc8a2a5a9cc329432209f",
+      "last_modified": 1757397621,
+      "size": 11679
+    },
+    "./.specstar/logs/user_prompt_submit.json": {
+      "path": "./.specstar/logs/user_prompt_submit.json",
+      "hash": "ff666527e21370549a60cffb85c6eef26f82ad18d3cd3bbd6d007cf9f638ffa9",
+      "last_modified": 1757433483,
+      "size": 4351
+    },
+    "./src/app.tsx": {
+      "path": "./src/app.tsx",
+      "hash": "1566f8707f2aba614bb51478b1dd112d090bca2c915933d5b5a6af438472d146",
+      "last_modified": 1757397621,
+      "size": 6290
+    },
+    "./specs/002-fix-session-monitoring-hooks/quickstart.md": {
+      "path": "./specs/002-fix-session-monitoring-hooks/quickstart.md",
+      "hash": "25c58f9c4211d7cc2ed292e90a1f060c06cf9db23813977cbe03638da2b3fe2f",
+      "last_modified": 1757432558,
+      "size": 5459
+    },
+    "./specs/001-docs-specstar-plan/contracts/cli-contracts.md": {
+      "path": "./specs/001-docs-specstar-plan/contracts/cli-contracts.md",
+      "hash": "1dc52d3e1cf729648368fbd07a4c7ae208303794fab819a451fdc55e780d07ff",
+      "last_modified": 1757397621,
+      "size": 6755
+    },
+    "./specs/001-docs-specstar-plan/validation-report.md": {
+      "path": "./specs/001-docs-specstar-plan/validation-report.md",
+      "hash": "55df5223b72b2c2dfbc32b0f2445fbfc4f2f00385711eafd659351464478b16a",
+      "last_modified": 1757397621,
+      "size": 4899
+    },
+    "./tests/contract/cli-main-tui.test.ts": {
+      "path": "./tests/contract/cli-main-tui.test.ts",
+      "hash": "d52478ba0c3beb30e9b9823548e6279a0f7a53dbbd4efb30834fc20ff4da54c6",
+      "last_modified": 1757397621,
+      "size": 6012
+    },
+    "./.claude/commands/plan.md": {
+      "path": "./.claude/commands/plan.md",
+      "hash": "3217f1635d575db9c18d58a5e22e51e4639ae1bfb905d5d16a7e6bb161e86050",
+      "last_modified": 1757354604,
+      "size": 1856
+    },
+    "./memory/constitution.md": {
+      "path": "./memory/constitution.md",
+      "hash": "0d871f4d45173d10bd2695ceb9538ebbdd244d38ee428375765fa8ccf12bd426",
+      "last_modified": 1757428776,
+      "size": 457
+    },
+    "./examples/document-viewer-demo.ts": {
+      "path": "./examples/document-viewer-demo.ts",
+      "hash": "d59721252b299e7351fcabfc3099dcdaa9c61d47a568c13d83a03234c3dac68b",
+      "last_modified": 1757397621,
+      "size": 5565
+    },
+    "./src/lib/hook-integrator/index.test.ts": {
+      "path": "./src/lib/hook-integrator/index.test.ts",
+      "hash": "7eeac6e43f52f9b0669acb953f892175c2e977d2e726a6179c8bbd907d7cbd76",
+      "last_modified": 1757397621,
+      "size": 11880
+    },
+    "./src/lib/hook-integrator/index.ts": {
+      "path": "./src/lib/hook-integrator/index.ts",
+      "hash": "1eb8e8bdceaccca3d7026a3ddbdfdf85a7e0dede77415e9f151a70b83544b920",
+      "last_modified": 1757397621,
+      "size": 6436
+    },
+    "./scripts/check-task-prerequisites.sh": {
+      "path": "./scripts/check-task-prerequisites.sh",
+      "hash": "5cb4d5129ec504873e445ced2bce4da230be7e69f24396d37f4ec5f532d58a2a",
+      "last_modified": 1757397621,
+      "size": 1907
+    },
+    "./specs/001-docs-specstar-plan/spec.md": {
+      "path": "./specs/001-docs-specstar-plan/spec.md",
+      "hash": "03fe99cc8c28ae1bbe9c3f87f99206f4420ef004e40cfbfd46f5fdb352607822",
+      "last_modified": 1757397621,
+      "size": 7108
+    },
+    "./scripts/setup-plan.sh": {
+      "path": "./scripts/setup-plan.sh",
+      "hash": "89feb13aae954b112fc57784dc67902edc8845572f8d509c3703077728f7feaf",
+      "last_modified": 1757397621,
+      "size": 1155
+    },
+    "./src/lib/document-viewer/no-frontmatter.md": {
+      "path": "./src/lib/document-viewer/no-frontmatter.md",
+      "hash": "c9223a871d2eeadd44a98c6d44d2f69ca1e4b497bd03ab7ceea7c7262abc7119",
+      "last_modified": 1757397621,
+      "size": 39
+    },
+    "./specs/002-fix-session-monitoring-hooks/research.md": {
+      "path": "./specs/002-fix-session-monitoring-hooks/research.md",
+      "hash": "e43a5a83d7ac5900e8542240d42c89ff8e84bd3061cb74517b10b239c2b25f84",
+      "last_modified": 1757432441,
+      "size": 8358
+    },
+    "./src/cli.tsx": {
+      "path": "./src/cli.tsx",
+      "hash": "d4c9395b060940e330a0fc3d2ba15bd6521183ed9a75d258d8d035c06f79dc64",
+      "last_modified": 1757397621,
+      "size": 2721
+    },
+    "./src/views/ObserveView.tsx": {
+      "path": "./src/views/ObserveView.tsx",
+      "hash": "4574d9b1fe9d381864b61d4a5d8ac5d0730c70a15fa800710e2dd6e2286625f4",
+      "last_modified": 1757397621,
+      "size": 11953
+    },
+    "./src/components/error-boundary.tsx": {
+      "path": "./src/components/error-boundary.tsx",
+      "hash": "d5b36604512f58aed47b2b7b2b7a8590550da0469caa6cb5c4db68820ab7d4af",
+      "last_modified": 1757397621,
+      "size": 2856
+    },
+    "./scripts/common.sh": {
+      "path": "./scripts/common.sh",
+      "hash": "36ea76e49c17989a195bc29073eb139c43e3a8310d3037528063f9b4f237422a",
+      "last_modified": 1757349262,
+      "size": 2045
+    },
+    "./src/lib/tui-renderer/index.test.tsx": {
+      "path": "./src/lib/tui-renderer/index.test.tsx",
+      "hash": "c4c23c8f2d5d5996b5b3dd6a616642677d40e547a123a940b340248b7e92098b",
+      "last_modified": 1757397621,
+      "size": 3818
+    },
+    "./src/lib/tui-renderer/example.tsx": {
+      "path": "./src/lib/tui-renderer/example.tsx",
+      "hash": "444ae397bcd47d87f4635e6e2822cd39dc460c6e45d6ff648f8cd781a52ee27a",
+      "last_modified": 1757397621,
+      "size": 5155
+    },
+    "./src/lib/config-manager/cli.ts": {
+      "path": "./src/lib/config-manager/cli.ts",
+      "hash": "344fdebb43c61aeb3a4bd0caea8a93484ac184ad91db7b587fbb66e0a0a0530e",
+      "last_modified": 1757397621,
+      "size": 7941
+    },
+    "./.specstar/logs/subagent_stop.json": {
+      "path": "./.specstar/logs/subagent_stop.json",
+      "hash": "0651cff381d687fa8364d83f6675650079a1daf97a5bfc3de55ffcb024e3b542",
+      "last_modified": 1757432074,
+      "size": 1694
+    },
+    "./templates/plan-template.md": {
+      "path": "./templates/plan-template.md",
+      "hash": "348f7df1b1ea91ff27f5813382039c6789ed104ccaefe58fe419c08837a78cfb",
+      "last_modified": 1757354604,
+      "size": 9041
+    },
+    "./tests/contract/cli-main-help.test.ts": {
+      "path": "./tests/contract/cli-main-help.test.ts",
+      "hash": "4a8f3b8fcfdc05e432c391d1f78504fdedb704d5a011020a235dc260d2d874ee",
+      "last_modified": 1757397621,
+      "size": 2364
+    },
+    "./src/lib/session-monitor/watcher.ts": {
+      "path": "./src/lib/session-monitor/watcher.ts",
+      "hash": "79d2db6996f534c04aa880b5c1ec63044cd0957f0440cea2b938206de302d6fc",
+      "last_modified": 1757397621,
+      "size": 16685
+    },
+    "./src/lib/document-viewer/cli.ts": {
+      "path": "./src/lib/document-viewer/cli.ts",
+      "hash": "b7edbe4bdaf5238ed88a0b2a033b3e9106902210c42c58d4ca27159c7de24740",
+      "last_modified": 1757397621,
+      "size": 13216
+    },
+    "./.specstar/sessions/e02f30f4-8e3c-4931-bee5-2def3b48ad95/state.json": {
+      "path": "./.specstar/sessions/e02f30f4-8e3c-4931-bee5-2def3b48ad95/state.json",
+      "hash": "829f574c067027ce0966e2e0453db066fe633322904a61ee9cf0a8f47bebe777",
+      "last_modified": 1757433042,
+      "size": 4136
+    },
+    "./specs/002-fix-session-monitoring-hooks/contracts/hook-contracts.json": {
+      "path": "./specs/002-fix-session-monitoring-hooks/contracts/hook-contracts.json",
+      "hash": "51774b80172783de1ab8e42f38f785f2453a7260981c14b8c8892f81f54fec4d",
+      "last_modified": 1757432521,
+      "size": 6344
+    },
+    "./templates/agent-file-template.md": {
+      "path": "./templates/agent-file-template.md",
+      "hash": "b440b65c90e58f5fd336aaf80785dd859498c7c139c8743f9dc804554a477a97",
+      "last_modified": 1757354604,
+      "size": 460
+    },
+    "./tests/setup.ts": {
+      "path": "./tests/setup.ts",
+      "hash": "5da2130822c07359a16ca67ecfae3743bc8c714716fd8949d24c8eefec829f2f",
+      "last_modified": 1757397621,
+      "size": 697
+    },
+    "./src/components/focus-box.tsx": {
+      "path": "./src/components/focus-box.tsx",
+      "hash": "a3f3d979cbf04fe9a52c3404161af49e60f0b2a745b62c8bba4491320b2fb5b1",
+      "last_modified": 1757396707,
+      "size": 593
+    },
+    "./src/lib/session-monitor/index.ts": {
+      "path": "./src/lib/session-monitor/index.ts",
+      "hash": "dbceae9c131eff0c5b3c02024d1e0d0c64fdb91cda64813741b9df467fc6e972",
+      "last_modified": 1757397621,
+      "size": 16295
+    },
+    "./tests/contract/cli-main-version.test.ts": {
+      "path": "./tests/contract/cli-main-version.test.ts",
+      "hash": "894131f6ae5e838c4deceb517ce3c897aeb0a8e9ef79fdd2f28456b61ef89091",
+      "last_modified": 1757397621,
+      "size": 2583
+    },
+    "./specs/001-docs-specstar-plan/research.md": {
+      "path": "./specs/001-docs-specstar-plan/research.md",
+      "hash": "629d22045297c2eaa4923c5a8a118e4435ae9ce3b456109336dfbb95ed381ccb",
+      "last_modified": 1757397621,
+      "size": 6193
+    },
+    "./src/lib/config/settings-loader.ts": {
+      "path": "./src/lib/config/settings-loader.ts",
+      "hash": "fa2c1ebc732b40cad7f6e2f9890ebb2e6d57b62fad081224ab4e64a9a867ba9f",
+      "last_modified": 1757397621,
+      "size": 1783
+    },
+    "./src/lib/integration.test.ts": {
+      "path": "./src/lib/integration.test.ts",
+      "hash": "3725545bd542ebd658e21d6e5c8b3b564f7afaaee6ff434c673017024c332797",
+      "last_modified": 1757397621,
+      "size": 16795
+    },
+    "./src/lib/hook-integrator/README.md": {
+      "path": "./src/lib/hook-integrator/README.md",
+      "hash": "ddab201a136c960998e9a8af092ca96bf5dd6d76691b6d1865a355ab02463ca2",
+      "last_modified": 1757397621,
+      "size": 4372
+    },
+    "./src/lib/session-monitor/cli.ts": {
+      "path": "./src/lib/session-monitor/cli.ts",
+      "hash": "e6d062ae7e70e71ea702f32fb6907f9d738a158e525e24885c6232f252367135",
+      "last_modified": 1757397621,
+      "size": 14246
+    },
+    "./src/lib/hook-integrator/cli.ts": {
+      "path": "./src/lib/hook-integrator/cli.ts",
+      "hash": "e316a74a09aed9bc2c5d47c8fc6edf78dc0b8bddfb8898f04733ad6426d786e0",
+      "last_modified": 1757397621,
+      "size": 13138
+    },
+    "./README.md": {
+      "path": "./README.md",
+      "hash": "711ddd964f561784078c49ed372ad577023cf8587d6b018bae8e544225a364bb",
+      "last_modified": 1757383874,
+      "size": 108
+    },
+    "./docs/specstar-plan.md": {
+      "path": "./docs/specstar-plan.md",
+      "hash": "9fa7f1844774d39fad9627c2173aefab514358903e6ce83e2f19a113ced5cbef",
+      "last_modified": 1757397621,
+      "size": 8555
+    },
+    "./.claude/commands/tasks.md": {
+      "path": "./.claude/commands/tasks.md",
+      "hash": "fc2febcb579099f3cbb98cc9fb0866ffa02cc5c650d828002eb8c90f43860bbf",
+      "last_modified": 1757354604,
+      "size": 2540
+    },
+    "./.specstar/sessions/423ea1a2-8fe9-45ee-b6db-e05186b15d62/state.json": {
+      "path": "./.specstar/sessions/423ea1a2-8fe9-45ee-b6db-e05186b15d62/state.json",
+      "hash": "72cd912cbf7f0c627c98f49d25c929b6d72cbc79c6ef362ccc352f1db2e9d272",
+      "last_modified": 1757431712,
+      "size": 1119
+    },
+    "./src/models/document.ts": {
+      "path": "./src/models/document.ts",
+      "hash": "547893e9261fb99819c7a9865eca0ed7cba9236d1592aced9e28626f354b088a",
+      "last_modified": 1757397621,
+      "size": 9239
+    },
+    "./docs/vendor/cc-hooks-reference.md": {
+      "path": "./docs/vendor/cc-hooks-reference.md",
+      "hash": "1b418e32980f85eef75fd7179de64d4af00337611ce0c2991d4c07736fb2e76b",
+      "last_modified": 1757385479,
+      "size": 23040
+    },
+    "./tests/contract/cli-main-init.test.ts": {
+      "path": "./tests/contract/cli-main-init.test.ts",
+      "hash": "10a2c6503e4286d3a6870f8999081eb2fc94fef9ad0cc279a692e2711c77e7c0",
+      "last_modified": 1757397621,
+      "size": 5164
+    },
+    "./specs/001-docs-specstar-plan/data-model.md": {
+      "path": "./specs/001-docs-specstar-plan/data-model.md",
+      "hash": "44d7f0d3d139c7ef51e7751c9bb2228b4df6bd48f74c7e7c6af98c8df10cc949",
+      "last_modified": 1757397621,
+      "size": 7693
+    },
+    "./.specstar/sessions/52fc1d65-e13d-4b94-9e6e-feac3ae3c75e/state.json": {
+      "path": "./.specstar/sessions/52fc1d65-e13d-4b94-9e6e-feac3ae3c75e/state.json",
+      "hash": "8da4ef0eb0be5c560065ac1dce005adb11dcab8560e5b56333031fc41a37b65f",
+      "last_modified": 1757397606,
+      "size": 2644
+    },
+    "./src/lib/hook-integrator/example-hooks.ts": {
+      "path": "./src/lib/hook-integrator/example-hooks.ts",
+      "hash": "9cbcbd8432832de47d90cf7b8939f51f576291a4f719ff86be123e9386dbb97a",
+      "last_modified": 1757397621,
+      "size": 3878
+    },
+    "./.claude/commands/specify.md": {
+      "path": "./.claude/commands/specify.md",
+      "hash": "68f10c390a5087f588e1baa324a3c504810d3df6d7e513f5e829655d4d86f435",
+      "last_modified": 1757354604,
+      "size": 1016
+    },
+    "./tests/contract/cli-session-monitor.test.ts": {
+      "path": "./tests/contract/cli-session-monitor.test.ts",
+      "hash": "c21c4c80883406621218329bc2494ffeaa3ae00c8f04c7162c706041e5ce83bf",
+      "last_modified": 1757397621,
+      "size": 8238
+    },
+    "./docs/vendor/cc-hooks-guide.md": {
+      "path": "./docs/vendor/cc-hooks-guide.md",
+      "hash": "9df4505de21707de7e6ecc74fa0655b2e77ba5bc1d53f2b864ea92a233080bae",
+      "last_modified": 1757385463,
+      "size": 9479
+    },
+    "./.specstar/logs/notification.json": {
+      "path": "./.specstar/logs/notification.json",
+      "hash": "97752baba5f8aecd4e4795381fbc921ab53f34391965d09f36ff261c6b0c42b1",
+      "last_modified": 1757432934,
+      "size": 974
+    },
+    "./specs/002-fix-session-monitoring-hooks/plan.md": {
+      "path": "./specs/002-fix-session-monitoring-hooks/plan.md",
+      "hash": "f6fca03f7ff131d58fca2d3b3033cc0bfbef210f394bb596be1ebec4133ce87d",
+      "last_modified": 1757432569,
+      "size": 8420
+    },
+    "./.specstar/sessions/d2ca3ec5-e5c7-4041-9acc-57ffeadb08c1/state.json": {
+      "path": "./.specstar/sessions/d2ca3ec5-e5c7-4041-9acc-57ffeadb08c1/state.json",
+      "hash": "b68765475e6b38726f979fce5609e5452fffaa0ea8ac1c673388419bcfad9429",
+      "last_modified": 1757431830,
+      "size": 648
+    },
+    "./src/lib/hook-integrator/state-manager.ts": {
+      "path": "./src/lib/hook-integrator/state-manager.ts",
+      "hash": "7178e00f5b0b94e5bba19ac89e5d16713e9eab3a319dc4f543f9909112530a15",
+      "last_modified": 1757397621,
+      "size": 19771
+    },
+    "./bunfig.toml": {
+      "path": "./bunfig.toml",
+      "hash": "3fa8dc07e773935c2b6baec8931340fad35aad7648e99df5e6092fee0082d655",
+      "last_modified": 1757397621,
+      "size": 197
+    },
+    "./.specstar/sessions/ecfff356-fa32-46fd-8d8c-8656058abc00/state.json": {
+      "path": "./.specstar/sessions/ecfff356-fa32-46fd-8d8c-8656058abc00/state.json",
+      "hash": "09d9191ac6a8c31a2df049962682e4a2e5060ea1c364c1f0c2b8362f84fb295f",
+      "last_modified": 1757397761,
+      "size": 378
+    },
+    "./tests/contract/cli-document-viewer.test.ts": {
+      "path": "./tests/contract/cli-document-viewer.test.ts",
+      "hash": "cf6b9bf552128cce9bc0f6a486f8e18abe59b6c00918bd41ad635f94787c2e9b",
+      "last_modified": 1757397621,
+      "size": 9344
+    }
+  }
+}

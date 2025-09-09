@@ -17,5 +17,5 @@
   ],
   "theme": "dark",
   "autoStart": false,
-  "logLevel": "info"
+  "logLevel": "debug"
 }

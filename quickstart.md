@@ -14,7 +14,7 @@ Specstar is a Terminal UI for monitoring Claude Code sessions and viewing planni
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/specstar.git
+git clone https://github.com/dylan-gluck/specstar.git
 cd specstar
 
 # Install dependencies
@@ -65,7 +65,7 @@ bun run dev
 
 #### Global Commands
 - `P` - Switch to Plan view
-- `O` - Switch to Observe view  
+- `O` - Switch to Observe view
 - `H` or `?` - Show help/welcome screen
 - `Q` - Quit (from welcome screen)
 - `R` - Recover from errors
@@ -110,12 +110,25 @@ Edit `.specstar/settings.json` to customize:
 
 ```json
 {
-  "specsDirectory": "specs",
-  "sessionsDirectory": ".specstar/sessions",
-  "logLevel": "info",
-  "autoRefresh": true,
-  "refreshInterval": 1000,
-  "theme": "default"
+  "version": "1.0.0",
+  "sessionPath": ".specstar/sessions",
+  "folders": [
+    {
+      "title": "Docs",
+      "path": "docs"
+    },
+    {
+      "title": "Specs",
+      "path": "specs"
+    },
+    {
+      "title": "Templates",
+      "path": "templates"
+    }
+  ],
+  "theme": "dark",
+  "autoStart": false,
+  "logLevel": "info"
 }
 ```
 
@@ -256,30 +269,11 @@ specstar
 
 ### Advanced Configuration
 ```bash
-# Set custom specs directory
-echo '{"specsDirectory": "docs/specs"}' > .specstar/settings.json
-
 # Enable debug logging
 LOG_LEVEL=debug specstar
 
 # Force reinitialize
 specstar --init --force
-```
-
-### Integration with Claude Code
-```typescript
-// .specstar/hooks.ts
-export const hooks = {
-  onSessionStart: async (session) => {
-    console.log(`Session started: ${session.id}`);
-  },
-  onToolUse: async (tool, args) => {
-    console.log(`Tool used: ${tool}`);
-  },
-  onSessionEnd: async (session) => {
-    console.log(`Session ended: ${session.id}`);
-  }
-};
 ```
 
 ## Support
