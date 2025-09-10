@@ -103,7 +103,12 @@ export default function App() {
   // Loading state while settings are being loaded
   if (!settingsLoaded || activeView === null) {
     return (
-      <Box flexDirection="column" alignItems="center" justifyContent="center" flexGrow={1}>
+      <Box
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        flexGrow={1}
+      >
         <Text color="gray">Loading...</Text>
       </Box>
     );
@@ -212,7 +217,9 @@ export default function App() {
                 paddingX={1}
                 justifyContent="space-between"
               >
-                <Text color="gray">PLAN</Text>
+                <Text color="gray">
+                  <Gradient name="vice">SS</Gradient> [PLAN]
+                </Text>
                 <Text color="gray">Press O for Observe • H for Help</Text>
               </Box>
               <PlanView />
@@ -230,7 +237,9 @@ export default function App() {
                 paddingX={1}
                 justifyContent="space-between"
               >
-                <Text color="gray">OBSERVE</Text>
+                <Text color="gray">
+                  <Gradient name="vice">SS️</Gradient> [OBSERVE]
+                </Text>
                 <Text color="gray">Press P for Plan • H for Help</Text>
               </Box>
               <ObserveView />
