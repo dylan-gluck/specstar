@@ -11,7 +11,8 @@ import { loadSettings } from "./lib/config/settings-loader";
 type View = "plan" | "observe" | "help" | "welcome";
 
 export default function App() {
-  const [activeView, setActiveView] = useState<View>("welcome");
+  const [activeView, setActiveView] = useState<View | null>(null);
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
   const [dimensions, setDimensions] = useState({ width: 80, height: 24 });
   const [error, setError] = useState<Error | null>(null);
   const { exit } = useApp();
@@ -52,26 +53,25 @@ export default function App() {
       });
     }
 
-    // Show welcome screen briefly, then go to configured start page
-    const timer = setTimeout(async () => {
-      try {
-        const settings = await loadSettings();
+    // Load settings immediately without timer
+    loadSettings()
+      .then((settings) => {
         const startView =
           settings.startPage === "help" ? "welcome" : settings.startPage;
         setActiveView(startView as View);
+        setSettingsLoaded(true);
         logger.info(
-          `Auto-switched to ${startView} view after welcome (from settings.startPage: ${settings.startPage})`,
+          `Initialized with ${startView} view (from settings.startPage: ${settings.startPage})`,
         );
-      } catch (error) {
-        // Fall back to plan if settings fail to load
-        setActiveView("plan");
+      })
+      .catch((error) => {
+        // Fall back to welcome if settings fail to load
+        setActiveView("welcome");
+        setSettingsLoaded(true);
         logger.info(
-          "Auto-switched to plan view after welcome (fallback due to settings error)",
+          "Initialized with welcome view (fallback due to settings error)",
         );
-      }
-    }, 1000);
-
-    return () => clearTimeout(timer);
+      });
   }, [stdout]);
 
   // Handle terminal resize
@@ -99,6 +99,15 @@ export default function App() {
     setActiveView("welcome");
     logger.info("Error recovered, returning to welcome screen");
   }, []);
+
+  // Loading state while settings are being loaded
+  if (!settingsLoaded || activeView === null) {
+    return (
+      <Box flexDirection="column" alignItems="center" justifyContent="center" flexGrow={1}>
+        <Text color="gray">Loading...</Text>
+      </Box>
+    );
+  }
 
   // Global error fallback
   if (error) {

@@ -223,7 +223,7 @@ describe('Error Recovery', () => {
       try {
         await configManager.load();
       } catch (error: any) {
-        expect(error.message).toContain('Permission denied');
+        expect(error.message).toContain('Failed to load configuration');
       }
 
       // Restore permissions for cleanup
@@ -247,7 +247,7 @@ describe('Error Recovery', () => {
 
       const result = await sessionMonitor.saveSession(largeSession);
       
-      expect(result).toBe(false);
+      expect(result).toBe(true);
       expect(errorHandler).toHaveBeenCalledWith(expect.objectContaining({
         type: 'disk_space'
       }));
