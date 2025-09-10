@@ -7,7 +7,6 @@ import {
   type SessionEvent,
 } from "../lib/session-monitor";
 import { join } from "node:path";
-import chalk from "chalk";
 
 export default function ObserveView() {
   const { exit } = useApp();
@@ -269,6 +268,13 @@ export default function ObserveView() {
   );
 }
 
+function stripPrefix(string: string, prefix: string) {
+  if (string.startsWith(prefix)) {
+    return string.slice(prefix.length);
+  }
+  return string;
+}
+
 // SessionDashboard component as per ObserveViewContract
 function SessionDashboard({
   sessionId,
@@ -329,7 +335,10 @@ function SessionDashboard({
                 borderColor="gray"
                 flexDirection="column"
               >
-                <Text>Active: {sessionData.agents.length || "0"}</Text>
+                <Text>
+                  Active:{" "}
+                  <Text color="green">{sessionData.agents.length || "0"}</Text>
+                </Text>
                 <Box flexDirection="column">
                   {sessionData.agents.length > 0 &&
                     sessionData.agents.map((agent, index) => (
@@ -347,7 +356,12 @@ function SessionDashboard({
                 borderColor="gray"
                 flexDirection="column"
               >
-                <Text>History: {sessionData.agents_history.length} total</Text>
+                <Text>
+                  History:{" "}
+                  <Text color="green">
+                    {sessionData.agents_history.length || "0"}
+                  </Text>
+                </Text>
                 <Box flexDirection="column">
                   {sessionData.agents_history.length > 0 &&
                     sessionData.agents_history.map((agent, index) => (
@@ -426,18 +440,73 @@ function SessionDashboard({
             <Text bold color="gray">
               Files
             </Text>
-            <Text>
-              New:{" "}
-              <Text color="green">{sessionData.files?.new?.length || 0}</Text>
-            </Text>
-            <Text>
-              Edited:{" "}
-              <Text color="blue">{sessionData.files?.edited?.length || 0}</Text>
-            </Text>
-            <Text>
-              Read:{" "}
-              <Text color="gray">{sessionData.files?.read?.length || 0}</Text>
-            </Text>
+            <Box
+              borderLeft={false}
+              borderRight={false}
+              borderBottom={false}
+              borderStyle="classic"
+              borderColor="gray"
+              flexDirection="column"
+            >
+              <Text>
+                New:{" "}
+                <Text color="green">{sessionData.files?.new?.length || 0}</Text>
+              </Text>
+              <Box flexDirection="column" paddingRight={2}>
+                {sessionData.files.new.length > 0 &&
+                  sessionData.files.new.slice(-5).map((file, index) => (
+                    <Text wrap="truncate-start" key={index} color={"gray"}>
+                      {stripPrefix(file, process.cwd() + "/")}
+                    </Text>
+                  ))}
+              </Box>
+            </Box>
+            <Box
+              borderLeft={false}
+              borderRight={false}
+              borderBottom={false}
+              borderStyle="classic"
+              borderColor="gray"
+              flexDirection="column"
+            >
+              <Text>
+                Edited:{" "}
+                <Text color="green">
+                  {sessionData.files?.edited?.length || 0}
+                </Text>
+              </Text>
+              <Box flexDirection="column" paddingRight={2}>
+                {sessionData.files.edited.length > 0 &&
+                  sessionData.files.edited.slice(-5).map((file, index) => (
+                    <Text wrap="truncate-start" key={index} color={"gray"}>
+                      {stripPrefix(file, process.cwd() + "/")}
+                    </Text>
+                  ))}
+              </Box>
+            </Box>
+            <Box
+              borderLeft={false}
+              borderRight={false}
+              borderBottom={false}
+              borderStyle="classic"
+              borderColor="gray"
+              flexDirection="column"
+            >
+              <Text>
+                Read:{" "}
+                <Text color="green">
+                  {sessionData.files?.read?.length || 0}
+                </Text>
+              </Text>
+              <Box flexDirection="column" paddingRight={2}>
+                {sessionData.files.read.length > 0 &&
+                  sessionData.files.read.slice(-5).map((file, index) => (
+                    <Text wrap="truncate-start" key={index} color={"gray"}>
+                      {stripPrefix(file, process.cwd() + "/")}
+                    </Text>
+                  ))}
+              </Box>
+            </Box>
           </Box>
         </Box>
       </Box>
