@@ -296,19 +296,23 @@ function handlePostToolUse(input: HookInput): void {
   if (tool_name === "Task" && tool_input) {
     const subagentType = tool_input.subagent_type;
     if (subagentType) {
-      // Remove from active agents
-      const agentIndex = state.agents.indexOf(subagentType);
-      if (agentIndex > -1) {
-        state.agents.splice(agentIndex, 1);
-      }
-
-      // Update agents history with completion time
+      // Find the OLDEST incomplete agent of this type (FIFO approach)
       const historyEntry = state.agents_history
-        .slice()
-        .reverse()
         .find((a) => a.name === subagentType && !a.completed_at);
+      
       if (historyEntry) {
         historyEntry.completed_at = getCurrentTimestamp();
+        
+        // Only remove from active agents array if no more incomplete agents of this type exist
+        const hasMoreIncomplete = state.agents_history
+          .some((a) => a.name === subagentType && !a.completed_at);
+        
+        if (!hasMoreIncomplete) {
+          const agentIndex = state.agents.indexOf(subagentType);
+          if (agentIndex > -1) {
+            state.agents.splice(agentIndex, 1);
+          }
+        }
       }
     }
   } else if (tool_name === "Write" && tool_input) {

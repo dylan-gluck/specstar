@@ -268,7 +268,7 @@ export default function ObserveView() {
                       }
                       wrap="truncate-end"
                     >
-                      <Text color={session.session_active ? "green" : "gray"}>
+                      <Text color={session.session_active ? "yellow" : "gray"}>
                         {"● "}
                       </Text>
                       {session.session_title || session.session_id}
@@ -332,7 +332,7 @@ const SessionDashboard = React.memo(
           <Box flexBasis="50%" flexDirection="column">
             <Text bold>
               {sessionData.session_title || "(untitled)"}
-              <Text color={sessionData.session_active ? "green" : "gray"}>
+              <Text color={sessionData.session_active ? "yellow" : "gray"}>
                 {" ●"}
               </Text>
             </Text>
