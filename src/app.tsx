@@ -56,15 +56,20 @@ export default function App() {
     const timer = setTimeout(async () => {
       try {
         const settings = await loadSettings();
-        const startView = settings.startPage === 'help' ? 'welcome' : settings.startPage;
+        const startView =
+          settings.startPage === "help" ? "welcome" : settings.startPage;
         setActiveView(startView as View);
-        logger.info(`Auto-switched to ${startView} view after welcome (from settings.startPage: ${settings.startPage})`);
+        logger.info(
+          `Auto-switched to ${startView} view after welcome (from settings.startPage: ${settings.startPage})`,
+        );
       } catch (error) {
         // Fall back to plan if settings fail to load
         setActiveView("plan");
-        logger.info("Auto-switched to plan view after welcome (fallback due to settings error)");
+        logger.info(
+          "Auto-switched to plan view after welcome (fallback due to settings error)",
+        );
       }
-    }, 2000);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [stdout]);
@@ -141,38 +146,48 @@ export default function App() {
               flexGrow={1}
             >
               <Gradient name="vice">
-                <BigText text="SPECSTAR" />
+                <BigText font="tiny" text="SPECSTAR" />
               </Gradient>
-              <Text color="cyan" bold>
-                Terminal UI for Claude Code Sessions
-              </Text>
-              <Box marginTop={2} flexDirection="column" alignItems="center">
-                <Text>
-                  Press{" "}
+              <Box width={31} marginTop={2} flexDirection="column">
+                <Box
+                  borderTop={false}
+                  borderLeft={false}
+                  borderRight={false}
+                  borderStyle="classic"
+                  borderColor="gray"
+                  justifyContent="space-between"
+                >
+                  <Text bold>Plan</Text>
                   <Text bold color="green">
                     P
-                  </Text>{" "}
-                  for Plan View
-                </Text>
-                <Text>
-                  Press{" "}
-                  <Text bold color="blue">
+                  </Text>
+                </Box>
+                <Box
+                  borderTop={false}
+                  borderLeft={false}
+                  borderRight={false}
+                  borderStyle="classic"
+                  borderColor="gray"
+                  justifyContent="space-between"
+                >
+                  <Text bold>Observe</Text>
+                  <Text bold color="green">
                     O
-                  </Text>{" "}
-                  for Observe View
-                </Text>
-                <Text>
-                  Press{" "}
-                  <Text bold color="red">
+                  </Text>
+                </Box>
+                <Box
+                  borderTop={false}
+                  borderLeft={false}
+                  borderRight={false}
+                  borderStyle="classic"
+                  borderColor="gray"
+                  justifyContent="space-between"
+                >
+                  <Text bold>Quit</Text>
+                  <Text bold color="green">
                     Q
-                  </Text>{" "}
-                  to Quit
-                </Text>
-              </Box>
-              <Box marginTop={2}>
-                <Text color="gray" dimColor>
-                  Loading start page...
-                </Text>
+                  </Text>
+                </Box>
               </Box>
             </Box>
           </ErrorBoundary>
@@ -181,17 +196,14 @@ export default function App() {
         {/* Plan View */}
         {activeView === "plan" && (
           <ErrorBoundary name="PlanView">
-            <Box flexDirection="column" flexGrow={1}>
+            <Box flexDirection="column" flexGrow={1} marginTop={1}>
               <Box
-                borderStyle="round"
+                borderStyle="classic"
                 borderColor="green"
                 paddingX={1}
-                marginTop={1}
                 justifyContent="space-between"
               >
-                <Text bold color="green">
-                  📋 PLAN MODE
-                </Text>
+                <Text color="gray">PLAN</Text>
                 <Text color="gray">Press O for Observe • H for Help</Text>
               </Box>
               <PlanView />
@@ -202,17 +214,14 @@ export default function App() {
         {/* Observe View */}
         {activeView === "observe" && (
           <ErrorBoundary name="ObserveView">
-            <Box flexDirection="column" flexGrow={1}>
+            <Box flexDirection="column" flexGrow={1} marginTop={1}>
               <Box
-                borderStyle="round"
-                borderColor="blue"
+                borderStyle="classic"
+                borderColor="green"
                 paddingX={1}
-                marginTop={1}
                 justifyContent="space-between"
               >
-                <Text bold color="blue">
-                  👁 OBSERVE MODE
-                </Text>
+                <Text color="gray">OBSERVE</Text>
                 <Text color="gray">Press P for Plan • H for Help</Text>
               </Box>
               <ObserveView />

@@ -16,6 +16,6 @@
   ],
   "theme": "dark",
   "autoStart": false,
-  "startPage": "plan",
-  "logLevel": "info"
+  "startPage": "observe",
+  "logLevel": "debug"
 }

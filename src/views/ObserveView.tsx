@@ -197,23 +197,30 @@ export default function ObserveView() {
     : null;
 
   return (
-    <Box minWidth={30} flexGrow={1} flexDirection="column">
+    <Box flexGrow={1} flexDirection="column">
       {/* Two-column layout as per ObserveViewContract */}
       <Box flexGrow={1} gap={1}>
         {/* Left Panel - Session List (30% width) */}
-        <Box flexDirection="column">
+        <Box flexBasis="20%" minWidth={30} flexDirection="column">
           <Box
-            borderStyle="round"
+            borderStyle="classic"
             borderColor="green"
             flexGrow={1}
             paddingX={1}
             flexDirection="column"
           >
-            <Text bold color="yellow">
-              Session List
+            <Text bold color="gray">
+              Sessions
             </Text>
             {sessionHistory.length > 0 ? (
-              <Box flexDirection="column" marginTop={1}>
+              <Box
+                borderLeft={false}
+                borderRight={false}
+                borderBottom={false}
+                borderStyle="classic"
+                borderColor="gray"
+                flexDirection="column"
+              >
                 {sessionHistory.map((session) => (
                   <Box key={session.session_id}>
                     <Text
@@ -239,7 +246,7 @@ export default function ObserveView() {
         </Box>
 
         {/* Right Panel - Session Dashboard (70% width) */}
-        <Box flexGrow={1} flexDirection="column">
+        <Box flexBasis="80%" flexDirection="column">
           {selectedSession ? (
             <SessionDashboard
               sessionId={selectedSession.session_id}
@@ -253,7 +260,7 @@ export default function ObserveView() {
       </Box>
 
       {/* Footer */}
-      <Box marginTop={1}>
+      <Box>
         <Text color="gray" dimColor>
           ↑↓ Navigate • Enter Select • R Refresh • Q Quit
         </Text>
@@ -275,70 +282,128 @@ function SessionDashboard({
   return (
     <Box flexDirection="column" flexGrow={1}>
       {/* Session data: Identity, Status, Created/Updated */}
-      <Box
-        width="100%"
-        borderStyle="round"
-        borderColor="green"
-        flexDirection="column"
-        paddingX={1}
-      >
+      <Box borderStyle="classic" borderColor="green" paddingX={1}>
         {/* Identity section */}
-        <Box width="100%" justifyContent="space-between" gap={1}>
-          <Text bold color="yellow">
+        <Box flexBasis="50%" flexDirection="column">
+          <Text bold>
             {sessionData.session_title || "(untitled)"}
+            <Text color={sessionData.session_active ? "green" : "gray"}>
+              {" ●"}
+            </Text>
           </Text>
-          <Text color={sessionData.session_active ? "green" : "gray"}>
-            {sessionData.session_active ? "Active" : "Inactive"}
-          </Text>
-          <Text>
-            Created: {new Date(sessionData.created_at).toLocaleString()}
-          </Text>
+          <Text wrap="truncate-end">{sessionId}</Text>
         </Box>
 
         {/* Status section */}
-        <Box width="100%" justifyContent="space-between" gap={1}>
-          <Text>{sessionId}</Text>
-          <Text>
-            Updated: {new Date(sessionData.updated_at).toLocaleString()}
+        <Box flexBasis="50%" flexDirection="column" alignItems="flex-end">
+          <Text wrap="truncate-start">
+            {new Date(sessionData.created_at).toLocaleString()}
+          </Text>
+          <Text wrap="truncate-start">
+            {new Date(sessionData.updated_at).toLocaleString()}
           </Text>
         </Box>
       </Box>
 
       <Box width="100%" gap={1} flexGrow={1}>
-        <Box width="50%" flexGrow={1} flexDirection="column">
+        {/* Left Column */}
+        <Box flexGrow={1} flexBasis="50%" flexDirection="column">
           {/* Agents section */}
           <Box
-            width="100%"
             paddingX={1}
-            borderStyle="round"
+            borderStyle="classic"
             borderColor="green"
             flexDirection="column"
             flexGrow={1}
           >
-            <Text bold color="yellow">
+            <Text bold color="gray">
               Agents
             </Text>
-            <Text>Active: {sessionData.agents.join(", ") || "None"}</Text>
-            <Text>History: {sessionData.agents_history.length} total</Text>
+
+            <Box flexDirection="column">
+              <Box
+                borderLeft={false}
+                borderRight={false}
+                borderBottom={false}
+                borderStyle="classic"
+                borderColor="gray"
+                flexDirection="column"
+              >
+                <Text>Active: {sessionData.agents.length || "0"}</Text>
+                <Box flexDirection="column">
+                  {sessionData.agents.length > 0 &&
+                    sessionData.agents.map((agent, index) => (
+                      <Text key={index} color={"gray"}>
+                        {agent}
+                      </Text>
+                    ))}
+                </Box>
+              </Box>
+              <Box
+                borderLeft={false}
+                borderRight={false}
+                borderBottom={false}
+                borderStyle="classic"
+                borderColor="gray"
+                flexDirection="column"
+              >
+                <Text>History: {sessionData.agents_history.length} total</Text>
+                <Box flexDirection="column">
+                  {sessionData.agents_history.length > 0 &&
+                    sessionData.agents_history.map((agent, index) => (
+                      <Box justifyContent="space-between" gap={1}>
+                        <Text key={index} color={"gray"}>
+                          {agent.name}
+                        </Text>
+                        <Text
+                          wrap="truncate-start"
+                          key={index}
+                          color={"gray"}
+                          dimColor
+                        >
+                          {new Date(agent.started_at).toLocaleTimeString()}
+                          {agent.completed_at && (
+                            <Text
+                              wrap="truncate-start"
+                              key={index}
+                              color={"gray"}
+                              dimColor
+                            >
+                              {" - "}
+                              {new Date(
+                                agent.completed_at,
+                              ).toLocaleTimeString()}
+                            </Text>
+                          )}
+                        </Text>
+                      </Box>
+                    ))}
+                </Box>
+              </Box>
+            </Box>
           </Box>
 
           {/* Tools section */}
           <Box
             paddingX={1}
-            borderStyle="round"
+            borderStyle="classic"
             borderColor="green"
             flexDirection="column"
           >
-            <Text bold color="yellow">
+            <Text bold color="gray">
               Tools
             </Text>
             <Box width="100%" flexWrap="wrap">
               {Object.entries(sessionData.tools_used || {}).length > 0 ? (
                 Object.entries(sessionData.tools_used).map(([tool, count]) => (
-                  <Box width="33%">
-                    <Text key={tool}>
-                      {tool}: {count}
-                    </Text>
+                  <Box
+                    key={tool}
+                    width="33%"
+                    justifyContent="space-between"
+                    paddingRight={2}
+                  >
+                    <Text>{tool}:</Text>
+                    <Text>{count}</Text>
                   </Box>
                 ))
               ) : (
@@ -348,29 +413,32 @@ function SessionDashboard({
           </Box>
         </Box>
 
-        {/* Files section */}
-        <Box
-          width="50%"
-          paddingX={1}
-          borderStyle="round"
-          borderColor="green"
-          flexDirection="column"
-        >
-          <Text bold color="yellow">
-            Files
-          </Text>
-          <Text>
-            New:{" "}
-            <Text color="green">{sessionData.files?.new?.length || 0}</Text>
-          </Text>
-          <Text>
-            Edited:{" "}
-            <Text color="blue">{sessionData.files?.edited?.length || 0}</Text>
-          </Text>
-          <Text>
-            Read:{" "}
-            <Text color="gray">{sessionData.files?.read?.length || 0}</Text>
-          </Text>
+        {/* Right Column */}
+        <Box flexGrow={1} flexBasis="50%" flexDirection="column">
+          {/* Files section */}
+          <Box
+            flexGrow={1}
+            paddingX={1}
+            borderStyle="classic"
+            borderColor="green"
+            flexDirection="column"
+          >
+            <Text bold color="gray">
+              Files
+            </Text>
+            <Text>
+              New:{" "}
+              <Text color="green">{sessionData.files?.new?.length || 0}</Text>
+            </Text>
+            <Text>
+              Edited:{" "}
+              <Text color="blue">{sessionData.files?.edited?.length || 0}</Text>
+            </Text>
+            <Text>
+              Read:{" "}
+              <Text color="gray">{sessionData.files?.read?.length || 0}</Text>
+            </Text>
+          </Box>
         </Box>
       </Box>
     </Box>
@@ -381,9 +449,8 @@ function SessionDashboard({
 function EmptyState() {
   return (
     <Box
-      borderStyle="round"
+      borderStyle="classic"
       borderColor="gray"
-      padding={2}
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
