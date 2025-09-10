@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Box, Text, useInput, useApp, useFocusManager } from "ink";
 import {
   SessionMonitor,
@@ -7,7 +7,6 @@ import {
   type SessionEvent,
 } from "../lib/session-monitor";
 import { join } from "node:path";
-import chalk from "chalk";
 
 export default function ObserveView() {
   const { exit } = useApp();
@@ -20,18 +19,17 @@ export default function ObserveView() {
         claudePath: join(process.cwd(), ".claude"),
         pollingInterval: 100,
         debounceDelay: 50,
-      })
+      }),
   );
 
   const [currentSession, setCurrentSession] = useState<SessionData | null>(
-    null
+    null,
   );
   const [sessionHistory, setSessionHistory] = useState<SessionData[]>([]);
   const [sessionStats, setSessionStats] = useState<SessionStats | null>(null);
   const [recentEvents, setRecentEvents] = useState<SessionEvent[]>([]);
-  const [selectedHistoryIndex, setSelectedHistoryIndex] = useState(0);
-  const [activePane, setActivePane] = useState<"current" | "history" | "stats">(
-    "current"
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
+    null,
   );
   const [error, setError] = useState<string | null>(null);
 
@@ -51,8 +49,30 @@ export default function ObserveView() {
 
       // Set up event listeners
       monitor.onUpdate((session) => {
-        setCurrentSession(session);
-        updateStats(session);
+        // Update session in history if it exists
+        setSessionHistory((prev) => {
+          const updated = [...prev];
+          const index = updated.findIndex(
+            (s) => s.session_id === session.session_id,
+          );
+          if (index >= 0) {
+            updated[index] = session;
+          } else {
+            // New session, add to history
+            updated.unshift(session);
+          }
+          return updated;
+        });
+
+        // Update current session if it's the same one
+        setCurrentSession((current) =>
+          current?.session_id === session.session_id ? session : current,
+        );
+
+        // Update stats if this is the selected session
+        if (selectedSessionId === session.session_id) {
+          updateStats(session);
+        }
       });
 
       monitor.on("sessionStart", (session: SessionData) => {
@@ -102,12 +122,14 @@ export default function ObserveView() {
       setCurrentSession(session);
       if (session) {
         updateStats(session);
+        // Select current session by default
+        setSelectedSessionId(session.session_id);
       }
 
       await loadHistory();
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to start monitoring"
+        err instanceof Error ? err.message : "Failed to start monitoring",
       );
     }
   };
@@ -116,6 +138,13 @@ export default function ObserveView() {
     try {
       const history = await monitor.getSessionHistory();
       setSessionHistory(history);
+      // Select first session by default if none selected
+      if (!selectedSessionId && history.length > 0) {
+        const firstSession = history[0];
+        if (firstSession) {
+          setSelectedSessionId(firstSession.session_id);
+        }
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load history");
     }
@@ -150,28 +179,25 @@ export default function ObserveView() {
   };
 
   useInput((input, key) => {
-    // Pane navigation
-    if (input === "1") {
-      setActivePane("current");
-      focus("current-session");
+    // Session list navigation
+    if (key.upArrow && sessionHistory.length > 0) {
+      const currentIndex = selectedSessionId
+        ? sessionHistory.findIndex((s) => s.session_id === selectedSessionId)
+        : -1;
+      const newIndex = Math.max(0, currentIndex - 1);
+      setSelectedSessionId(sessionHistory[newIndex]?.session_id || null);
     }
-    if (input === "2") {
-      setActivePane("history");
-      focus("session-history");
-    }
-    if (input === "3") {
-      setActivePane("stats");
-      focus("session-stats");
+    if (key.downArrow && sessionHistory.length > 0) {
+      const currentIndex = selectedSessionId
+        ? sessionHistory.findIndex((s) => s.session_id === selectedSessionId)
+        : -1;
+      const newIndex = Math.min(sessionHistory.length - 1, currentIndex + 1);
+      setSelectedSessionId(sessionHistory[newIndex]?.session_id || null);
     }
 
-    // History navigation
-    if (activePane === "history") {
-      if (key.upArrow && selectedHistoryIndex > 0) {
-        setSelectedHistoryIndex(selectedHistoryIndex - 1);
-      }
-      if (key.downArrow && selectedHistoryIndex < sessionHistory.length - 1) {
-        setSelectedHistoryIndex(selectedHistoryIndex + 1);
-      }
+    // Select first session if none selected
+    if (key.return && sessionHistory.length > 0 && !selectedSessionId) {
+      setSelectedSessionId(sessionHistory[0]?.session_id || null);
     }
 
     // Refresh
@@ -189,197 +215,392 @@ export default function ObserveView() {
     focus("current-session");
   }, []);
 
+  // Only update stats when selected session changes
+  useEffect(() => {
+    if (selectedSessionId) {
+      const selected = sessionHistory.find(
+        (s) => s.session_id === selectedSessionId,
+      );
+      if (selected) {
+        updateStats(selected);
+      }
+    }
+  }, [selectedSessionId, sessionHistory]);
+
+  // Get selected session data - memoized to prevent recalculation
+  const selectedSession = useMemo(
+    () =>
+      selectedSessionId
+        ? sessionHistory.find((s) => s.session_id === selectedSessionId)
+        : null,
+    [selectedSessionId, sessionHistory],
+  );
+
   return (
-    <Box flexGrow={1} flexDirection="column" marginTop={2} marginX={1}>
-      {/* Header */}
-      <Box marginBottom={1}>
-        <Text bold color="cyan">
-          Session Monitor
-        </Text>
-        {error && <Text color="red"> - Error: {error}</Text>}
-      </Box>
-
-      {/* Main content area */}
+    <Box flexGrow={1} flexDirection="column">
+      {/* Two-column layout as per ObserveViewContract */}
       <Box flexGrow={1} gap={1}>
-        {/* Left column - Current Session and Events */}
-        <Box width="50%" flexDirection="column" gap={1}>
-          {/* Current Session */}
+        {/* Left Panel - Session List (30% width) */}
+        <Box flexBasis="20%" minWidth={30} flexDirection="column">
           <Box
-            borderStyle="round"
-            borderColor={activePane === "current" ? "green" : "gray"}
+            borderStyle="classic"
+            borderColor="green"
             flexGrow={1}
-            padding={1}
+            paddingX={1}
             flexDirection="column"
           >
-            <Text bold>[1] Current Session</Text>
-            {currentSession ? (
-              <Box flexDirection="column" marginTop={1}>
-                <Text>
-                  ID: <Text color="yellow">{currentSession.session_id.slice(0, 8)}...</Text>
-                </Text>
-                <Text>
-                  Title: <Text color="cyan">{currentSession.session_title || "(untitled)"}</Text>
-                </Text>
-                <Text>
-                  Started:{" "}
-                  <Text color="green">
-                    {formatTimestamp(currentSession.created_at)}
-                  </Text>
-                </Text>
-                <Text>
-                  Updated:{" "}
-                  <Text color="blue">
-                    {formatTimestamp(currentSession.updated_at)}
-                  </Text>
-                </Text>
-                <Text>
-                  Status:{" "}
-                  <Text color={currentSession.session_active ? "green" : "yellow"}>
-                    {currentSession.session_active ? "Active" : "Inactive"}
-                  </Text>
-                </Text>
-                <Text>
-                  Active Agents:{" "}
-                  <Text color="magenta">
-                    {currentSession.agents.length > 0 
-                      ? currentSession.agents.join(", ")
-                      : "None"}
-                  </Text>
-                </Text>
-                <Text>
-                  Files:{" "}
-                  <Text color="green">+{currentSession.files?.new?.length || 0}</Text>{" "}
-                  <Text color="yellow">~{currentSession.files?.edited?.length || 0}</Text>{" "}
-                  <Text color="blue">⟳{currentSession.files?.read?.length || 0}</Text>
-                </Text>
-              </Box>
-            ) : (
-              <Text color="gray">No active session</Text>
-            )}
-          </Box>
-
-          {/* Recent Events */}
-          <Box
-            borderStyle="round"
-            borderColor="gray"
-            flexGrow={1}
-            padding={1}
-            flexDirection="column"
-          >
-            <Text bold>Recent Events</Text>
-            {recentEvents.length > 0 ? (
-              <Box flexDirection="column" marginTop={1}>
-                {recentEvents.map((event, index) => (
-                  <Box key={index} marginBottom={0}>
-                    <Text color="gray">
-                      {formatTimestamp(event.timestamp)}{" "}
-                    </Text>
+            <Text bold color="gray">
+              Sessions
+            </Text>
+            {sessionHistory.length > 0 ? (
+              <Box
+                borderLeft={false}
+                borderRight={false}
+                borderBottom={false}
+                borderStyle="classic"
+                borderColor="gray"
+                flexDirection="column"
+              >
+                {sessionHistory.map((session) => (
+                  <Box key={session.session_id}>
                     <Text
                       color={
-                        event.type === "session_start"
+                        selectedSessionId === session.session_id
                           ? "green"
-                          : event.type === "session_end"
-                          ? "yellow"
-                          : event.type === "file_change"
-                          ? "blue"
-                          : event.type === "command"
-                          ? "magenta"
-                          : event.type === "error"
-                          ? "red"
-                          : "white"
+                          : undefined
                       }
+                      wrap="truncate-end"
                     >
-                      {event.type.replace("_", " ")}
+                      <Text color={session.session_active ? "yellow" : "gray"}>
+                        {"● "}
+                      </Text>
+                      {session.session_title || session.session_id}
                     </Text>
                   </Box>
                 ))}
               </Box>
             ) : (
-              <Text color="gray">No recent events</Text>
+              <Text color="gray">No sessions found</Text>
             )}
           </Box>
         </Box>
 
-        {/* Right column - History and Stats */}
-        <Box width="50%" flexDirection="column" gap={1}>
-          {/* Session History */}
-          <Box
-            borderStyle="round"
-            borderColor={activePane === "history" ? "green" : "gray"}
-            flexGrow={1}
-            padding={1}
-            flexDirection="column"
-          >
-            <Text bold>[2] Session History</Text>
-            {sessionHistory.length > 0 ? (
-              <Box flexDirection="column" marginTop={1}>
-                {sessionHistory.slice(0, 5).map((session, index) => (
-                  <Box
-                    key={session.session_id}
-                    backgroundColor={
-                      activePane === "history" && selectedHistoryIndex === index
-                        ? "gray"
-                        : undefined
-                    }
-                  >
-                    <Text color={session.session_active ? "green" : "white"}>
-                      {formatTimestamp(session.created_at)} -{" "}
-                      {session.session_id.slice(0, 8)}
-                      {session.session_active && <Text color="green"> [ACTIVE]</Text>}
-                    </Text>
-                  </Box>
-                ))}
-              </Box>
-            ) : (
-              <Text color="gray">No session history</Text>
-            )}
-          </Box>
-
-          {/* Session Stats */}
-          <Box
-            borderStyle="round"
-            borderColor={activePane === "stats" ? "green" : "gray"}
-            flexGrow={1}
-            padding={1}
-            flexDirection="column"
-          >
-            <Text bold>[3] Session Statistics</Text>
-            {sessionStats ? (
-              <Box flexDirection="column" marginTop={1}>
-                <Text>
-                  Duration:{" "}
-                  <Text color="cyan">
-                    {formatDuration(sessionStats.duration)}
-                  </Text>
-                </Text>
-                <Text>
-                  Files: <Text color="green">+{sessionStats.filesCreated}</Text>{" "}
-                  <Text color="yellow">~{sessionStats.filesModified}</Text>{" "}
-                  <Text color="blue">⟳{sessionStats.filesRead || 0}</Text>
-                </Text>
-                <Text>
-                  Commands:{" "}
-                  <Text color="green">{sessionStats.commandsSucceeded} OK</Text>{" "}
-                  <Text color="red">{sessionStats.commandsFailed} Failed</Text>
-                </Text>
-                <Text>
-                  Total Commands:{" "}
-                  <Text color="blue">{sessionStats.commandsExecuted}</Text>
-                </Text>
-              </Box>
-            ) : (
-              <Text color="gray">No statistics available</Text>
-            )}
-          </Box>
+        {/* Right Panel - Session Dashboard (70% width) */}
+        <Box flexBasis="80%" flexDirection="column">
+          {selectedSession ? (
+            <SessionDashboard
+              sessionId={selectedSession.session_id}
+              sessionData={selectedSession}
+              sessionStats={sessionStats}
+            />
+          ) : (
+            <EmptyState />
+          )}
         </Box>
       </Box>
 
       {/* Footer */}
-      <Box marginTop={1}>
+      <Box>
         <Text color="gray" dimColor>
-          [1-3] Switch Panes • [R] Refresh • [Q] Quit • ↑↓ Navigate History
+          ↑↓ Navigate • Enter Select • R Refresh • Q Quit
         </Text>
       </Box>
+    </Box>
+  );
+}
+
+function stripPrefix(string: string, prefix: string) {
+  if (string.startsWith(prefix)) {
+    return string.slice(prefix.length);
+  }
+  return string;
+}
+
+// SessionDashboard component as per ObserveViewContract
+const SessionDashboard = React.memo(
+  function SessionDashboard({
+    sessionId,
+    sessionData,
+    sessionStats,
+  }: {
+    sessionId: string;
+    sessionData: SessionData;
+    sessionStats: SessionStats | null;
+  }) {
+    return (
+      <Box flexDirection="column" flexGrow={1}>
+        {/* Session data: Identity, Status, Created/Updated */}
+        <Box borderStyle="classic" borderColor="green" paddingX={1}>
+          {/* Identity section */}
+          <Box flexBasis="50%" flexDirection="column">
+            <Text bold>
+              {sessionData.session_title || "(untitled)"}
+              <Text color={sessionData.session_active ? "yellow" : "gray"}>
+                {" ●"}
+              </Text>
+            </Text>
+            <Text wrap="truncate-end">{sessionId}</Text>
+          </Box>
+
+          {/* Status section */}
+          <Box flexBasis="50%" flexDirection="column" alignItems="flex-end">
+            <Text wrap="truncate-start">
+              {new Date(sessionData.created_at).toLocaleString()}
+            </Text>
+            <Text wrap="truncate-start">
+              {new Date(sessionData.updated_at).toLocaleString()}
+            </Text>
+          </Box>
+        </Box>
+
+        <Box width="100%" gap={1} flexGrow={1}>
+          {/* Left Column */}
+          <Box flexGrow={1} flexBasis="50%" flexDirection="column">
+            {/* Agents section */}
+            <Box
+              paddingX={1}
+              borderStyle="classic"
+              borderColor="green"
+              flexDirection="column"
+              flexGrow={1}
+            >
+              <Text bold color="gray">
+                Agents
+              </Text>
+
+              <Box flexDirection="column">
+                <Box
+                  borderLeft={false}
+                  borderRight={false}
+                  borderBottom={false}
+                  borderStyle="classic"
+                  borderColor="gray"
+                  flexDirection="column"
+                >
+                  <Text>
+                    Active:{" "}
+                    <Text color="green">
+                      {sessionData.agents_history.filter(
+                        (agent) => !agent.completed_at,
+                      ).length || "0"}
+                    </Text>
+                  </Text>
+                  <Box flexDirection="column">
+                    {sessionData.agents_history.filter(
+                      (agent) => !agent.completed_at,
+                    ).length > 0 &&
+                      sessionData.agents_history
+                        .filter((agent) => !agent.completed_at)
+                        .map((agent, index) => (
+                          <Box
+                            key={index}
+                            justifyContent="space-between"
+                            gap={1}
+                          >
+                            <Text color={"gray"}>{agent.name}</Text>
+                            <Text wrap="truncate-start" color={"gray"} dimColor>
+                              {new Date(agent.started_at).toLocaleTimeString()}
+                            </Text>
+                          </Box>
+                        ))}
+                  </Box>
+                </Box>
+                <Box
+                  borderLeft={false}
+                  borderRight={false}
+                  borderBottom={false}
+                  borderStyle="classic"
+                  borderColor="gray"
+                  flexDirection="column"
+                >
+                  <Text>
+                    Completed:{" "}
+                    <Text color="green">
+                      {sessionData.agents_history.filter(
+                        (agent) => agent.completed_at,
+                      ).length || "0"}
+                    </Text>
+                  </Text>
+                  <Box flexDirection="column">
+                    {sessionData.agents_history.filter(
+                      (agent) => agent.completed_at,
+                    ).length > 0 &&
+                      sessionData.agents_history
+                        .filter((agent) => agent.completed_at)
+                        .map((agent, index) => (
+                          <Box
+                            key={index}
+                            justifyContent="space-between"
+                            gap={1}
+                          >
+                            <Text color={"gray"}>{agent.name}</Text>
+                            <Text wrap="truncate-start" color={"gray"} dimColor>
+                              {agent.completed_at &&
+                                new Date(
+                                  agent.completed_at,
+                                ).toLocaleTimeString()}
+                            </Text>
+                          </Box>
+                        ))}
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+
+            {/* Tools section */}
+            <Box
+              paddingX={1}
+              borderStyle="classic"
+              borderColor="green"
+              flexDirection="column"
+            >
+              <Text bold color="gray">
+                Tools
+              </Text>
+              <Box flexWrap="wrap">
+                {Object.entries(sessionData.tools_used || {}).length > 0 ? (
+                  Object.entries(sessionData.tools_used).map(
+                    ([tool, count]) => (
+                      <Box
+                        borderStyle="classic"
+                        borderLeft={false}
+                        borderRight={false}
+                        borderBottom={false}
+                        borderColor="gray"
+                        key={tool}
+                        flexBasis="25%"
+                        flexGrow={1}
+                        flexShrink={1}
+                      >
+                        <Text>
+                          {tool}: <Text color="green">{count}</Text>
+                        </Text>
+                      </Box>
+                    ),
+                  )
+                ) : (
+                  <Text color="gray">No tools used</Text>
+                )}
+              </Box>
+            </Box>
+          </Box>
+
+          {/* Right Column */}
+          <Box flexGrow={1} flexBasis="50%" flexDirection="column">
+            {/* Files section */}
+            <Box
+              flexGrow={1}
+              paddingX={1}
+              borderStyle="classic"
+              borderColor="green"
+              flexDirection="column"
+            >
+              <Text bold color="gray">
+                Files
+              </Text>
+              <Box
+                borderLeft={false}
+                borderRight={false}
+                borderBottom={false}
+                borderStyle="classic"
+                borderColor="gray"
+                flexDirection="column"
+              >
+                <Text>
+                  New:{" "}
+                  <Text color="green">
+                    {sessionData.files?.new?.length || 0}
+                  </Text>
+                </Text>
+                <Box flexDirection="column" paddingRight={2}>
+                  {sessionData.files.new.length > 0 &&
+                    sessionData.files.new.slice(-5).map((file, index) => (
+                      <Text wrap="truncate-start" key={index} color={"gray"}>
+                        {stripPrefix(file, process.cwd() + "/")}
+                      </Text>
+                    ))}
+                </Box>
+              </Box>
+              <Box
+                borderLeft={false}
+                borderRight={false}
+                borderBottom={false}
+                borderStyle="classic"
+                borderColor="gray"
+                flexDirection="column"
+              >
+                <Text>
+                  Edited:{" "}
+                  <Text color="green">
+                    {sessionData.files?.edited?.length || 0}
+                  </Text>
+                </Text>
+                <Box flexDirection="column" paddingRight={2}>
+                  {sessionData.files.edited.length > 0 &&
+                    sessionData.files.edited.slice(-5).map((file, index) => (
+                      <Text wrap="truncate-start" key={index} color={"gray"}>
+                        {stripPrefix(file, process.cwd() + "/")}
+                      </Text>
+                    ))}
+                </Box>
+              </Box>
+              <Box
+                borderLeft={false}
+                borderRight={false}
+                borderBottom={false}
+                borderStyle="classic"
+                borderColor="gray"
+                flexDirection="column"
+              >
+                <Text>
+                  Read:{" "}
+                  <Text color="green">
+                    {sessionData.files?.read?.length || 0}
+                  </Text>
+                </Text>
+                <Box flexDirection="column" paddingRight={2}>
+                  {sessionData.files.read.length > 0 &&
+                    sessionData.files.read.slice(-5).map((file, index) => (
+                      <Text wrap="truncate-start" key={index} color={"gray"}>
+                        {stripPrefix(file, process.cwd() + "/")}
+                      </Text>
+                    ))}
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    );
+  },
+  (prevProps, nextProps) => {
+    // Custom comparison to prevent unnecessary re-renders
+    return (
+      prevProps.sessionId === nextProps.sessionId &&
+      prevProps.sessionData.updated_at === nextProps.sessionData.updated_at &&
+      JSON.stringify(prevProps.sessionStats) ===
+        JSON.stringify(nextProps.sessionStats)
+    );
+  },
+);
+
+// EmptyState component as per ObserveViewContract
+function EmptyState() {
+  return (
+    <Box
+      borderStyle="classic"
+      borderColor="gray"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      flexGrow={1}
+    >
+      <Text color="gray" bold>
+        No Session Selected
+      </Text>
+      <Text color="gray">
+        Select a session from the left panel to view details
+      </Text>
     </Box>
   );
 }

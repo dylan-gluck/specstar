@@ -8,6 +8,7 @@ export interface FolderConfig {
 export interface SpecstarSettings {
   version: string;
   sessionPath: string;
+  startPage: 'plan' | 'observe' | 'help';
   folders: FolderConfig[];
   theme: string;
   autoStart: boolean;
@@ -22,7 +23,12 @@ export async function loadSettings(): Promise<SpecstarSettings> {
     
     if (await file.exists()) {
       const content = await file.text();
-      return JSON.parse(content) as SpecstarSettings;
+      const loadedSettings = JSON.parse(content);
+      // Ensure startPage defaults to 'plan' if not set
+      return {
+        ...loadedSettings,
+        startPage: loadedSettings.startPage || 'plan'
+      } as SpecstarSettings;
     }
   } catch (error) {
     console.error('Failed to load settings:', error);
@@ -32,6 +38,7 @@ export async function loadSettings(): Promise<SpecstarSettings> {
   return {
     version: "1.0.0",
     sessionPath: ".specstar/sessions",
+    startPage: "plan",
     folders: [
       {
         title: "Docs",

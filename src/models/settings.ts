@@ -4,12 +4,9 @@
  */
 
 export interface ThemeSettings {
-  primaryColor?: string;
-  accentColor?: string;
-  backgroundColor?: string;
-  textColor?: string;
-  borderStyle?: 'single' | 'double' | 'round' | 'bold' | 'none';
-  syntax?: 'monokai' | 'github' | 'dracula' | 'nord' | 'auto';
+  bg: string;
+  fg: string;
+  fgAccent: string;
 }
 
 export interface HookSettings {
@@ -33,7 +30,7 @@ export enum LogLevel {
 
 export interface Settings {
   version: string;
-  sessionPath: string;
+  startPage: 'plan' | 'observe' | 'help';
   hooks: HookSettings;
   theme: ThemeSettings;
   autoStart: boolean;
@@ -56,16 +53,10 @@ export function isValidThemeSettings(theme: unknown): theme is ThemeSettings {
   if (typeof theme !== 'object' || theme === null) return false;
   const t = theme as Record<string, unknown>;
   
-  const validBorderStyles = ['single', 'double', 'round', 'bold', 'none'];
-  const validSyntaxThemes = ['monokai', 'github', 'dracula', 'nord', 'auto'];
-  
   return (
-    (t.primaryColor === undefined || typeof t.primaryColor === 'string') &&
-    (t.accentColor === undefined || typeof t.accentColor === 'string') &&
-    (t.backgroundColor === undefined || typeof t.backgroundColor === 'string') &&
-    (t.textColor === undefined || typeof t.textColor === 'string') &&
-    (t.borderStyle === undefined || validBorderStyles.includes(t.borderStyle as string)) &&
-    (t.syntax === undefined || validSyntaxThemes.includes(t.syntax as string))
+    typeof t.bg === 'string' &&
+    typeof t.fg === 'string' &&
+    typeof t.fgAccent === 'string'
   );
 }
 
@@ -90,7 +81,8 @@ export function isValidSettings(settings: unknown): settings is Settings {
   
   return (
     typeof s.version === 'string' &&
-    typeof s.sessionPath === 'string' &&
+    typeof s.startPage === 'string' &&
+    ['plan', 'observe', 'help'].includes(s.startPage as string) &&
     isValidHookSettings(s.hooks) &&
     isValidThemeSettings(s.theme) &&
     typeof s.autoStart === 'boolean' &&
@@ -108,12 +100,9 @@ export function isValidSettings(settings: unknown): settings is Settings {
  */
 export function createThemeSettings(params?: Partial<ThemeSettings>): ThemeSettings {
   return {
-    primaryColor: params?.primaryColor || '#00ff00',
-    accentColor: params?.accentColor || '#0099ff',
-    backgroundColor: params?.backgroundColor || '#000000',
-    textColor: params?.textColor || '#ffffff',
-    borderStyle: params?.borderStyle || 'single',
-    syntax: params?.syntax || 'auto'
+    bg: params?.bg || '#000000',
+    fg: params?.fg || '#ffffff',
+    fgAccent: params?.fgAccent || '#00ff00'
   };
 }
 
@@ -132,7 +121,7 @@ export function createHookSettings(params?: Partial<HookSettings>): HookSettings
 export function createSettings(params?: Partial<Settings>): Settings {
   return {
     version: params?.version || '1.0.0',
-    sessionPath: params?.sessionPath || '.specstar/sessions',
+    startPage: params?.startPage || 'plan',
     hooks: params?.hooks || createHookSettings(),
     theme: params?.theme || createThemeSettings(),
     autoStart: params?.autoStart ?? false,
@@ -207,6 +196,16 @@ export function removePlugin(settings: Settings, pluginName: string): Settings {
   };
 }
 
+export function updateStartPage(settings: Settings, startPage: 'plan' | 'observe' | 'help'): Settings {
+  if (!['plan', 'observe', 'help'].includes(startPage)) {
+    throw new Error(`Invalid startPage value: ${startPage}. Must be one of: plan, observe, help`);
+  }
+  return {
+    ...settings,
+    startPage
+  };
+}
+
 export function updateKeybinding(settings: Settings, key: string, command: string): Settings {
   return {
     ...settings,
@@ -231,9 +230,10 @@ export function migrateSettings(oldSettings: Record<string, unknown>): Settings 
   // Create new settings with defaults
   const newSettings = createSettings();
   
-  // Copy over valid properties
-  if (typeof oldSettings.sessionPath === 'string') {
-    newSettings.sessionPath = oldSettings.sessionPath;
+  // Copy over valid properties (sessionPath is intentionally omitted - it should be hardcoded)
+  if (typeof oldSettings.startPage === 'string' && 
+      ['plan', 'observe', 'help'].includes(oldSettings.startPage)) {
+    newSettings.startPage = oldSettings.startPage as 'plan' | 'observe' | 'help';
   }
   
   if (typeof oldSettings.autoStart === 'boolean') {

@@ -100,6 +100,7 @@ export class SessionMonitor extends EventEmitter {
   private lastFileContents: Map<string, string> = new Map();
   private eventStream?: Readable;
   private streamListeners: Set<(event: SessionEvent) => void> = new Set();
+  private pollingTimer?: NodeJS.Timeout;
 
   constructor(options: SessionMonitorOptions) {
     super();
@@ -127,6 +128,11 @@ export class SessionMonitor extends EventEmitter {
     
     // Then do initial scan for existing sessions
     await this.scanForSessions();
+    
+    // Start polling if configured
+    if (this.options.pollingInterval > 0) {
+      this.startPolling();
+    }
   }
 
   // Stop monitoring
@@ -136,6 +142,12 @@ export class SessionMonitor extends EventEmitter {
     }
 
     this.isRunning = false;
+
+    // Stop polling
+    if (this.pollingTimer) {
+      clearInterval(this.pollingTimer);
+      this.pollingTimer = undefined;
+    }
 
     // Clear all watchers
     for (const [path, watcher] of this.watchers) {
@@ -347,15 +359,11 @@ export class SessionMonitor extends EventEmitter {
 
         const fullPath = join(this.options.sessionPath, filename);
         
-        // Process file immediately without debouncing for new files
-        // but debounce for changes to existing files
-        if (eventType === 'rename') {
-          // New file created, process immediately
-          this.processSessionFile(fullPath).catch(error => {
-            console.error(`Failed to process new file ${fullPath}:`, error);
-          });
-        } else {
-          // File changed, debounce
+        // Handle both rename and change events
+        // 'rename' can mean file created/deleted/renamed
+        // 'change' means file content was modified
+        if (eventType === 'rename' || eventType === 'change') {
+          // Always debounce to handle rapid changes and atomic writes
           this.debounceFileChange(fullPath, async () => {
             await this.processSessionFile(fullPath);
           });
@@ -386,13 +394,6 @@ export class SessionMonitor extends EventEmitter {
     try {
       // Read and parse the session file
       const content = await readFile(filePath, 'utf-8');
-      
-      // Check if content has changed
-      const lastContent = this.lastFileContents.get(filePath);
-      if (lastContent === content) {
-        return; // No changes
-      }
-      this.lastFileContents.set(filePath, content);
 
       let sessionData: SessionData;
       try {
@@ -554,6 +555,85 @@ export class SessionMonitor extends EventEmitter {
   private emitToStream(event: SessionEvent): void {
     for (const listener of this.streamListeners) {
       listener(event);
+    }
+  }
+
+  private startPolling(): void {
+    // Set up polling interval to periodically scan for session updates
+    this.pollingTimer = setInterval(async () => {
+      if (!this.isRunning) return;
+      
+      try {
+        await this.pollSessions();
+      } catch (error) {
+        console.error('Polling error:', error);
+      }
+    }, this.options.pollingInterval);
+  }
+
+  private async pollSessions(): Promise<void> {
+    // Scan all session directories and process their state files
+    try {
+      const sessionDirs = await readdir(this.options.sessionPath);
+      
+      for (const dir of sessionDirs) {
+        if (!this.isRunning) break;
+        
+        const stateFile = join(this.options.sessionPath, dir, 'state.json');
+        
+        try {
+          // Read file content
+          const content = await readFile(stateFile, 'utf-8');
+          
+          // Parse JSON to check validity
+          let sessionData: SessionData;
+          try {
+            sessionData = JSON.parse(content);
+          } catch (parseError) {
+            continue; // Skip invalid JSON
+          }
+          
+          // Check if this session has changed by comparing parsed data
+          const existingSession = this.sessions.get(sessionData.session_id);
+          
+          // Compare by updated_at timestamp or content hash
+          if (!existingSession || 
+              existingSession.updated_at !== sessionData.updated_at ||
+              JSON.stringify(existingSession) !== JSON.stringify(sessionData)) {
+            
+            // Process the changed session
+            // Update session in memory
+            this.sessions.set(sessionData.session_id, sessionData);
+            
+            // Detect and emit various events
+            if (!existingSession) {
+              this.handleSessionStart(sessionData);
+            } else {
+              this.detectChanges(existingSession, sessionData);
+              
+              if (existingSession.session_active && !sessionData.session_active) {
+                this.handleSessionEnd(sessionData);
+              }
+            }
+            
+            // Save to history
+            await this.saveSessionToHistory(sessionData);
+            
+            // Emit general update event
+            this.emit('update', sessionData);
+          }
+        } catch (error) {
+          // File might not exist or be inaccessible, skip it
+          if ((error as any).code !== 'ENOENT') {
+            console.error(`Failed to poll session file ${stateFile}:`, error);
+          }
+        }
+      }
+    } catch (error) {
+      // Directory might not exist yet
+      if ((error as any).code !== 'ENOENT') {
+        console.error('Failed to poll sessions:', error);
+      }
     }
   }
 }

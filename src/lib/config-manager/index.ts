@@ -29,7 +29,7 @@ export interface FolderConfig {
 
 export interface SpecstarConfig {
   version: string;
-  sessionPath?: string;
+  startPage?: 'plan' | 'observe' | 'help';
   folders?: FolderConfig[];
   theme?: 'light' | 'dark';
   autoStart?: boolean;
@@ -54,7 +54,7 @@ export interface ClaudeCodeSettings {
 // Default configuration
 const DEFAULT_CONFIG: SpecstarConfig = {
   version: '1.0.0',
-  sessionPath: '.specstar/sessions',
+  startPage: 'plan',
   folders: [
     {
       title: 'Docs',
@@ -243,8 +243,9 @@ export class ConfigManager {
       return false;
     }
     
-    // Optional field: sessionPath
-    if (config.sessionPath !== undefined && typeof config.sessionPath !== 'string') {
+    // Optional field: startPage
+    if (config.startPage !== undefined && 
+        !['plan', 'observe', 'help'].includes(config.startPage)) {
       return false;
     }
     

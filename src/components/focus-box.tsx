@@ -15,7 +15,7 @@ export default function FocusBox({
 
   return (
     <Box
-      borderStyle="round"
+      borderStyle="classic"
       borderColor={isFocused ? "green" : "gray"}
       flexGrow={isFocused ? 1 : 0}
       paddingX={1}
