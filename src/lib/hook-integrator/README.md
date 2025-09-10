@@ -159,10 +159,6 @@ const hooks = new HookIntegrator({
 });
 ```
 
-## Examples
-
-See `example-hooks.ts` for a complete example of all supported hook types and usage patterns.
-
 ## Testing
 
 Run tests with:
