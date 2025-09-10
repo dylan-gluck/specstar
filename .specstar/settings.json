@@ -1,5 +1,6 @@
 {
   "version": "1.0.0",
+  "startPage": "observe",
   "folders": [
     {
       "title": "Docs",
@@ -16,6 +17,5 @@
   ],
   "theme": "dark",
   "autoStart": false,
-  "startPage": "observe",
-  "logLevel": "debug"
+  "logLevel": "info"
 }

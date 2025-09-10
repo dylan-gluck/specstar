@@ -432,9 +432,10 @@ const SessionDashboard = React.memo(
                           >
                             <Text color={"gray"}>{agent.name}</Text>
                             <Text wrap="truncate-start" color={"gray"} dimColor>
-                              {new Date(
-                                agent.completed_at,
-                              ).toLocaleTimeString()}
+                              {agent.completed_at &&
+                                new Date(
+                                  agent.completed_at,
+                                ).toLocaleTimeString()}
                             </Text>
                           </Box>
                         ))}
@@ -453,18 +454,24 @@ const SessionDashboard = React.memo(
               <Text bold color="gray">
                 Tools
               </Text>
-              <Box width="100%" flexWrap="wrap">
+              <Box flexWrap="wrap">
                 {Object.entries(sessionData.tools_used || {}).length > 0 ? (
                   Object.entries(sessionData.tools_used).map(
                     ([tool, count]) => (
                       <Box
+                        borderStyle="classic"
+                        borderLeft={false}
+                        borderRight={false}
+                        borderBottom={false}
+                        borderColor="gray"
                         key={tool}
-                        width="33%"
-                        justifyContent="space-between"
-                        paddingRight={2}
+                        flexBasis="25%"
+                        flexGrow={1}
+                        flexShrink={1}
                       >
-                        <Text>{tool}:</Text>
-                        <Text>{count}</Text>
+                        <Text>
+                          {tool}: <Text color="green">{count}</Text>
+                        </Text>
                       </Box>
                     ),
                   )

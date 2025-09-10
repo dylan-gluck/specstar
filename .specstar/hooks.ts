@@ -418,7 +418,7 @@ function handleSessionEnd(input: HookInput): void {
 function handleStop(input: HookInput): void {
   const { session_id, stop_hook_active, transcript_path } = input;
 
-  // Log event only
+  // Log event only (no state changes for stop)
   logEvent("stop", {
     session_id,
     stop_hook_active,
@@ -429,7 +429,7 @@ function handleStop(input: HookInput): void {
 function handleSubagentStop(input: HookInput): void {
   const { session_id, stop_hook_active, transcript_path } = input;
 
-  // Log event only
+  // Log event only (no state changes for subagent stop)
   logEvent("subagent_stop", {
     session_id,
     stop_hook_active,
