@@ -7,7 +7,7 @@
 
 import { describe, test, expect } from 'bun:test';
 import { 
-  SettingsContract,
+  type SettingsContract,
   testSettingsCompliance 
 } from '../../specs/003-current-status-the/contracts/hook-contracts';
 

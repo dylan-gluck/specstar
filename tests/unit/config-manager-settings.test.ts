@@ -153,7 +153,7 @@ describe('ConfigManager Settings Validation', () => {
       expect(configManager.validate(loadedConfig)).toBe(true);
       expect(loadedConfig.startPage).toBe('plan');
       expect(loadedConfig.folders).toHaveLength(1);
-      expect(loadedConfig.folders?.[0].title).toBe('Test Docs');
+      expect(loadedConfig.folders?.[0]?.title).toBe('Test Docs');
     });
 
     it('should reject invalid startPage values', async () => {

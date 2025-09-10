@@ -140,7 +140,10 @@ export default function ObserveView() {
       setSessionHistory(history);
       // Select first session by default if none selected
       if (!selectedSessionId && history.length > 0) {
-        setSelectedSessionId(history[0].session_id);
+        const firstSession = history[0];
+        if (firstSession) {
+          setSelectedSessionId(firstSession.session_id);
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load history");

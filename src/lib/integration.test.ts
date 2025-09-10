@@ -69,7 +69,7 @@ describe("Specstar Integration Tests", () => {
       const config = await configManager.load();
       expect(config.version).toBe("1.0.0");
       expect(config.startPage).toBe("plan");  // Check new startPage field instead of sessionPath
-      expect(config.sessionPath).toBeUndefined();  // sessionPath should no longer exist
+      expect((config as any).sessionPath).toBeUndefined();  // sessionPath should no longer exist
       
       // Check hooks.ts content - actual template uses Claude Code hooks
       const hooksFile = await Bun.file(join(SPECSTAR_DIR, "hooks.ts")).text();

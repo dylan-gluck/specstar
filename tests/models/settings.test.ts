@@ -7,9 +7,9 @@
 
 import { describe, test, expect } from 'bun:test';
 import {
-  Settings,
-  ThemeSettings,
-  HookSettings,
+  type Settings,
+  type ThemeSettings,
+  type HookSettings,
   LogLevel,
   isValidSettings,
   createSettings,
@@ -331,7 +331,6 @@ describe('Settings Model - Start Page Configuration', () => {
       // Type check that Settings interface accepts startPage
       const validSettings: Settings = {
         version: '1.0.0',
-        sessionPath: '.specstar/sessions',
         startPage: 'observe', // Should be allowed
         hooks: {
           enabled: false,
@@ -343,12 +342,9 @@ describe('Settings Model - Start Page Configuration', () => {
           onError: true
         },
         theme: {
-          primaryColor: '#00ff00',
-          accentColor: '#0099ff',
-          backgroundColor: '#000000',
-          textColor: '#ffffff',
-          borderStyle: 'single',
-          syntax: 'auto'
+          bg: '#000000',
+          fg: '#ffffff',
+          fgAccent: '#0099ff'
         },
         autoStart: false,
         logLevel: LogLevel.Info

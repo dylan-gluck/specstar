@@ -221,7 +221,6 @@ async function main() {
         // Load default configuration
         const defaultConfig: SpecstarConfig = {
           version: '1.0.0',
-          sessionPath: '.specstar/sessions',
           folders: [],
           theme: 'dark',
           autoStart: false,

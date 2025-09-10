@@ -10,7 +10,7 @@
  */
 
 import { describe, test, expect } from 'bun:test';
-import { ListItemRenderContract, SettingsContract } from '../../specs/003-current-status-the/contracts/hook-contracts.ts';
+import type { ListItemRenderContract, SettingsContract } from '../../specs/003-current-status-the/contracts/hook-contracts.ts';
 
 // ============================================================================
 // TEST THEMES

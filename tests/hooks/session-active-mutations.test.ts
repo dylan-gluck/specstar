@@ -385,8 +385,10 @@ describe("Session Active Mutation Tests", () => {
           result.afterState
         );
         
-        expect(validation.valid).toBe(true, 
-          `Hook ${hook.type} violated session_active contract: ${validation.error}`);
+        if (!validation.valid) {
+          throw new Error(`Hook ${hook.type} violated session_active contract: ${validation.error}`);
+        }
+        expect(validation.valid).toBe(true);
       }
     });
   });
@@ -405,8 +407,10 @@ describe("Session Active Mutation Tests", () => {
 
       testCases.forEach(({ hook, canModify }) => {
         const result = SessionActiveContract.canModifySessionActive(hook);
-        expect(result).toBe(canModify, 
-          `Contract mismatch for ${hook}: expected ${canModify}, got ${result}`);
+        if (result !== canModify) {
+          throw new Error(`Contract mismatch for ${hook}: expected ${canModify}, got ${result}`);
+        }
+        expect(result).toBe(canModify);
       });
     });
 
