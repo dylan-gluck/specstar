@@ -47,9 +47,9 @@ if (process.argv.includes('-h') || process.argv.includes('--help')) {
   process.exit(0);
 }
 
-// Handle --version/-v flag
-if (cli.flags.version || process.argv.includes('-v')) {
-  console.log('specstar 0.0.1');
+// meow handles --version automatically, but we handle -v manually
+if (process.argv.includes('-v') && !process.argv.includes('--version')) {
+  console.log('0.0.1');
   process.exit(0);
 }
 
