@@ -217,7 +217,11 @@ export function MarkdownViewer({
 
         {/* Main content */}
         {loading && <Text color="gray">Loading document...</Text>}
-        {error && <Text color="red">Error: {error}</Text>}
+        {error && (
+          <Box flexGrow={1} flexDirection="column">
+            <Text color="red">Error: {error}</Text>
+          </Box>
+        )}
         {!loading && !error && !renderedContent && (
           <Text color="gray">No content to display</Text>
         )}
