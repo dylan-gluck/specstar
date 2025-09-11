@@ -71,6 +71,10 @@ interface HookInput {
 // Utility Functions
 // ============================================================================
 
+// Get the directory where this hooks.ts script is located
+// Using import.meta.dir which is Bun's way to get the current file's directory
+const HOOKS_DIR = import.meta.dir;
+
 function ensureDirectoryExists(dirPath: string): void {
   if (!existsSync(dirPath)) {
     mkdirSync(dirPath, { recursive: true });
@@ -78,7 +82,9 @@ function ensureDirectoryExists(dirPath: string): void {
 }
 
 function getSpecstarDir(): string {
-  return join(process.cwd(), ".specstar");
+  // Always return the .specstar directory relative to where hooks.ts is located
+  // hooks.ts is inside .specstar/, so we just return the parent directory
+  return HOOKS_DIR;
 }
 
 function getSessionDir(sessionId: string): string {
@@ -466,7 +472,7 @@ async function main() {
     process.exit(1);
   }
 
-  // Ensure directories exist
+  // Ensure directories exist (relative to hooks.ts location)
   ensureDirectoryExists(getSpecstarDir());
   ensureDirectoryExists(join(getSpecstarDir(), "sessions"));
   ensureDirectoryExists(getLogsDir());

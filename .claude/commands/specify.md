@@ -20,7 +20,8 @@ Given the feature description provided as an argument, do this:
    - Keep specification simple and clear
    - Avoid technical implementation details
    - Mark any ambiguities for clarification
-   - Remember: test infrastructure will be set up with project setup
+   - Remember: test infrastructure and debugger will be set up with project setup
+   - Language-specific debugger (pyright, gopls, etc.) ensures type safety and code intelligence
    - Each future task will include its own tests and devlog entry
 4. Write the specification to SPEC_FILE using the template structure, replacing placeholders with concrete details derived from the feature description (arguments) while preserving section order and headings.
 5. Note that ALL feature implementation will be completed using spec-implementer agents in the tasks phase.

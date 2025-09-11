@@ -31,7 +31,8 @@
 - ✅ Focus on WHAT users need and WHY
 - ❌ Avoid HOW to implement (no tech stack, APIs, code structure)
 - 👥 Written for business stakeholders, not developers
-- 📝 Note: Test infrastructure will be set up with project initialization per constitution
+- 📝 Note: Test infrastructure and language-specific debugger will be set up with project initialization per constitution
+- 🔍 Note: Debugger (pyright/gopls/rust-analyzer etc.) ensures type checking and code intelligence during development
 - 🤖 Note: ALL feature implementation will be completed using spec-implementer agents
 
 ### Section Requirements

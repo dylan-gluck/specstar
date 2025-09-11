@@ -19,8 +19,11 @@ describe('Contract: hooks.ts implementation', () => {
     await mkdir(join(tmpDir, '.specstar', 'sessions'), { recursive: true });
     await mkdir(join(tmpDir, '.specstar', 'logs'), { recursive: true });
     
-    // Path to the hooks.ts file
-    hookPath = join(process.cwd(), '.specstar', 'hooks.ts');
+    // Copy hooks.ts to temp directory so it uses the test directory
+    const sourceHookPath = join(process.cwd(), '.specstar', 'hooks.ts');
+    hookPath = join(tmpDir, '.specstar', 'hooks.ts');
+    const hookContent = await readFile(sourceHookPath, 'utf-8');
+    await writeFile(hookPath, hookContent);
   });
   
   afterAll(async () => {

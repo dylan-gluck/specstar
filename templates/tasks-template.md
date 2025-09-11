@@ -10,6 +10,7 @@
    → Extract: tech stack, libraries, structure
 2. Load constitutional principles from /memory/constitution.md
    → Apply 80/20 testing PER TASK strategy
+   → Ensure debugger setup included in initialization
    → Ensure separation of concerns
    → Check file size limits (250 lines)
    → Every task includes tests AND devlog
@@ -18,7 +19,7 @@
    → contracts/: Each file → test task (20% effort)
    → research.md: Extract decisions → setup tasks
 4. Generate tasks by category (constitutional priorities):
-   → Setup: project init WITH test infrastructure AND pre-commit hooks
+   → Setup: project init WITH test infrastructure AND pre-commit hooks AND debugger
    → Core: models, services, CLI (each task: 80% implementation + 20% tests)
    → Polish: refactoring if >250 lines
    → Each task ends with: commit + devlog entry
@@ -53,34 +54,35 @@
 
 ## Phase 3.1: Setup
 - [ ] T001 Create modular project structure per implementation plan
-- [ ] T002 Initialize [language] project with [framework] dependencies AND test infrastructure
+- [ ] T002 Initialize [language] project with [framework] dependencies AND test infrastructure AND debugger ([language-specific LSP: pyright/gopls/rust-analyzer/etc])
 - [ ] T003 [P] Configure pre-commit hooks for code quality AND test automation
+- [ ] T004 [P] Create debugger configuration files (.vscode/launch.json or equivalent) with usage instructions
 
 ## Phase 3.2: Core Implementation (each task: 80% code + 20% tests)
-- [ ] T004 [P] User model in src/models/user.py + unit tests (keep under 250 lines) - via spec-implementer agent
-- [ ] T005 [P] UserService CRUD in src/services/user_service.py + tests (single responsibility) - via spec-implementer agent
-- [ ] T006 [P] CLI --create-user in src/cli/user_commands.py + tests (reuse existing patterns) - via spec-implementer agent
-- [ ] T007 POST /api/users endpoint + contract tests (modular, clean code) - via spec-implementer agent
-- [ ] T008 GET /api/users/{id} endpoint + tests (consistent naming) - via spec-implementer agent
-- [ ] T009 Input validation + validation tests (self-explanatory code) - via spec-implementer agent
-- [ ] T010 Error handling and logging + tests (structured, clear) - via spec-implementer agent
+- [ ] T005 [P] User model in src/models/user.py + unit tests (keep under 250 lines) - via spec-implementer agent
+- [ ] T006 [P] UserService CRUD in src/services/user_service.py + tests (single responsibility) - via spec-implementer agent
+- [ ] T007 [P] CLI --create-user in src/cli/user_commands.py + tests (reuse existing patterns) - via spec-implementer agent
+- [ ] T008 POST /api/users endpoint + contract tests (modular, clean code) - via spec-implementer agent
+- [ ] T009 GET /api/users/{id} endpoint + tests (consistent naming) - via spec-implementer agent
+- [ ] T010 Input validation + validation tests (self-explanatory code) - via spec-implementer agent
+- [ ] T011 Error handling and logging + tests (structured, clear) - via spec-implementer agent
 
 ## Phase 3.3: Integration Testing (if needed beyond task-level tests)
-- [ ] T011 [P] End-to-end user flow in tests/integration/test_users.py
-- [ ] T012 [P] Cross-module integration tests
+- [ ] T012 [P] End-to-end user flow in tests/integration/test_users.py
+- [ ] T013 [P] Cross-module integration tests
 
 ## Phase 3.4: Integration (only if needed)
-- [ ] T013 Connect UserService to DB + tests (reuse existing patterns)
-- [ ] T014 Add consistent error handling across modules + tests
-- [ ] T015 Configure structured logging + verification tests
+- [ ] T014 Connect UserService to DB + tests (reuse existing patterns)
+- [ ] T015 Add consistent error handling across modules + tests
+- [ ] T016 Configure structured logging + verification tests
 
 ## Phase 3.5: Polish
-- [ ] T016 Refactor any files over 250 lines + update tests
-- [ ] T017 Remove code duplication (DRY principle) + verify tests
-- [ ] T018 Ensure KISS principle throughout
+- [ ] T017 Refactor any files over 250 lines + update tests
+- [ ] T018 Remove code duplication (DRY principle) + verify tests
+- [ ] T019 Ensure KISS principle throughout
 
 ## Dependencies
-- Setup (with test infrastructure) before core implementation
+- Setup (with test infrastructure and debugger) before core implementation
 - Core implementation tasks can run parallel if different files
 - Each task self-contained with implementation + tests + commit + devlog
 - Integration tests after core tasks complete
@@ -88,7 +90,7 @@
 
 ## Parallel Example
 ```
-# MUST launch T004-T006 together in parallel (different files, modular components):
+# MUST launch T005-T007 together in parallel (different files, modular components):
 Task (spec-implementer): "Create User model in src/models/user.py with unit tests, commit, and devlog"
 Task (spec-implementer): "Create UserService in src/services/user_service.py with tests, commit, and devlog" 
 Task (spec-implementer): "Create CLI user commands in src/cli/user_commands.py with tests, commit, and devlog"
@@ -124,7 +126,7 @@ Task (spec-implementer): "Create CLI user commands in src/cli/user_commands.py w
    - No separate testing phase
 
 4. **Ordering**:
-   - Setup (with test infrastructure) → Core Implementation (with tests) → Polish
+   - Setup (with test infrastructure and debugger) → Core Implementation (with tests) → Polish
    - Modular components can run parallel
 
 ## Validation Checklist (Constitutional)
@@ -138,4 +140,4 @@ Task (spec-implementer): "Create CLI user commands in src/cli/user_commands.py w
 - [ ] Each task includes commit + devlog requirement
 - [ ] No redundant code generation
 - [ ] Parallel tasks truly independent
-- [ ] Test infrastructure included in setup
+- [ ] Test infrastructure and debugger included in setup

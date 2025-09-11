@@ -20,6 +20,7 @@ Given the context provided as an argument, do this:
    - IF EXISTS: Read quickstart.md for test scenarios
 
 3. Generate tasks following constitutional principles:
+   - **Project Setup**: MUST include language-specific debugger (pyright, gopls, rust-analyzer, etc.)
    - **Testing (80/20 rule PER TASK)**: Each task includes 80% implementation, 20% tests BEFORE completion
    - **Separation of Concerns**: Each task targets a single responsibility
    - **Simplicity**: Keep tasks minimal and focused
@@ -29,7 +30,8 @@ Given the context provided as an argument, do this:
    - **Implementation method**: ALL feature implementation MUST be completed using spec-implementer agents
 
 4. Task categories and priorities:
-   - **Setup tasks**: Project init WITH test infrastructure AND pre-commit hooks together
+   - **Setup tasks**: Project init WITH test infrastructure AND pre-commit hooks AND debugger together
+   - **Debugger config**: Language-specific LSP setup with usage instructions
    - **Core tasks**: Each includes implementation (80%) AND tests (20%) in same task, executed via spec-implementer agent
    - **Integration tasks**: Only if truly needed, also include tests
    - **Communication**: EVERY task requires git commit AND devlog entry

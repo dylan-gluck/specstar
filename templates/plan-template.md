@@ -50,6 +50,7 @@
 ## Technical Context
 **Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
 **Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Debugger**: [e.g., Python: pyright/pylsp, Go: gopls, JS/TS: typescript-language-server, Rust: rust-analyzer or NEEDS CLARIFICATION]  
 **Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
 **Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
 **Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
@@ -62,7 +63,7 @@
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
 **Core Principles (from constitution.md)**:
-- Setup: Test infrastructure AND pre-commit hooks together first
+- Setup: Test infrastructure AND pre-commit hooks AND language-specific debugger together first
 - Testing: 80% code, 20% tests PER TASK (implementation first, then tests)
 - Files: Maximum 250 lines per file
 - Architecture: Modular with single responsibilities
@@ -89,6 +90,7 @@
 
 **Testing Strategy**:
 - Test infrastructure included in project setup?
+- Language-specific debugger configured (pyright, gopls, etc.)?
 - 80% implementation, 20% testing PER TASK?
 - Tests included before task completion?
 - Tests are modular and focused?
@@ -160,6 +162,7 @@ ios/ or android/
    For each technology choice:
      Task: "Find minimal {tech} approach following KISS principle"
    Include: Research test infrastructure setup approach
+   Include: Research language-specific debugger setup
    ```
 
 3. **Consolidate findings** in `research.md` using format:
@@ -184,6 +187,8 @@ ios/ or android/
 
 3. **Plan test approach** (20% effort PER TASK):
    - Test infrastructure setup with project init
+   - Language-specific debugger configuration (pyright, gopls, etc.)
+   - Debugger usage instructions in quickstart.md
    - Modular, focused test scenarios per task
    - Tests written AFTER implementation but BEFORE task completion
    - No TDD - implementation first approach
@@ -216,7 +221,7 @@ ios/ or android/
 - Tasks marked [P] MUST be executed in parallel
 
 **Ordering Strategy**:
-- Setup with test infrastructure AND pre-commit hooks first
+- Setup with test infrastructure AND pre-commit hooks AND debugger first
 - Core implementation tasks (each with 80% code + 20% tests) via spec-implementer
 - Integration testing if needed
 - Polish and refactoring
@@ -262,4 +267,4 @@ ios/ or android/
 
 ---
 *Based on Specstar Constitution - See `/memory/constitution.md`*
-*Remember: Test infrastructure first | 80% code, 20% tests PER TASK | Max 250 lines/file | Simple & clean | Commit + devlog per task*
+*Remember: Test infrastructure + debugger first | 80% code, 20% tests PER TASK | Max 250 lines/file | Simple & clean | Commit + devlog per task*

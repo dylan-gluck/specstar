@@ -27,7 +27,7 @@ Given the implementation details provided as an argument, do this:
    - Extract insights about project structure, naming conventions, and existing utilities
 
 4. Read the constitution at `/memory/constitution.md` to understand core principles:
-   - Project Setup: Test infrastructure AND pre-commit hooks together as first priority
+   - Project Setup: Test infrastructure AND pre-commit hooks AND language-specific debugger together as first priority
    - Testing Strategy: 80% code, 20% tests PER TASK (implementation first, then tests)
    - Separation of Concerns: Modular, single-responsibility components
    - Simple, Clean Code: Files under 250 lines, no redundancy
@@ -41,8 +41,8 @@ Given the implementation details provided as an argument, do this:
    - The template is self-contained and executable
    - Follow error handling and gate checks as specified
    - Let the template guide artifact generation in $SPECS_DIR:
-     * Phase 0 generates research.md (includes test infrastructure planning)
-     * Phase 1 generates data-model.md, contracts/, quickstart.md
+     * Phase 0 generates research.md (includes test infrastructure and debugger planning)
+     * Phase 1 generates data-model.md, contracts/, quickstart.md with debugger usage instructions
      * Phase 2 describes task approach with per-task testing (tasks.md created by /tasks command)
    - Incorporate <user-provided-details> from arguments into Technical Context
    - Incorporate codebase analysis insights from step 3 into planning
