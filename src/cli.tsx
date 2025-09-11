@@ -4,6 +4,7 @@ import meow from "meow";
 import App from "./app.tsx";
 import { ConfigManager } from "./lib/config-manager/index.ts";
 import { Logger } from "./lib/logger/index.ts";
+import { VERSION } from "./version.ts";
 
 const cli = meow(
   `
@@ -35,7 +36,9 @@ const cli = meow(
         shortFlag: 'v'
       }
     },
-    helpIndent: 2
+    helpIndent: 2,
+    // Disable automatic version handling
+    autoVersion: false
   }
 );
 
@@ -47,9 +50,9 @@ if (process.argv.includes('-h') || process.argv.includes('--help')) {
   process.exit(0);
 }
 
-// meow handles --version automatically, but we handle -v manually
-if (process.argv.includes('-v') && !process.argv.includes('--version')) {
-  console.log('0.0.1');
+// Handle version flag
+if (cli.flags.version || process.argv.includes('-v')) {
+  console.log(VERSION);
   process.exit(0);
 }
 
