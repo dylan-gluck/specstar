@@ -51,15 +51,3 @@ src/
 ├── logs/           # Session logs
 └── hooks.ts        # Claude Code hooks
 ```
-
-### Testing Approach
-Follow TDD with this order:
-1. Contract tests (CLI interfaces)
-2. Integration tests (file system, hooks)
-3. E2E tests (full TUI interaction)
-4. Unit tests (component logic)
-
-### Recent Changes
-- 004-clean-up-technical: Removed 6,000+ lines of redundant code, consolidated to single executable
-- 002-fix-session-monitoring-hooks: Fixed settings.json to use folders instead of hooks
-- 001-docs-specstar-plan: Added TypeScript + React Ink TUI framework

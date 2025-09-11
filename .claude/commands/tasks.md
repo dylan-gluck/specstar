@@ -3,60 +3,56 @@ name: tasks
 description: 'Break down the plan into executable tasks. This is the third step in the Spec-Driven Development lifecycle.'
 ---
 
-Break down the plan into executable tasks.
+Break down the plan into executable tasks following constitutional principles.
 
 This is the third step in the Spec-Driven Development lifecycle.
 
 Given the context provided as an argument, do this:
 
 1. Run `scripts/check-task-prerequisites.sh --json` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute.
+
 2. Load and analyze available design documents:
    - Always read plan.md for tech stack and libraries
+   - Read constitution at `/memory/constitution.md` for principles
    - IF EXISTS: Read data-model.md for entities
    - IF EXISTS: Read contracts/ for API endpoints
    - IF EXISTS: Read research.md for technical decisions
    - IF EXISTS: Read quickstart.md for test scenarios
 
-   Note: Not all projects have all documents. For example:
-   - CLI tools might not have contracts/
-   - Simple libraries might not need data-model.md
-   - Generate tasks based on what's available
+3. Generate tasks following constitutional principles:
+   - **Testing (80/20 rule)**: Spend ~80% on implementation, ~20% on tests
+   - **Separation of Concerns**: Each task targets a single responsibility
+   - **Simplicity**: Keep tasks minimal and focused
+   - **File size**: Plan splits if files would exceed 250 lines
+   - **No redundancy**: Reuse existing functions, avoid duplication
 
-3. Generate tasks following the template:
-   - Use `/templates/tasks-template.md` as the base
-   - Replace example tasks with actual tasks based on:
-     * **Setup tasks**: Project init, dependencies, linting
-     * **Test tasks [P]**: One per contract, one per integration scenario
-     * **Core tasks**: One per entity, service, CLI command, endpoint
-     * **Integration tasks**: DB connections, middleware, logging
-     * **Polish tasks [P]**: Unit tests, performance, docs
+4. Task categories and priorities:
+   - **Setup tasks**: Project init, dependencies, pre-commit hooks
+   - **Core tasks**: Lightweight, modular implementations (80% focus)
+   - **Test tasks [P]**: Modular, focused tests (20% focus)
+   - **Integration tasks**: Only if truly needed
+   - **Communication tasks**: Write concise devlog summary
 
-4. Task generation rules:
-   - Each contract file → contract test task marked [P]
-   - Each entity in data-model → model creation task marked [P]
-   - Each endpoint → implementation task (not parallel if shared files)
-   - Each user story → integration test marked [P]
+5. Task generation rules (per constitution):
+   - Each module → single responsibility task
+   - Files approaching 250 lines → split task planned
+   - Tests are modular and focused (not TDD-first)
    - Different files = can be parallel [P]
    - Same file = sequential (no [P])
+   - Consistent naming with existing code
 
-5. Order tasks by dependencies:
-   - Setup before everything
-   - Tests before implementation (TDD)
-   - Models before services
-   - Services before endpoints
-   - Core before integration
-   - Everything before polish
-
-6. Include parallel execution examples:
-   - Group [P] tasks that can run together
-   - Show actual Task agent commands
+6. Order tasks by constitutional priorities:
+   - Setup and architecture first
+   - Core implementation (80% effort)
+   - Focused testing (20% effort)
+   - Devlog summary at end
 
 7. Create FEATURE_DIR/tasks.md with:
-   - Correct feature name from implementation plan
+   - Feature name from implementation plan
    - Numbered tasks (T001, T002, etc.)
    - Clear file paths for each task
-   - Dependency notes
-   - Parallel execution guidance
+   - File size considerations noted
+   - Devlog writing task included
 
 Context for task generation: $ARGUMENTS
 

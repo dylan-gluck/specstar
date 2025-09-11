@@ -7,21 +7,27 @@
 ```
 1. Load feature spec from Input path
    → If not found: ERROR "No feature spec at {path}"
-2. Fill Technical Context (scan for NEEDS CLARIFICATION)
+2. Load constitution from /memory/constitution.md
+   → Apply core principles to all design decisions
+3. Fill Technical Context (scan for NEEDS CLARIFICATION)
    → Detect Project Type from context (web=frontend+backend, mobile=app+api)
    → Set Structure Decision based on project type
-3. Evaluate Constitution Check section below
-   → If violations exist: Document in Complexity Tracking
-   → If no justification possible: ERROR "Simplify approach first"
+4. Evaluate Constitution Check section below
+   → Verify 80/20 testing approach
+   → Check separation of concerns
+   → Ensure file size limits (250 lines)
    → Update Progress Tracking: Initial Constitution Check
-4. Execute Phase 0 → research.md
+5. Execute Phase 0 → research.md
    → If NEEDS CLARIFICATION remain: ERROR "Resolve unknowns"
-5. Execute Phase 1 → contracts, data-model.md, quickstart.md, agent-specific template file (e.g., `CLAUDE.md` for Claude Code, `.github/copilot-instructions.md` for GitHub Copilot, or `GEMINI.md` for Gemini CLI).
-6. Re-evaluate Constitution Check section
-   → If new violations: Refactor design, return to Phase 1
+6. Execute Phase 1 → contracts, data-model.md, quickstart.md, agent-specific template file
+   → Apply modular architecture
+   → Keep designs simple and clean
+7. Re-evaluate Constitution Check section
+   → If violations: Document minimal justification
    → Update Progress Tracking: Post-Design Constitution Check
-7. Plan Phase 2 → Describe task generation approach (DO NOT create tasks.md)
-8. STOP - Ready for /tasks command
+8. Plan Phase 2 → Describe task generation approach (DO NOT create tasks.md)
+   → Include devlog writing in task plan
+9. STOP - Ready for /tasks command
 ```
 
 **IMPORTANT**: The /plan command STOPS at step 7. Phases 2-4 are executed by other commands:
@@ -45,35 +51,36 @@
 ## Constitution Check
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-**Simplicity**:
-- Projects: [#] (max 3 - e.g., api, cli, tests)
-- Using framework directly? (no wrapper classes)
-- Single data model? (no DTOs unless serialization differs)
-- Avoiding patterns? (no Repository/UoW without proven need)
+**Core Principles (from constitution.md)**:
+- Testing: 80% code, 20% tests (NOT TDD-first)
+- Files: Maximum 250 lines per file
+- Architecture: Modular with single responsibilities
+- Code: Simple, clean, self-explanatory (no comments)
+- Communication: Devlog summaries after work
 
-**Architecture**:
-- EVERY feature as library? (no direct app code)
-- Libraries listed: [name + purpose for each]
-- CLI per library: [commands with --help/--version/--format]
-- Library docs: llms.txt format planned?
+**Separation of Concerns**:
+- Lightweight, performant, clean architecture?
+- Each module has single responsibility?
+- Modular project layout with centralized main?
+- Clear separation across components?
 
-**Testing (NON-NEGOTIABLE)**:
-- RED-GREEN-Refactor cycle enforced? (test MUST fail first)
-- Git commits show tests before implementation?
-- Order: Contract→Integration→E2E→Unit strictly followed?
-- Real dependencies used? (actual DBs, not mocks)
-- Integration tests for: new libraries, contract changes, shared schemas?
-- FORBIDDEN: Implementation before test, skipping RED phase
+**Simple, Clean Code**:
+- Readability and maintainability prioritized?
+- Feature bloat avoided?
+- Files planned under 250 lines?
+- Code will be self-explanatory?
 
-**Observability**:
-- Structured logging included?
-- Frontend logs → backend? (unified stream)
-- Error context sufficient?
+**Consistency**:
+- Reusing existing functions?
+- Following existing naming conventions?
+- KISS and DRY principles applied?
+- Pre-commit hooks planned?
 
-**Versioning**:
-- Version number assigned? (MAJOR.MINOR.BUILD)
-- BUILD increments on every change?
-- Breaking changes handled? (parallel tests, migration plan)
+**Testing Strategy**:
+- 80% implementation, 20% testing effort?
+- Tests are modular and focused?
+- Consistent testing framework?
+- NOT doing TDD (tests after implementation)?
 
 ## Project Structure
 
@@ -130,73 +137,76 @@ ios/ or android/
 ## Phase 0: Outline & Research
 1. **Extract unknowns from Technical Context** above:
    - For each NEEDS CLARIFICATION → research task
-   - For each dependency → best practices task
-   - For each integration → patterns task
+   - For each dependency → simple, lightweight solution
+   - For each integration → minimal, focused approach
 
 2. **Generate and dispatch research agents**:
    ```
    For each unknown in Technical Context:
-     Task: "Research {unknown} for {feature context}"
+     Task: "Research simple {unknown} solution for {feature}"
    For each technology choice:
-     Task: "Find best practices for {tech} in {domain}"
+     Task: "Find minimal {tech} approach following KISS principle"
    ```
 
 3. **Consolidate findings** in `research.md` using format:
-   - Decision: [what was chosen]
-   - Rationale: [why chosen]
-   - Alternatives considered: [what else evaluated]
+   - Decision: [simplest viable solution]
+   - Rationale: [why this keeps code clean and minimal]
+   - Alternatives rejected: [why they add unnecessary complexity]
 
-**Output**: research.md with all NEEDS CLARIFICATION resolved
+**Output**: research.md with simple, focused solutions
 
 ## Phase 1: Design & Contracts
 *Prerequisites: research.md complete*
 
 1. **Extract entities from feature spec** → `data-model.md`:
-   - Entity name, fields, relationships
+   - Simple entity definitions (under 250 lines total)
+   - Minimal fields, clear relationships
    - Validation rules from requirements
-   - State transitions if applicable
 
 2. **Generate API contracts** from functional requirements:
-   - For each user action → endpoint
-   - Use standard REST/GraphQL patterns
-   - Output OpenAPI/GraphQL schema to `/contracts/`
+   - For each user action → simple endpoint
+   - Use standard REST patterns (KISS principle)
+   - Output minimal OpenAPI schema to `/contracts/`
 
-3. **Generate contract tests** from contracts:
-   - One test file per endpoint
-   - Assert request/response schemas
-   - Tests must fail (no implementation yet)
+3. **Plan test approach** (20% effort allocation):
+   - Modular, focused test scenarios
+   - Tests will be written AFTER implementation
+   - No TDD - implementation first approach
 
 4. **Extract test scenarios** from user stories:
-   - Each story → integration test scenario
-   - Quickstart test = story validation steps
+   - Each story → simple integration test
+   - Quickstart test = basic validation steps
 
-5. **Update agent file incrementally** (O(1) operation):
-   - Run `/scripts/update-agent-context.sh [claude|gemini|copilot]` for your AI assistant
-   - If exists: Add only NEW tech from current plan
-   - Preserve manual additions between markers
-   - Update recent changes (keep last 3)
-   - Keep under 150 lines for token efficiency
-   - Output to repository root
+5. **Update agent file with constitution principles**:
+   - Include constitutional guidelines at top
+   - Add only NEW tech from current plan
+   - Note file size limits and modular approach
+   - Keep under 150 lines for efficiency
+   - Include devlog requirement
 
-**Output**: data-model.md, /contracts/*, failing tests, quickstart.md, agent-specific file
+**Output**: data-model.md, /contracts/*, quickstart.md, agent-specific file
 
 ## Phase 2: Task Planning Approach
 *This section describes what the /tasks command will do - DO NOT execute during /plan*
 
-**Task Generation Strategy**:
+**Task Generation Strategy (Constitutional)**:
 - Load `/templates/tasks-template.md` as base
-- Generate tasks from Phase 1 design docs (contracts, data model, quickstart)
-- Each contract → contract test task [P]
-- Each entity → model creation task [P] 
-- Each user story → integration test task
-- Implementation tasks to make tests pass
+- Apply 80/20 rule: 80% implementation, 20% testing
+- Each module → single responsibility task
+- Files approaching 250 lines → split into multiple tasks
+- Each entity → lightweight model task [P]
+- Tests come AFTER implementation (not TDD)
+- Include devlog summary task at end
 
 **Ordering Strategy**:
-- TDD order: Tests before implementation 
-- Dependency order: Models before services before UI
-- Mark [P] for parallel execution (independent files)
+- Setup with pre-commit hooks first
+- Core implementation (80% of tasks)
+- Focused testing (20% of tasks) 
+- Polish and refactoring
+- Devlog summary last
+- Mark [P] for parallel execution (different files)
 
-**Estimated Output**: 25-30 numbered, ordered tasks in tasks.md
+**Estimated Output**: 20-25 focused, modular tasks in tasks.md
 
 **IMPORTANT**: This phase is executed by the /tasks command, NOT by /plan
 
@@ -208,12 +218,12 @@ ios/ or android/
 **Phase 5**: Validation (run tests, execute quickstart.md, performance validation)
 
 ## Complexity Tracking
-*Fill ONLY if Constitution Check has violations that must be justified*
+*Fill ONLY if Constitution principles cannot be fully met*
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+| Principle | Challenge | Mitigation |
+|-----------|-----------|------------|
+| [e.g., 250 line limit] | [specific file] | [how it will be split] |
+| [e.g., Single responsibility] | [complex module] | [how to modularize] |
 
 
 ## Progress Tracking
@@ -234,4 +244,5 @@ ios/ or android/
 - [ ] Complexity deviations documented
 
 ---
-*Based on Constitution v2.1.1 - See `/memory/constitution.md`*
+*Based on Specstar Constitution - See `/memory/constitution.md`*
+*Remember: 80% code, 20% tests | Max 250 lines/file | Simple & clean | Write devlog*

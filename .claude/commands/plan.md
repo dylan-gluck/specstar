@@ -20,7 +20,12 @@ Given the implementation details provided as an argument, do this:
    - Success criteria and acceptance criteria
    - Any technical constraints or dependencies mentioned
 
-3. Read the constitution at `/memory/constitution.md` to understand constitutional requirements.
+3. Read the constitution at `/memory/constitution.md` to understand core principles:
+   - Testing Strategy: 80% code, 20% tests (not TDD-first)
+   - Separation of Concerns: Modular, single-responsibility components
+   - Simple, Clean Code: Files under 250 lines, no redundancy
+   - Consistency: Reuse existing code, maintain naming conventions
+   - Communication: Write devlog summaries after work
 
 4. Execute the implementation plan template:
    - Load `/templates/plan-template.md` (already copied to IMPL_PLAN path)
@@ -31,7 +36,7 @@ Given the implementation details provided as an argument, do this:
    - Let the template guide artifact generation in $SPECS_DIR:
      * Phase 0 generates research.md
      * Phase 1 generates data-model.md, contracts/, quickstart.md
-     * Phase 2 generates tasks.md
+     * Phase 2 describes task approach (tasks.md created by /tasks command)
    - Incorporate <user-provided-details> from arguments into Technical Context
    - Update Progress Tracking as you complete each phase
 
