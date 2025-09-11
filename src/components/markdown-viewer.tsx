@@ -187,7 +187,7 @@ export function MarkdownViewer({
       {/* Content area with fixed height */}
       <Box
         flexDirection="column"
-        height={scrollable ? 20 : undefined}
+        flexGrow={1}
         overflow="hidden"
         marginTop={1}
       >
