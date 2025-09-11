@@ -250,6 +250,7 @@ export default function ObserveView() {
             flexGrow={1}
             paddingX={1}
             flexDirection="column"
+            overflow="hidden"
           >
             <Text bold color="gray">
               Sessions

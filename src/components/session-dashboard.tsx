@@ -56,6 +56,7 @@ export const SessionDashboard = React.memo(
               borderColor="green"
               flexDirection="column"
               flexGrow={1}
+              overflow="hidden"
             >
               <Text bold color="gray">
                 Agents
