@@ -510,7 +510,7 @@ try {
   });
   
   describe('Integration with actual hook (when implemented)', () => {
-    it.skip('should execute the actual stop hook implementation', async () => {
+    it('should execute the actual stop hook implementation', async () => {
       // This test will be enabled when the actual hook is implemented
       // It will test against the real implementation in .specstar/hooks/stop
       

@@ -45,7 +45,7 @@ describe('Plan View Navigation', () => {
     expect(lastFrame()).toContain('[Q] Quit');
   });
 
-  test.skip('should navigate between documents with arrow keys', async () => {
+  test('should navigate between documents with arrow keys', async () => {
     // Create settings file for the test
     await Bun.write(join(tempDir, '.specstar', 'settings.json'), JSON.stringify({
       folders: [
@@ -71,7 +71,7 @@ describe('Plan View Navigation', () => {
     expect(lastFrame()).toContain('▶ architecture.md');
   });
 
-  test.skip('should wrap navigation at boundaries', () => {
+  test('should wrap navigation at boundaries', () => {
     const { lastFrame, stdin } = render(<PlanView />);
     
     // Navigate to last document
@@ -89,7 +89,7 @@ describe('Plan View Navigation', () => {
     expect(lastFrame()).toContain('▶ requirements.md');
   });
 
-  test.skip('should load document content on Enter key', async () => {
+  test('should load document content on Enter key', async () => {
     const { lastFrame, stdin } = render(<PlanView />);
     
     // Select architecture.md
@@ -108,7 +108,7 @@ describe('Plan View Navigation', () => {
     expect(lastFrame()).toContain('Component A');
   });
 
-  test.skip('should support vim-style navigation (j/k)', () => {
+  test('should support vim-style navigation (j/k)', () => {
     const { lastFrame, stdin } = render(<PlanView />);
     
     // Press 'j' to move down
@@ -124,7 +124,7 @@ describe('Plan View Navigation', () => {
     expect(lastFrame()).toContain('▶ architecture.md');
   });
 
-  test.skip('should scroll document content with Page Up/Down', async () => {
+  test('should scroll document content with Page Up/Down', async () => {
     const { lastFrame, stdin } = render(<PlanView />);
     
     // Create a long document
@@ -150,7 +150,7 @@ describe('Plan View Navigation', () => {
     expect(lastFrame()).toContain('Line 1');
   });
 
-  test.skip('should search within documents with /', () => {
+  test('should search within documents with /', () => {
     const { lastFrame, stdin } = render(<PlanView />);
     
     // Load a document
@@ -169,7 +169,7 @@ describe('Plan View Navigation', () => {
     expect(lastFrame()).toContain('Component'); // Should highlight matches
   });
 
-  test.skip('should switch focus between panes with Tab', () => {
+  test('should switch focus between panes with Tab', () => {
     const { lastFrame, stdin } = render(<PlanView />);
     
     // Initial focus on document list
@@ -190,7 +190,7 @@ describe('Plan View Navigation', () => {
     expect(lastFrame()).toContain('[Documents]'); // Focus indicator
   });
 
-  test.skip('should handle keyboard shortcuts for common actions', () => {
+  test('should handle keyboard shortcuts for common actions', () => {
     const { lastFrame, stdin, rerender } = render(<PlanView />);
     
     // Press 'r' to refresh document list
@@ -209,7 +209,7 @@ describe('Plan View Navigation', () => {
     expect(lastFrame()).toContain('Enter - Open document');
   });
 
-  test.skip('should maintain scroll position when switching documents', async () => {
+  test('should maintain scroll position when switching documents', async () => {
     const { lastFrame, stdin } = render(<PlanView />);
     
     // Load first document and scroll down
@@ -233,7 +233,7 @@ describe('Plan View Navigation', () => {
     expect(lastFrame()).toBe(scrolledPosition ?? '');
   });
 
-  test.skip('should handle rapid navigation without errors', () => {
+  test('should handle rapid navigation without errors', () => {
     const { lastFrame, stdin } = render(<PlanView />);
     
     // Rapidly press navigation keys

@@ -322,7 +322,7 @@ describe('Error Recovery', () => {
   });
 
   describe('UI Error Recovery', () => {
-    test.skip('should display error boundary for component crashes', () => {
+    test('should display error boundary for component crashes', () => {
       // Component that will throw
       const CrashingComponent = () => {
         throw new Error('Intentional crash');
@@ -346,7 +346,7 @@ describe('Error Recovery', () => {
       expect(lastFrame()).toBeDefined();
     });
 
-    test.skip('should handle terminal resize gracefully', () => {
+    test('should handle terminal resize gracefully', () => {
       const { lastFrame, rerender } = render(<App />);
       
       // Simulate terminal resize

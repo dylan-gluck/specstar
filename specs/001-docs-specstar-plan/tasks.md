@@ -58,11 +58,7 @@
 - [ ] T007 [P] Contract test for specstar main TUI launch in tests/contract/cli-main-tui.test.ts
 
 ### Contract Tests - Library CLIs
-- [ ] T008 [P] Contract test for tui-renderer CLI in tests/contract/cli-tui-renderer.test.ts
-- [ ] T009 [P] Contract test for session-monitor CLI in tests/contract/cli-session-monitor.test.ts
-- [ ] T010 [P] Contract test for document-viewer CLI in tests/contract/cli-document-viewer.test.ts
 - [ ] T011 [P] Contract test for hook-integrator CLI in tests/contract/cli-hook-integrator.test.ts
-- [ ] T012 [P] Contract test for config-manager CLI in tests/contract/cli-config-manager.test.ts
 
 ### Integration Tests
 - [ ] T013 Integration test for initializing specstar in new project in tests/integration/init-project.test.ts
@@ -102,11 +98,7 @@
 ## Phase 3.5: Polish
 
 ### Library CLIs
-- [ ] T035 [P] Implement tui-renderer CLI interface in src/lib/tui-renderer/cli.ts
-- [ ] T036 [P] Implement session-monitor CLI interface in src/lib/session-monitor/cli.ts
-- [ ] T037 [P] Implement document-viewer CLI interface in src/lib/document-viewer/cli.ts
 - [ ] T038 [P] Implement hook-integrator CLI interface in src/lib/hook-integrator/cli.ts
-- [ ] T039 [P] Implement config-manager CLI interface in src/lib/config-manager/cli.ts
 
 ### Final Polish
 - [ ] T040 Add error boundaries to UI components
@@ -118,27 +110,23 @@
 ## Dependencies
 
 - Setup (T001-T003) must complete first
-- Tests (T004-T017) before implementation (T018-T030)
+- Tests (T004-T017) before implementation (T018-T030) - Note: Some tests removed during cleanup
 - Libraries (T018-T022) before UI components (T027-T030)
 - Models (T023-T026) can run in parallel
-- Library CLIs (T035-T039) can run in parallel after core libraries
+- Library CLI (T038) after core libraries
 - Integration (T031-T034) requires core implementation
 - Polish (T040-T044) runs last
 
 ## Parallel Execution Examples
 
-### Phase 3.2 - Contract Tests (T004-T012)
+### Phase 3.2 - Contract Tests (T004-T011)
 ```bash
 # Launch all contract tests together:
 Task agent: "Contract test for specstar --help in tests/contract/cli-main-help.test.ts"
 Task agent: "Contract test for specstar --version in tests/contract/cli-main-version.test.ts"
 Task agent: "Contract test for specstar --init in tests/contract/cli-main-init.test.ts"
 Task agent: "Contract test for specstar main TUI launch in tests/contract/cli-main-tui.test.ts"
-Task agent: "Contract test for tui-renderer CLI in tests/contract/cli-tui-renderer.test.ts"
-Task agent: "Contract test for session-monitor CLI in tests/contract/cli-session-monitor.test.ts"
-Task agent: "Contract test for document-viewer CLI in tests/contract/cli-document-viewer.test.ts"
 Task agent: "Contract test for hook-integrator CLI in tests/contract/cli-hook-integrator.test.ts"
-Task agent: "Contract test for config-manager CLI in tests/contract/cli-config-manager.test.ts"
 ```
 
 ### Phase 3.3 - Data Models (T023-T026)
@@ -150,14 +138,10 @@ Task agent: "Create Document model with frontmatter parsing in src/models/docume
 Task agent: "Create HookEvent model with type definitions in src/models/hook-event.ts"
 ```
 
-### Phase 3.5 - Library CLIs (T035-T039)
+### Phase 3.5 - Library CLIs (T038)
 ```bash
-# Launch all library CLI implementations together:
-Task agent: "Implement tui-renderer CLI interface in src/lib/tui-renderer/cli.ts"
-Task agent: "Implement session-monitor CLI interface in src/lib/session-monitor/cli.ts"
-Task agent: "Implement document-viewer CLI interface in src/lib/document-viewer/cli.ts"
+# Launch library CLI implementation:
 Task agent: "Implement hook-integrator CLI interface in src/lib/hook-integrator/cli.ts"
-Task agent: "Implement config-manager CLI interface in src/lib/config-manager/cli.ts"
 ```
 
 ## Notes
@@ -195,7 +179,7 @@ Task agent: "Implement config-manager CLI interface in src/lib/config-manager/cl
 
 ## Validation Checklist
 
-- ✅ All CLI contracts have corresponding tests (T004-T012)
+- ✅ All CLI contracts have corresponding tests (T004-T011, some removed during cleanup)
 - ✅ Core entities have model tasks (T023-T026)
 - ✅ All tests come before implementation (Phase 3.2 before 3.3)
 - ✅ Parallel tasks truly independent (different files)

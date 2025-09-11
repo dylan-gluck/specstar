@@ -6,7 +6,7 @@ import Gradient from "ink-gradient";
 import BigText from "ink-big-text";
 import { ErrorBoundary } from "./components/error-boundary";
 import { Logger } from "./lib/logger/index";
-import { loadSettings } from "./lib/config/settings-loader";
+import { ConfigManager } from "./lib/config-manager";
 
 type View = "plan" | "observe" | "help" | "welcome";
 
@@ -54,7 +54,8 @@ export default function App() {
     }
 
     // Load settings immediately without timer
-    loadSettings()
+    const configManager = new ConfigManager();
+    configManager.load()
       .then((settings) => {
         const startView =
           settings.startPage === "help" ? "welcome" : settings.startPage;

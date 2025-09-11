@@ -5,7 +5,6 @@ import type { FSWatcher } from 'node:fs';
 import { readFile, readdir, mkdir, unlink } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { Readable } from 'node:stream';
-import type { HookIntegrator } from '../hook-integrator';
 
 // Core interfaces for session monitoring
 export interface SessionMonitorOptions {
@@ -94,7 +93,6 @@ export class SessionMonitor extends EventEmitter {
   private options: Required<SessionMonitorOptions>;
   private watchers: Map<string, FSWatcher> = new Map();
   private sessions: Map<string, SessionData> = new Map();
-  private hookIntegrator?: HookIntegrator;
   private isRunning: boolean = false;
   private debounceTimers: Map<string, NodeJS.Timeout> = new Map();
   private lastFileContents: Map<string, string> = new Map();
@@ -225,10 +223,6 @@ export class SessionMonitor extends EventEmitter {
     );
   }
 
-  // Set hook integrator for lifecycle events
-  setHookIntegrator(integrator: HookIntegrator): void {
-    this.hookIntegrator = integrator;
-  }
 
   // Get session statistics
   getSessionStats(sessionId: string): SessionStats | null {
@@ -465,10 +459,6 @@ export class SessionMonitor extends EventEmitter {
     this.emit('sessionStart', session);
     this.emitToStream(event);
 
-    // Trigger hook if available
-    if (this.hookIntegrator) {
-      (this.hookIntegrator as any).onSessionStart?.(session);
-    }
   }
 
   private handleSessionEnd(session: SessionData): void {
@@ -487,10 +477,6 @@ export class SessionMonitor extends EventEmitter {
     this.emit('sessionEnd', endData);
     this.emitToStream(event);
 
-    // Trigger hook if available
-    if (this.hookIntegrator) {
-      (this.hookIntegrator as any).onSessionEnd?.(session);
-    }
   }
 
   private detectChanges(oldSession: SessionData, newSession: SessionData): void {
@@ -518,9 +504,6 @@ export class SessionMonitor extends EventEmitter {
       this.emitToStream(event);
 
       // Trigger hook if available
-      if (this.hookIntegrator) {
-        (this.hookIntegrator as any).onFileChange?.(event.data);
-      }
     }
 
     // Detect tool usage changes (instead of commands)

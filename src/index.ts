@@ -19,5 +19,3 @@ export { ConfigManager } from './lib/config-manager/index.ts';
 // Export session monitor when implemented
 // export { SessionMonitor } from './lib/session-monitor/index.ts';
 
-// Export hook integrator when implemented  
-// export { HookIntegrator } from './lib/hook-integrator/index.ts';

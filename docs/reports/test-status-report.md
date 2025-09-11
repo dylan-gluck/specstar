@@ -18,36 +18,7 @@ This report documents the current test suite status for the Specstar project, sp
 
 The following CLI tools are referenced in tests but do not exist as standalone executables:
 
-#### **specstar-tui-renderer** 
-- **Location**: `tests/contract/cli-tui-renderer.test.ts`
-- **Status**: Entire test suite skipped
-- **Purpose**: Would handle terminal UI rendering operations
-- **Features Expected**:
-  - Render React components to terminal
-  - Preview components in watch mode
-  - Export component output to files
-  - Display help and version information
-
-#### **specstar-session-monitor**
-- **Location**: `tests/contract/cli-session-monitor.test.ts`
-- **Status**: Entire test suite skipped
-- **Purpose**: Would monitor Claude Code sessions
-- **Features Expected**:
-  - Watch session directory for changes
-  - List all sessions
-  - Replay session files
-  - Export sessions to different formats (markdown, JSON)
-
-#### **specstar-document-viewer**
-- **Location**: `tests/contract/cli-document-viewer.test.ts`
-- **Status**: Entire test suite skipped
-- **Purpose**: Would handle markdown document viewing and rendering
-- **Features Expected**:
-  - View markdown documents in terminal
-  - Render markdown to HTML
-  - Search within documents
-  - Generate table of contents
-  - Support paging for long documents
+#### **Note**: Some CLI tools referenced in original design have been removed during cleanup
 
 #### **specstar-hook-integrator**
 - **Location**: `tests/contract/cli-hook-integrator.test.ts`
@@ -60,16 +31,6 @@ The following CLI tools are referenced in tests but do not exist as standalone e
   - Validate hook files
   - Run specific hooks with arguments
 
-#### **specstar-config-manager**
-- **Location**: `tests/contract/cli-config-manager.test.ts`
-- **Status**: Entire test suite skipped
-- **Purpose**: Would manage Specstar configuration
-- **Features Expected**:
-  - Initialize configuration
-  - Get/set configuration values
-  - List all configuration keys
-  - Reset configuration to defaults
-  - Validate configuration against schema
 
 ### 2. TUI Launch Tests (Partially Implemented)
 
