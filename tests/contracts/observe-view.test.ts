@@ -524,7 +524,9 @@ describe('ObserveViewContract Integration', () => {
     // Initially no selection - should show EmptyState
     expect(view.sessionList.selectedId).toBeNull();
     
-    // User selection test removed due to type mismatch
+    // Simulate user selecting a session
+    view.sessionList.onSelect('session-1');
+    currentSelection = 'session-1';
     
     // Update view to reflect selection
     const updatedView = createMockObserveView({
@@ -541,11 +543,11 @@ describe('ObserveViewContract Integration', () => {
       },
       sessionList: {
         sessions: view.sessionList.sessions,
-        selectedId: null,
+        selectedId: 'session-1',
         onSelect: view.sessionList.onSelect
       },
       dashboard: {
-        sessionId: currentSelection!,
+        sessionId: 'session-1',
         sections: ['identity', 'status', 'agents', 'files', 'tools'],
         data: {
           identity: { agent: 'Claude' },

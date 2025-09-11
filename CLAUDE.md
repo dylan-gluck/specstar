@@ -22,19 +22,18 @@ Terminal UI for monitoring Claude Code sessions and viewing planning documents.
 - **Testing**: Bun test with ink-testing-library
 
 ### Key Libraries
-- `tui-renderer`: Terminal UI rendering and navigation
-- `session-monitor`: Session JSON file watching
-- `document-viewer`: Markdown document rendering
-- `hook-integrator`: Claude Code lifecycle hooks
-- `config-manager`: Settings and initialization
+- `session-monitor`: Session JSON file watching (internal)
+- `document-viewer`: Markdown document rendering (internal)
+- `config-manager`: Settings and initialization (internal)
+- `tui-renderer`: Terminal UI rendering and navigation (internal)
 
 ### Commands
 ```bash
-bun install          # Install dependencies
-bun run build       # Build executable
+bun install         # Install dependencies
+bun run build       # Build single executable (dist/specstar)
 bun test            # Run tests
 bun run dev         # Development mode
-specstar --init     # Initialize in project
+specstar --init     # Initialize in project (creates hooks.ts)
 ```
 
 ### Project Structure
@@ -61,5 +60,6 @@ Follow TDD with this order:
 4. Unit tests (component logic)
 
 ### Recent Changes
-- 001-docs-specstar-plan: Added TypeScript + React Ink TUI framework
+- 004-clean-up-technical: Removed 6,000+ lines of redundant code, consolidated to single executable
 - 002-fix-session-monitoring-hooks: Fixed settings.json to use folders instead of hooks
+- 001-docs-specstar-plan: Added TypeScript + React Ink TUI framework

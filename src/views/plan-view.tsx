@@ -4,11 +4,7 @@ import { type File, FileList } from "../components/file-list";
 import { MarkdownViewer } from "../components/markdown-viewer";
 import { LoadingOverlay } from "../components/loading-spinner";
 import { Logger } from "../lib/logger/index";
-import {
-  loadSettings,
-  loadFolderFiles,
-  type FolderConfig,
-} from "../lib/config/settings-loader";
+import { ConfigManager, type FolderConfig } from "../lib/config-manager";
 import { join } from "node:path";
 
 export default function PlanView() {
@@ -50,19 +46,20 @@ export default function PlanView() {
       setLoadingMessage("Loading configuration...");
 
       try {
-        const settings = await loadSettings();
-        setFolders(settings.folders);
+        const configManager = new ConfigManager();
+        const settings = await configManager.load();
+        setFolders(settings.folders || []);
 
         // Load files for each folder
         const files: Record<string, File[]> = {};
-        for (const folder of settings.folders) {
+        for (const folder of (settings.folders || [])) {
           setLoadingMessage(`Loading ${folder.title}...`);
-          files[folder.path] = await loadFolderFiles(folder.path);
+          files[folder.path] = await configManager.loadFolderFiles(folder);
         }
         setFolderFiles(files);
 
         // Focus on first folder by default
-        if (settings.folders.length > 0) {
+        if (settings.folders && settings.folders.length > 0) {
           setActivePane("1");
           focus("1");
         }

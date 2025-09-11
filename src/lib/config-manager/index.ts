@@ -1,5 +1,6 @@
 import { join, dirname } from "path";
 import { homedir } from "os";
+import { readdir } from "fs/promises";
 
 // Type definitions for hooks
 export interface SessionContext {
@@ -305,6 +306,33 @@ export class ConfigManager {
    */
   getHooksPath(): string {
     return join(this.specstarDir, 'hooks.ts');
+  }
+  
+  /**
+   * Load files from a folder configuration
+   */
+  async loadFolderFiles(folder: FolderConfig): Promise<any[]> {
+    const { path: folderPath } = folder;
+    const files: any[] = [];
+    
+    try {
+      const fullPath = join(process.cwd(), folderPath);
+      const entries = await readdir(fullPath, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        if (entry.isFile()) {
+          files.push({
+            name: entry.name,
+            path: join(fullPath, entry.name),
+            isDirectory: false
+          });
+        }
+      }
+    } catch (error) {
+      // Return empty array if folder doesn't exist
+    }
+    
+    return files;
   }
   
   /**

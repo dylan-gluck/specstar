@@ -4,8 +4,6 @@
 
 This plan synthesizes solutions from four parallel strategy analyses to address the critical inconsistencies identified in the Specstar TUI codebase. The plan prioritizes stability, maintains backward compatibility where possible, and provides a clear migration path with minimal disruption.
 
-**Implementation Timeline:** 4-5 days  
-**Risk Level:** Medium (mitigated through phased approach)  
 **Expected Outcome:** Clean, maintainable codebase with single implementations for each subsystem
 
 ## Phase 1: Critical Fixes (Day 1)
@@ -13,8 +11,8 @@ This plan synthesizes solutions from four parallel strategy analyses to address 
 
 ### 1.1 Fix Invalid 'specstar' Package Import
 
-**File:** `/Users/dylan/Workspace/projects/specstar/src/lib/config-manager/index.ts`  
-**Line:** 85  
+**File:** `/Users/dylan/Workspace/projects/specstar/src/lib/config-manager/index.ts`
+**Line:** 85
 **Action:** Remove the invalid import line
 ```typescript
 // DELETE THIS LINE:
@@ -28,11 +26,11 @@ import type { SessionContext, FileChangeEvent } from 'specstar';
 
 **Files to Update:**
 1. `/Users/dylan/Workspace/projects/specstar/src/lib/session-monitor/index.ts`
-   - Line 470: Change `(this.hookIntegrator as any).onSessionStart?.(session)`  
+   - Line 470: Change `(this.hookIntegrator as any).onSessionStart?.(session)`
      to `this.hookIntegrator?.triggerHook('session_start', session)`
-   - Line 492: Change `(this.hookIntegrator as any).onSessionEnd?.(session)`  
+   - Line 492: Change `(this.hookIntegrator as any).onSessionEnd?.(session)`
      to `this.hookIntegrator?.triggerHook('session_end', session)`
-   - Line 522: Change `(this.hookIntegrator as any).onFileChange?.(event.data)`  
+   - Line 522: Change `(this.hookIntegrator as any).onFileChange?.(event.data)`
      to `this.hookIntegrator?.triggerHook('file_change', event.data)`
 
 ### 1.3 Standardize Import Extensions
@@ -73,34 +71,34 @@ export interface ClaudeHookEvent {
 
 export class ClaudeHookExecutor {
   private hooksPath: string;
-  
+
   constructor(configPath: string = '.specstar') {
     this.hooksPath = join(configPath, 'hooks.ts');
   }
-  
+
   async executeHook(eventName: string, data: ClaudeHookEvent): Promise<void> {
     if (!existsSync(this.hooksPath)) {
       return; // No hooks file, skip silently
     }
-    
+
     const child = spawn('bun', [this.hooksPath], {
       env: { ...process.env, HOOK_EVENT: eventName },
       stdio: ['pipe', 'pipe', 'pipe']
     });
-    
+
     child.stdin.write(JSON.stringify({
       ...data,
       hook_event_name: eventName
     }));
     child.stdin.end();
-    
+
     return new Promise((resolve, reject) => {
       let stdout = '';
       let stderr = '';
-      
+
       child.stdout.on('data', (data) => stdout += data);
       child.stderr.on('data', (data) => stderr += data);
-      
+
       child.on('close', (code) => {
         if (code === 0) {
           resolve();
@@ -164,7 +162,7 @@ if (this.hookExecutor && event.type === 'file_change') {
 
 ### 2.3 Deprecate Old Hook System
 
-**File:** `/Users/dylan/Workspace/projects/specstar/src/lib/hook-integrator/index.ts`  
+**File:** `/Users/dylan/Workspace/projects/specstar/src/lib/hook-integrator/index.ts`
 **Add at line 1:**
 ```typescript
 /**
@@ -177,7 +175,7 @@ if (this.hookExecutor && event.type === 'file_change') {
 
 ### 3.1 Create Unified File Watcher Architecture
 
-**Step 1: Extract Common Types**  
+**Step 1: Extract Common Types**
 **New File:** `/Users/dylan/Workspace/projects/specstar/src/lib/session-monitor/types.ts`
 ```typescript
 export interface FileChangeEvent {
@@ -196,7 +194,7 @@ export interface WatcherOptions {
 }
 ```
 
-**Step 2: Create Session-Specific Watcher**  
+**Step 2: Create Session-Specific Watcher**
 **New File:** `/Users/dylan/Workspace/projects/specstar/src/lib/session-monitor/session-file-watcher.ts`
 ```typescript
 import { FileWatcher } from './watcher';
@@ -204,7 +202,7 @@ import type { FileChangeEvent, WatcherOptions } from './types';
 
 export class SessionFileWatcher extends FileWatcher {
   private sessionPath: string;
-  
+
   constructor(sessionPath: string, options: WatcherOptions = {}) {
     super({
       ...options,
@@ -212,7 +210,7 @@ export class SessionFileWatcher extends FileWatcher {
     });
     this.sessionPath = sessionPath;
   }
-  
+
   // Session-specific methods
   async watchSession(sessionId: string): Promise<void> {
     const path = `${this.sessionPath}/${sessionId}.json`;
@@ -221,7 +219,7 @@ export class SessionFileWatcher extends FileWatcher {
 }
 ```
 
-**Step 3: Refactor SessionMonitor**  
+**Step 3: Refactor SessionMonitor**
 **File:** `/Users/dylan/Workspace/projects/specstar/src/lib/session-monitor/index.ts`
 - Lines 349-375: Replace polling logic with `SessionFileWatcher`
 - Line 95: Add `private watcher: SessionFileWatcher;`
@@ -274,7 +272,7 @@ export function migrateFromLegacySettings(legacy: any): Settings {
       logs: { level: 'info', maxSize: 10485760 }
     };
   }
-  
+
   // Handle SpecstarConfig format
   if (!('sessionPath' in legacy) && 'folders' in legacy) {
     return {
@@ -287,7 +285,7 @@ export function migrateFromLegacySettings(legacy: any): Settings {
       logs: { level: 'info', maxSize: 10485760 }
     };
   }
-  
+
   // Already in Settings format
   return legacy as Settings;
 }
@@ -407,8 +405,6 @@ bun test src/lib/config-manager
 Final validation:
 ```bash
 bun run build
-./specstar --init
-./specstar
 ```
 
 ## Migration Checklist
@@ -417,22 +413,22 @@ bun run build
   - [ ] Fix invalid 'specstar' import
   - [ ] Fix SessionMonitor hook calls
   - [ ] Remove .ts extensions from imports
-  
+
 - [ ] **Phase 2: Hook System**
   - [ ] Create ClaudeHookExecutor
   - [ ] Update SessionMonitor integration
   - [ ] Add deprecation notices
-  
+
 - [ ] **Phase 3: File Watcher**
   - [ ] Create unified watcher architecture
   - [ ] Refactor SessionMonitor
   - [ ] Delete duplicate implementations
-  
+
 - [ ] **Phase 4: Settings**
   - [ ] Create unified Settings interface
   - [ ] Add migration utilities
   - [ ] Update all references
-  
+
 - [ ] **Phase 5: Cleanup**
   - [ ] Standardize file names
   - [ ] Remove dead code
@@ -486,6 +482,6 @@ The key to success is maintaining a working system throughout the migration, wit
 
 ---
 
-*Plan synthesized from 4 parallel strategy analyses*  
-*Generated: 2025-09-10*  
+*Plan synthesized from 4 parallel strategy analyses*
+*Generated: 2025-09-10*
 *Implementation ready: Yes*
