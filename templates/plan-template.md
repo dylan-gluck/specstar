@@ -7,30 +7,40 @@
 ```
 1. Load feature spec from Input path
    → If not found: ERROR "No feature spec at {path}"
-2. Load constitution from /memory/constitution.md
+2. Analyze existing project MUST use agents in parallel:
+   → codebase-analyzer: understand implementation patterns
+   → codebase-locator: find relevant existing components
+   → codebase-pattern-finder: identify patterns to follow
+   → Extract project structure, naming conventions, utilities
+3. Load constitution from /memory/constitution.md
    → Apply core principles to all design decisions
-3. Fill Technical Context (scan for NEEDS CLARIFICATION)
+4. Fill Technical Context (scan for NEEDS CLARIFICATION)
    → Detect Project Type from context (web=frontend+backend, mobile=app+api)
    → Set Structure Decision based on project type
-4. Evaluate Constitution Check section below
-   → Verify 80/20 testing approach
+   → Incorporate insights from codebase analysis
+5. Evaluate Constitution Check section below
+   → Verify test infrastructure setup with project init
+   → Verify 80/20 testing PER TASK approach
    → Check separation of concerns
    → Ensure file size limits (250 lines)
+   → Confirm devlog per task requirement
    → Update Progress Tracking: Initial Constitution Check
-5. Execute Phase 0 → research.md
+6. Execute Phase 0 → research.md
    → If NEEDS CLARIFICATION remain: ERROR "Resolve unknowns"
-6. Execute Phase 1 → contracts, data-model.md, quickstart.md, agent-specific template file
+7. Execute Phase 1 → contracts, data-model.md, quickstart.md, agent-specific template file
    → Apply modular architecture
    → Keep designs simple and clean
-7. Re-evaluate Constitution Check section
+8. Re-evaluate Constitution Check section
    → If violations: Document minimal justification
    → Update Progress Tracking: Post-Design Constitution Check
-8. Plan Phase 2 → Describe task generation approach (DO NOT create tasks.md)
+9. Plan Phase 2 → Describe task generation approach (DO NOT create tasks.md)
    → Include devlog writing in task plan
-9. STOP - Ready for /tasks command
+   → Note ALL implementation MUST use spec-implementer agents
+   → Note tasks marked [P] MUST be executed in parallel
+10. STOP - Ready for /tasks command
 ```
 
-**IMPORTANT**: The /plan command STOPS at step 7. Phases 2-4 are executed by other commands:
+**IMPORTANT**: The /plan command STOPS at step 10. Phases 2-4 are executed by other commands:
 - Phase 2: /tasks command creates tasks.md
 - Phase 3-4: Implementation execution (manual or via tools)
 
@@ -52,11 +62,12 @@
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
 **Core Principles (from constitution.md)**:
-- Testing: 80% code, 20% tests (NOT TDD-first)
+- Setup: Test infrastructure AND pre-commit hooks together first
+- Testing: 80% code, 20% tests PER TASK (implementation first, then tests)
 - Files: Maximum 250 lines per file
 - Architecture: Modular with single responsibilities
 - Code: Simple, clean, self-explanatory (no comments)
-- Communication: Devlog summaries after work
+- Communication: EVERY task requires commit AND devlog entry
 
 **Separation of Concerns**:
 - Lightweight, performant, clean architecture?
@@ -77,10 +88,12 @@
 - Pre-commit hooks planned?
 
 **Testing Strategy**:
-- 80% implementation, 20% testing effort?
+- Test infrastructure included in project setup?
+- 80% implementation, 20% testing PER TASK?
+- Tests included before task completion?
 - Tests are modular and focused?
 - Consistent testing framework?
-- NOT doing TDD (tests after implementation)?
+- NOT doing TDD (implementation first, then tests)?
 
 ## Project Structure
 
@@ -146,6 +159,7 @@ ios/ or android/
      Task: "Research simple {unknown} solution for {feature}"
    For each technology choice:
      Task: "Find minimal {tech} approach following KISS principle"
+   Include: Research test infrastructure setup approach
    ```
 
 3. **Consolidate findings** in `research.md` using format:
@@ -168,9 +182,10 @@ ios/ or android/
    - Use standard REST patterns (KISS principle)
    - Output minimal OpenAPI schema to `/contracts/`
 
-3. **Plan test approach** (20% effort allocation):
-   - Modular, focused test scenarios
-   - Tests will be written AFTER implementation
+3. **Plan test approach** (20% effort PER TASK):
+   - Test infrastructure setup with project init
+   - Modular, focused test scenarios per task
+   - Tests written AFTER implementation but BEFORE task completion
    - No TDD - implementation first approach
 
 4. **Extract test scenarios** from user stories:
@@ -182,7 +197,7 @@ ios/ or android/
    - Add only NEW tech from current plan
    - Note file size limits and modular approach
    - Keep under 150 lines for efficiency
-   - Include devlog requirement
+   - Include per-task testing and devlog requirements
 
 **Output**: data-model.md, /contracts/*, quickstart.md, agent-specific file
 
@@ -191,20 +206,22 @@ ios/ or android/
 
 **Task Generation Strategy (Constitutional)**:
 - Load `/templates/tasks-template.md` as base
-- Apply 80/20 rule: 80% implementation, 20% testing
-- Each module → single responsibility task
+- Apply 80/20 rule PER TASK: each task includes implementation + tests
+- Each module → single responsibility task WITH tests
 - Files approaching 250 lines → split into multiple tasks
-- Each entity → lightweight model task [P]
-- Tests come AFTER implementation (not TDD)
-- Include devlog summary task at end
+- Each entity → lightweight model task with tests [P]
+- Tests within each task (implementation first, then tests)
+- Each task includes commit + devlog entry requirement
+- ALL feature implementation MUST use spec-implementer agents
+- Tasks marked [P] MUST be executed in parallel
 
 **Ordering Strategy**:
-- Setup with pre-commit hooks first
-- Core implementation (80% of tasks)
-- Focused testing (20% of tasks) 
+- Setup with test infrastructure AND pre-commit hooks first
+- Core implementation tasks (each with 80% code + 20% tests) via spec-implementer
+- Integration testing if needed
 - Polish and refactoring
-- Devlog summary last
-- Mark [P] for parallel execution (different files)
+- MUST mark [P] for parallel execution (different files)
+- Tasks with [P] MUST be executed concurrently
 
 **Estimated Output**: 20-25 focused, modular tasks in tasks.md
 
@@ -214,7 +231,7 @@ ios/ or android/
 *These phases are beyond the scope of the /plan command*
 
 **Phase 3**: Task execution (/tasks command creates tasks.md)  
-**Phase 4**: Implementation (execute tasks.md following constitutional principles)  
+**Phase 4**: Implementation (execute tasks.md using spec-implementer agents, with [P] tasks in parallel)  
 **Phase 5**: Validation (run tests, execute quickstart.md, performance validation)
 
 ## Complexity Tracking
@@ -245,4 +262,4 @@ ios/ or android/
 
 ---
 *Based on Specstar Constitution - See `/memory/constitution.md`*
-*Remember: 80% code, 20% tests | Max 250 lines/file | Simple & clean | Write devlog*
+*Remember: Test infrastructure first | 80% code, 20% tests PER TASK | Max 250 lines/file | Simple & clean | Commit + devlog per task*

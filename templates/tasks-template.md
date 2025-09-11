@@ -9,22 +9,24 @@
    → If not found: ERROR "No implementation plan found"
    → Extract: tech stack, libraries, structure
 2. Load constitutional principles from /memory/constitution.md
-   → Apply 80/20 testing strategy
+   → Apply 80/20 testing PER TASK strategy
    → Ensure separation of concerns
    → Check file size limits (250 lines)
+   → Every task includes tests AND devlog
 3. Load optional design documents:
    → data-model.md: Extract entities → model tasks
    → contracts/: Each file → test task (20% effort)
    → research.md: Extract decisions → setup tasks
 4. Generate tasks by category (constitutional priorities):
-   → Setup: project init, dependencies, pre-commit hooks
-   → Core: models, services, CLI (80% effort, modular)
-   → Tests: focused unit & integration (20% effort)
+   → Setup: project init WITH test infrastructure AND pre-commit hooks
+   → Core: models, services, CLI (each task: 80% implementation + 20% tests)
    → Polish: refactoring if >250 lines
-   → Communication: devlog summary task
+   → Each task ends with: commit + devlog entry
 5. Apply task rules:
-   → Different files = mark [P] for parallel
+   → Different files = MUST mark [P] for parallel
    → Same file = sequential (no [P])
+   → Tasks marked with [P] MUST be completed in parallel
+   → ALL feature implementation MUST use spec-implementer agents
    → Modular architecture enforced
    → Reuse existing functions
 6. Number tasks sequentially (T001, T002...)
@@ -33,14 +35,15 @@
 9. Validate constitutional compliance:
    → Files under 250 lines?
    → Single responsibility per task?
-   → 80/20 code/test ratio?
-   → Devlog task included?
+   → Each task includes 80% implementation + 20% tests?
+   → Each task includes commit + devlog?
 10. Return: SUCCESS (tasks ready for execution)
 ```
 
 ## Format: `[ID] [P?] Description`
-- **[P]**: Can run in parallel (different files, no dependencies)
+- **[P]**: MUST run in parallel (different files, no dependencies)
 - Include exact file paths in descriptions
+- All implementation tasks MUST specify use of spec-implementer agent
 
 ## Path Conventions
 - **Single project**: `src/`, `tests/` at repository root
@@ -50,86 +53,89 @@
 
 ## Phase 3.1: Setup
 - [ ] T001 Create modular project structure per implementation plan
-- [ ] T002 Initialize [language] project with [framework] dependencies
-- [ ] T003 [P] Configure pre-commit hooks for code quality
+- [ ] T002 Initialize [language] project with [framework] dependencies AND test infrastructure
+- [ ] T003 [P] Configure pre-commit hooks for code quality AND test automation
 
-## Phase 3.2: Core Implementation (80% effort focus)
-- [ ] T004 [P] User model in src/models/user.py (keep under 250 lines)
-- [ ] T005 [P] UserService CRUD in src/services/user_service.py (single responsibility)
-- [ ] T006 [P] CLI --create-user in src/cli/user_commands.py (reuse existing patterns)
-- [ ] T007 POST /api/users endpoint (modular, clean code)
-- [ ] T008 GET /api/users/{id} endpoint (consistent naming)
-- [ ] T009 Input validation (self-explanatory code)
-- [ ] T010 Error handling and logging (structured, clear)
+## Phase 3.2: Core Implementation (each task: 80% code + 20% tests)
+- [ ] T004 [P] User model in src/models/user.py + unit tests (keep under 250 lines) - via spec-implementer agent
+- [ ] T005 [P] UserService CRUD in src/services/user_service.py + tests (single responsibility) - via spec-implementer agent
+- [ ] T006 [P] CLI --create-user in src/cli/user_commands.py + tests (reuse existing patterns) - via spec-implementer agent
+- [ ] T007 POST /api/users endpoint + contract tests (modular, clean code) - via spec-implementer agent
+- [ ] T008 GET /api/users/{id} endpoint + tests (consistent naming) - via spec-implementer agent
+- [ ] T009 Input validation + validation tests (self-explanatory code) - via spec-implementer agent
+- [ ] T010 Error handling and logging + tests (structured, clear) - via spec-implementer agent
 
-## Phase 3.3: Focused Testing (20% effort)
-- [ ] T011 [P] Unit test for User model in tests/unit/test_user.py
-- [ ] T012 [P] Integration test user flow in tests/integration/test_users.py
-- [ ] T013 [P] Contract test API endpoints in tests/contract/test_api.py
+## Phase 3.3: Integration Testing (if needed beyond task-level tests)
+- [ ] T011 [P] End-to-end user flow in tests/integration/test_users.py
+- [ ] T012 [P] Cross-module integration tests
 
 ## Phase 3.4: Integration (only if needed)
-- [ ] T014 Connect UserService to DB (reuse existing patterns)
-- [ ] T015 Add consistent error handling across modules
-- [ ] T016 Configure structured logging
+- [ ] T013 Connect UserService to DB + tests (reuse existing patterns)
+- [ ] T014 Add consistent error handling across modules + tests
+- [ ] T015 Configure structured logging + verification tests
 
-## Phase 3.5: Polish & Communication
-- [ ] T017 Refactor any files over 250 lines
-- [ ] T018 Remove code duplication (DRY principle)
-- [ ] T019 Ensure KISS principle throughout
-- [ ] T020 Write devlog summary in memory/devlog/[feature].md
+## Phase 3.5: Polish
+- [ ] T016 Refactor any files over 250 lines + update tests
+- [ ] T017 Remove code duplication (DRY principle) + verify tests
+- [ ] T018 Ensure KISS principle throughout
 
 ## Dependencies
-- Setup before core implementation
-- Core implementation (T004-T010) can run parallel if different files
-- Tests (T011-T013) after core implementation (80/20 rule)
+- Setup (with test infrastructure) before core implementation
+- Core implementation tasks can run parallel if different files
+- Each task self-contained with implementation + tests + commit + devlog
+- Integration tests after core tasks complete
 - Polish after everything else
-- Devlog summary as final task
 
 ## Parallel Example
 ```
-# Launch T004-T006 together (different files, modular components):
-Task: "Create User model in src/models/user.py keeping under 250 lines"
-Task: "Create UserService in src/services/user_service.py with single responsibility"
-Task: "Create CLI user commands in src/cli/user_commands.py reusing patterns"
+# MUST launch T004-T006 together in parallel (different files, modular components):
+Task (spec-implementer): "Create User model in src/models/user.py with unit tests, commit, and devlog"
+Task (spec-implementer): "Create UserService in src/services/user_service.py with tests, commit, and devlog" 
+Task (spec-implementer): "Create CLI user commands in src/cli/user_commands.py with tests, commit, and devlog"
+
+# These tasks marked [P] MUST be executed concurrently using spec-implementer agents
 ```
 
 ## Notes
-- [P] tasks = different files, no dependencies
+- [P] tasks = different files, no dependencies, MUST run in parallel
+- ALL feature implementation MUST use spec-implementer agents
 - Keep files under 250 lines (split if needed)
 - Reuse existing functions and patterns
 - Write self-explanatory code (no comments)
-- Commit after each task with clear message
-- Write devlog summary at end
+- EVERY task: implementation + tests + commit + devlog entry
 
 ## Task Generation Rules (Constitutional)
 *Applied during main() execution*
 
 1. **From Constitution**:
-   - 80% implementation tasks, 20% test tasks
+   - Each task: 80% implementation, 20% tests before completion
    - Each module → single responsibility
    - Files approaching 250 lines → split task
-   - Always include devlog summary task
+   - Every task ends with commit + devlog entry
+   - ALL implementation MUST use spec-implementer agents
+   - Tasks marked [P] MUST be executed in parallel
    
 2. **From Data Model**:
    - Each entity → model creation task [P]
    - Keep models lightweight and clean
    
 3. **From User Stories**:
-   - Core functionality first (80%)
-   - Focused tests after (20%)
+   - Core functionality with tests per task
+   - No separate testing phase
 
 4. **Ordering**:
-   - Setup → Core Implementation → Tests → Polish → Devlog
+   - Setup (with test infrastructure) → Core Implementation (with tests) → Polish
    - Modular components can run parallel
 
 ## Validation Checklist (Constitutional)
 *GATE: Checked by main() before returning*
 
-- [ ] 80/20 code/test ratio maintained
+- [ ] Each task includes 80% implementation + 20% tests
 - [ ] All files planned under 250 lines
 - [ ] Each task has single responsibility
 - [ ] Existing functions reused where possible
 - [ ] Consistent naming conventions used
-- [ ] Devlog summary task included
+- [ ] Each task includes commit + devlog requirement
 - [ ] No redundant code generation
 - [ ] Parallel tasks truly independent
+- [ ] Test infrastructure included in setup

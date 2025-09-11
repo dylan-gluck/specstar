@@ -31,6 +31,8 @@
 - ✅ Focus on WHAT users need and WHY
 - ❌ Avoid HOW to implement (no tech stack, APIs, code structure)
 - 👥 Written for business stakeholders, not developers
+- 📝 Note: Test infrastructure will be set up with project initialization per constitution
+- 🤖 Note: ALL feature implementation will be completed using spec-implementer agents
 
 ### Section Requirements
 - **Mandatory sections**: Must be completed for every feature

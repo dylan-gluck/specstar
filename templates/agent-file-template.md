@@ -3,11 +3,14 @@
 Auto-generated from all feature plans. Last updated: [DATE]
 
 ## Constitutional Principles
-- **Testing**: 80% code, 20% tests (not TDD-first)
+- **Setup**: Test infrastructure AND pre-commit hooks together first
+- **Testing**: 80% code, 20% tests PER TASK (implementation first, then tests before completion)
 - **Files**: Max 250 lines per file
 - **Code**: Simple, clean, self-explanatory (no comments)
 - **Architecture**: Modular with single responsibilities
-- **Communication**: Write devlog summaries after each story
+- **Communication**: EVERY task requires git commit AND devlog entry
+- **Implementation**: ALL features MUST use spec-implementer agents
+- **Parallel**: Tasks marked [P] MUST be executed concurrently
 
 ## Active Technologies
 [EXTRACTED FROM ALL PLAN.MD FILES]

@@ -2,12 +2,13 @@
 
 ## Core Principles
 
-### 0. Testing Strategy
+### 0. Project Setup & Testing Strategy
 
-* WE ARE NOT TDD, but testing is important. Spend about 80% on code and 20% on tests.
+* Project setup MUST include test infrastructure AND pre-commit hooks together as first priority.
+* The 80% implementation and 20% testing rule applies to EACH TASK, not the epic as a whole.
+* Tests MUST be added before marking any task as complete (implementation first, then tests).
 * Ensure that tests are modular and focused on specific functionality.
 * Use a consistent testing framework and follow best practices for test organization.
-* Add pre-commit hooks to ensure code quality and consistency.
 
 ### I. Separation of Concerns
 
@@ -32,7 +33,7 @@
 
 ### IV. Communication
 
-* Agents MUST always write a concise summary of their work in `memory/devlog/`
+* The devlog rule applies to EACH TASK: After completing a task, agents MUST commit changes with a clear concise message AND create an entry in `memory/devlog/`.
 * Ensure clear communication about what has changed, lessons learned, known bugs.
-* After each story, code is committed with a short clear message.
+* Each task completion requires both: git commit with message AND devlog entry.
 * After each epic passes QA & is merged into main, scrummaster/architect update long-term docs.
