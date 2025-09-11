@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+export const HOOKS_TEMPLATE = `#!/usr/bin/env bun
 
 /**
  * Specstar Hooks for Claude Code
@@ -94,7 +94,7 @@ function getLogsDir(): string {
 }
 
 function getLogFilePath(eventType: string): string {
-  return join(getLogsDir(), `${eventType}.json`);
+  return join(getLogsDir(), \`\${eventType}.json\`);
 }
 
 function getCurrentTimestamp(): string {
@@ -136,14 +136,14 @@ function loadState(sessionId: string): SessionState | null {
     const content = readFileSync(stateFile, "utf-8");
     return JSON.parse(content);
   } catch (error) {
-    console.error(`Failed to load state for session ${sessionId}:`, error);
+    console.error(\`Failed to load state for session \${sessionId}:\`, error);
     return null;
   }
 }
 
 function saveState(sessionId: string, state: SessionState): void {
   const stateFile = getStateFilePath(sessionId);
-  const tempFile = `${stateFile}.tmp`;
+  const tempFile = \`\${stateFile}.tmp\`;
 
   // Update timestamp
   state.updated_at = getCurrentTimestamp();
@@ -161,7 +161,7 @@ function saveState(sessionId: string, state: SessionState): void {
       Bun.spawn(["rm", tempFile]);
     }
   } catch (error) {
-    console.error(`Failed to save state for session ${sessionId}:`, error);
+    console.error(\`Failed to save state for session \${sessionId}:\`, error);
     throw error;
   }
 }
@@ -180,7 +180,7 @@ function logEvent(eventType: string, data: any): void {
       const content = readFileSync(logFile, "utf-8");
       logs = JSON.parse(content);
     } catch (error) {
-      console.error(`Failed to read log file ${logFile}:`, error);
+      console.error(\`Failed to read log file \${logFile}:\`, error);
       logs = [];
     }
   }
@@ -502,14 +502,14 @@ async function main() {
         handleSubagentStop(input);
         break;
       default:
-        console.error(`Error: Unknown hook type: ${hookType}`);
+        console.error(\`Error: Unknown hook type: \${hookType}\`);
         process.exit(1);
     }
 
     // Success - exit with code 0
     process.exit(0);
   } catch (error) {
-    console.error(`Error executing hook ${hookType}:`, error);
+    console.error(\`Error executing hook \${hookType}:\`, error);
     process.exit(1);
   }
 }
@@ -519,3 +519,4 @@ main().catch((error) => {
   console.error("Fatal error:", error);
   process.exit(1);
 });
+`;

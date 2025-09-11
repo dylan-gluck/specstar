@@ -205,7 +205,7 @@ describe('ConfigManager Settings Validation', () => {
       const configText = await Bun.file(configPath).text();
       const savedConfig = JSON.parse(configText);
       
-      expect(savedConfig.startPage).toBe('plan');
+      expect(savedConfig.startPage).toBe('observe');
       expect(savedConfig.version).toBe('1.0.0');
       expect(savedConfig.sessionPath).toBeUndefined();
     });
