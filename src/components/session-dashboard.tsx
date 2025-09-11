@@ -1,9 +1,6 @@
 import React from "react";
 import { Box, Text } from "ink";
-import {
-  type SessionData,
-  type SessionStats,
-} from "../lib/session-monitor";
+import { type SessionData, type SessionStats } from "../lib/session-monitor";
 
 function stripPrefix(string: string, prefix: string) {
   if (string.startsWith(prefix)) {
@@ -164,9 +161,9 @@ export const SessionDashboard = React.memo(
                         borderBottom={false}
                         borderColor="gray"
                         key={tool}
-                        flexBasis="25%"
+                        flexBasis="50%"
                         flexGrow={1}
-                        flexShrink={1}
+                        flexShrink={0}
                       >
                         <Text>
                           {tool}: <Text color="green">{count}</Text>
@@ -210,7 +207,7 @@ export const SessionDashboard = React.memo(
                 </Text>
                 <Box flexDirection="column" paddingRight={2}>
                   {sessionData.files.new.length > 0 &&
-                    sessionData.files.new.slice(-5).map((file, index) => (
+                    sessionData.files.new.slice(-10).map((file, index) => (
                       <Text wrap="truncate-start" key={index} color={"gray"}>
                         {stripPrefix(file, process.cwd() + "/")}
                       </Text>
@@ -233,7 +230,7 @@ export const SessionDashboard = React.memo(
                 </Text>
                 <Box flexDirection="column" paddingRight={2}>
                   {sessionData.files.edited.length > 0 &&
-                    sessionData.files.edited.slice(-5).map((file, index) => (
+                    sessionData.files.edited.slice(-10).map((file, index) => (
                       <Text wrap="truncate-start" key={index} color={"gray"}>
                         {stripPrefix(file, process.cwd() + "/")}
                       </Text>
@@ -256,7 +253,7 @@ export const SessionDashboard = React.memo(
                 </Text>
                 <Box flexDirection="column" paddingRight={2}>
                   {sessionData.files.read.length > 0 &&
-                    sessionData.files.read.slice(-5).map((file, index) => (
+                    sessionData.files.read.slice(-10).map((file, index) => (
                       <Text wrap="truncate-start" key={index} color={"gray"}>
                         {stripPrefix(file, process.cwd() + "/")}
                       </Text>
