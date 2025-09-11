@@ -26,6 +26,13 @@ export function FileList({ id, title, files: staticFiles, directory, pattern, on
   const [error, setError] = useState<string | null>(null);
   const { isFocused } = useFocus({ id });
 
+  // Update files when staticFiles prop changes
+  useEffect(() => {
+    if (staticFiles) {
+      setFiles(staticFiles);
+    }
+  }, [staticFiles]);
+
   // Load files from directory if specified
   useEffect(() => {
     if (directory && !staticFiles) {

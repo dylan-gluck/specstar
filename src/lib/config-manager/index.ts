@@ -81,8 +81,10 @@ export class ConfigManager {
   private specstarDir: string;
 
   constructor(options?: ConfigManagerOptions) {
-    // Default to .specstar in current working directory
-    this.specstarDir = options?.configPath || join(process.cwd(), ".specstar");
+    // Check environment variable first, then options, then default
+    this.specstarDir = process.env.SPECSTAR_CONFIG_PATH || 
+                       options?.configPath || 
+                       join(process.cwd(), ".specstar");
     this.configPath = join(this.specstarDir, "settings.json");
   }
 
@@ -284,7 +286,8 @@ export class ConfigManager {
     const files: any[] = [];
 
     try {
-      const fullPath = join(process.cwd(), folderPath);
+      // Use absolute path if provided, otherwise join with cwd
+      const fullPath = folderPath.startsWith('/') ? folderPath : join(process.cwd(), folderPath);
       const entries = await readdir(fullPath, { withFileTypes: true });
 
       for (const entry of entries) {
