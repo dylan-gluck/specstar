@@ -310,16 +310,11 @@ export class DocumentViewer {
   renderMarkdown(content: string, options: RenderOptions = {}): string {
     const { startLine = 0, endLine, wrapText = true } = options;
 
-    // Parse markdown to tokens
-    const tokens = marked.lexer(content, {
-      breaks: true,
-      gfm: true,
-      smartLists: true,
-      smartypants: false,
-    } as any);
-
-    // Render tokens to terminal format
-    const rendered = this.terminalRenderer.render(tokens);
+    // Just apply syntax highlighting if enabled, no parsing
+    let rendered = content;
+    if (this.options.highlightSyntax) {
+      rendered = this.applySyntaxHighlighting(content);
+    }
 
     // Split into lines for pagination
     const lines = rendered.split("\n");
@@ -334,6 +329,72 @@ export class DocumentViewer {
     }
 
     return paginatedLines.join("\n");
+  }
+
+  /**
+   * Apply simple syntax highlighting to markdown text
+   */
+  private applySyntaxHighlighting(content: string): string {
+    const lines = content.split("\n");
+    return lines.map(line => {
+      // Headers (# ## ### etc)
+      if (line.match(/^#{1,6}\s/)) {
+        const level = (line.match(/^#+/) || [''])[0].length;
+        const styles = [
+          chalk.bold.cyan,     // h1
+          chalk.bold.yellow,   // h2
+          chalk.bold.green,    // h3
+          chalk.bold.blue,     // h4
+          chalk.bold.magenta,  // h5
+          chalk.bold.gray,     // h6
+        ];
+        return (styles[level - 1] || chalk.bold)(line);
+      }
+      
+      // Code blocks (indented with 4 spaces or tab)
+      if (line.match(/^(\s{4}|\t)/)) {
+        return chalk.gray(line);
+      }
+      
+      // Blockquotes (> )
+      if (line.match(/^>/)) {
+        return chalk.dim(line);
+      }
+      
+      // Lists (- * + or 1. 2. etc)
+      if (line.match(/^[\s]*[-*+]\s/) || line.match(/^[\s]*\d+\.\s/)) {
+        return line.replace(/^([\s]*[-*+\d.]+)(\s)/, (match, bullet, space) => 
+          chalk.yellow(bullet) + space
+        );
+      }
+      
+      // Horizontal rules (--- or *** or ___)
+      if (line.match(/^[-*_]{3,}$/)) {
+        return chalk.dim(line);
+      }
+      
+      // Inline code `code`
+      line = line.replace(/`([^`]+)`/g, (match, code) => 
+        chalk.bgGray.white(` ${code} `)
+      );
+      
+      // Bold **text** or __text__
+      line = line.replace(/(\*\*|__)([^*_]+)\1/g, (match, delim, text) => 
+        chalk.bold(delim + text + delim)
+      );
+      
+      // Italic *text* or _text_
+      line = line.replace(/([*_])([^*_]+)\1/g, (match, delim, text) => 
+        chalk.italic(delim + text + delim)
+      );
+      
+      // Links [text](url)
+      line = line.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, text, url) => 
+        chalk.blue.underline(`[${text}]`) + chalk.dim(`(${url})`)
+      );
+      
+      return line;
+    }).join("\n");
   }
 
   /**

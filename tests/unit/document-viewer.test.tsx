@@ -1,13 +1,13 @@
 import { describe, test, expect, mock, beforeEach } from "bun:test";
 import React, { useState, useEffect } from "react";
 import { render } from "ink-testing-library";
-import { MarkdownViewer } from "../../src/components/markdown-viewer";
+import { DocumentViewer } from "../../src/components/document-viewer";
 import { Box, Text } from "ink";
 
-describe("MarkdownViewer Layout", () => {
+describe("DocumentViewer Layout", () => {
   test("renders with flexGrow property", () => {
     const { lastFrame } = render(
-      <MarkdownViewer content="# Test Content" scrollable={true} />
+      <DocumentViewer content="# Test Content" scrollable={true} />
     );
     
     const output = lastFrame();
@@ -17,7 +17,7 @@ describe("MarkdownViewer Layout", () => {
 
   test("no fixed height applied when scrollable is true", () => {
     const { lastFrame } = render(
-      <MarkdownViewer 
+      <DocumentViewer 
         content="# Test Content\n\nLong content that would normally scroll" 
         scrollable={true} 
       />
@@ -30,7 +30,7 @@ describe("MarkdownViewer Layout", () => {
 
   test("viewer fills available space in parent container", () => {
     const { lastFrame } = render(
-      <MarkdownViewer 
+      <DocumentViewer 
         content="# Test Document\n\nThis is a test document with multiple lines.\nLine 2\nLine 3\nLine 4" 
         scrollable={true} 
       />
@@ -43,7 +43,7 @@ describe("MarkdownViewer Layout", () => {
 
   test("flexGrow is applied to content area", () => {
     const { lastFrame } = render(
-      <MarkdownViewer content="Test content" scrollable={true} />
+      <DocumentViewer content="Test content" scrollable={true} />
     );
     
     const output = lastFrame();
@@ -52,7 +52,7 @@ describe("MarkdownViewer Layout", () => {
 
   test("scrollable false does not apply fixed height", () => {
     const { lastFrame } = render(
-      <MarkdownViewer content="# Static Content" scrollable={false} />
+      <DocumentViewer content="# Static Content" scrollable={false} />
     );
     
     const output = lastFrame();

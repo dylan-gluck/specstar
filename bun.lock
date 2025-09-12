@@ -11,6 +11,7 @@
         "ink": "^6.3.0",
         "ink-big-text": "^2.0.0",
         "ink-gradient": "^3.0.0",
+        "ink-syntax-highlight": "^2.0.2",
         "ink-table": "^3.1.0",
         "marked": "^16.2.1",
         "meow": "^13.2.0",
@@ -129,6 +130,8 @@
     "ink-big-text": ["ink-big-text@2.0.0", "", { "dependencies": { "cfonts": "^3.1.1", "prop-types": "^15.8.1" }, "peerDependencies": { "ink": ">=4", "react": ">=18" } }, "sha512-Juzqv+rIOLGuhMJiE50VtS6dg6olWfzFdL7wsU/EARSL5Eaa5JNXMogMBm9AkjgzO2Y3UwWCOh87jbhSn8aNdw=="],
 
     "ink-gradient": ["ink-gradient@3.0.0", "", { "dependencies": { "@types/gradient-string": "^1.1.2", "gradient-string": "^2.0.2", "prop-types": "^15.8.1", "strip-ansi": "^7.1.0" }, "peerDependencies": { "ink": ">=4" } }, "sha512-OVyPBovBxE1tFcBhSamb+P1puqDP6pG3xFe2W9NiLgwUZd9RbcjBeR7twLbliUT9navrUstEf1ZcPKKvx71BsQ=="],
+
+    "ink-syntax-highlight": ["ink-syntax-highlight@2.0.2", "", { "dependencies": { "cli-highlight": "^2.1.9" }, "peerDependencies": { "ink": "^5.1.0", "react": "^18.3.1" } }, "sha512-aiBrZ/fvfo8ukoCd6xQfsoLDRZC4yKCiZTYUslv+HQNPKS1tLN0uSwYBdj7pmhVtz2uZAnKZnGyjd9E50w+fPQ=="],
 
     "ink-table": ["ink-table@3.1.0", "", { "dependencies": { "object-hash": "^2.0.3" }, "peerDependencies": { "ink": ">=3.0.0", "react": ">=16.8.0" } }, "sha512-qxVb4DIaEaJryvF9uZGydnmP9Hkmas3DCKVpEcBYC0E4eJd3qNgNe+PZKuzgCERFe9LfAS1TNWxCr9+AU4v3YA=="],
 

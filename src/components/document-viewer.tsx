@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { Text, Box, useInput, useFocus, useStdout } from "ink";
-import { DocumentViewer } from "../lib/document-viewer";
-import chalk from "chalk";
+import SyntaxHighlight from "ink-syntax-highlight";
 
-type MarkdownViewerProps = {
+type DocumentViewerProps = {
   id?: string;
   filePath?: string;
   content?: string;
@@ -11,30 +10,63 @@ type MarkdownViewerProps = {
   scrollable?: boolean;
 };
 
-export function MarkdownViewer({
-  id = "markdown-viewer",
+// Detect language from file extension
+const getLanguageFromPath = (path: string): string | undefined => {
+  if (!path) return undefined;
+  const ext = path.split('.').pop()?.toLowerCase();
+  const langMap: Record<string, string> = {
+    'js': 'javascript',
+    'jsx': 'javascript',
+    'ts': 'typescript',
+    'tsx': 'typescript',
+    'py': 'python',
+    'rb': 'ruby',
+    'go': 'go',
+    'rs': 'rust',
+    'java': 'java',
+    'cpp': 'cpp',
+    'c': 'c',
+    'cs': 'csharp',
+    'php': 'php',
+    'swift': 'swift',
+    'kt': 'kotlin',
+    'scala': 'scala',
+    'r': 'r',
+    'sql': 'sql',
+    'sh': 'bash',
+    'bash': 'bash',
+    'zsh': 'bash',
+    'fish': 'bash',
+    'ps1': 'powershell',
+    'yml': 'yaml',
+    'yaml': 'yaml',
+    'json': 'json',
+    'xml': 'xml',
+    'html': 'html',
+    'css': 'css',
+    'scss': 'scss',
+    'sass': 'scss',
+    'less': 'less',
+    'md': 'markdown',
+    'markdown': 'markdown',
+    'vue': 'vue',
+    'svelte': 'svelte',
+  };
+  return langMap[ext || ''];
+};
+
+export function DocumentViewer({
+  id = "document-viewer",
   filePath,
   content: staticContent,
   title,
   scrollable = true,
-}: MarkdownViewerProps) {
+}: DocumentViewerProps) {
   const [content, setContent] = useState<string>(staticContent || "");
-  const [renderedContent, setRenderedContent] = useState<string>("");
-  const [frontmatter, setFrontmatter] = useState<Record<string, any> | null>(
-    null,
-  );
   const [scrollOffset, setScrollOffset] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [viewer] = useState(
-    () =>
-      new DocumentViewer({
-        theme: "dark",
-        highlightSyntax: true,
-        maxWidth: 80,
-        pageSize: 20,
-      }),
-  );
+  const [language] = useState<string | undefined>(getLanguageFromPath(filePath || ""));
 
   const { isFocused } = useFocus({ id, autoFocus: false });
   const { stdout } = useStdout();
@@ -61,7 +93,7 @@ export function MarkdownViewer({
     if (filePath) {
       loadFile();
     } else if (staticContent) {
-      processContent(staticContent);
+      setContent(staticContent);
     }
   }, [filePath, staticContent]);
 
@@ -72,42 +104,15 @@ export function MarkdownViewer({
     setError(null);
 
     try {
-      const doc = await viewer.loadDocument(filePath);
-      setContent(doc.content);
-      setFrontmatter(doc.frontmatter || null);
-      processContent(doc.content);
+      const file = Bun.file(filePath);
+      const text = await file.text();
+      setContent(text);
+      setScrollOffset(0);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load file");
       setContent("");
-      setRenderedContent("");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const processContent = (markdown: string) => {
-    try {
-      // Extract frontmatter if not already done
-      if (!frontmatter) {
-        const { content: bodyContent, data } =
-          viewer.extractFrontmatter(markdown);
-        if (Object.keys(data).length > 0) {
-          setFrontmatter(data);
-          markdown = bodyContent;
-        }
-      }
-
-      // Render markdown to terminal format
-      const rendered = viewer.renderMarkdown(markdown, {
-        wrapText: true,
-      });
-      setRenderedContent(rendered);
-      setScrollOffset(0);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to render markdown",
-      );
-      setRenderedContent("");
     }
   };
 
@@ -118,13 +123,8 @@ export function MarkdownViewer({
     // - Header (1 line)
     // - Footer when focused (1 line)
     // - Margin/padding (2 lines)
-    // - Frontmatter display if present (up to 6 lines)
     let reservedLines = 6; // border + header + margins
     if (isFocused && scrollable) reservedLines += 1; // footer
-    if (frontmatter && Object.keys(frontmatter).length > 0) {
-      // Frontmatter takes up to 6 lines (title + 3 entries + dividers)
-      reservedLines += 6;
-    }
     return Math.max(1, dimensions.rows - reservedLines);
   };
 
@@ -132,7 +132,7 @@ export function MarkdownViewer({
   useInput((input, key) => {
     if (!isFocused || !scrollable) return;
 
-    const lines = renderedContent.split("\n");
+    const lines = content.split("\n");
     const viewportHeight = calculateViewportHeight();
     const maxOffset = Math.max(0, lines.length - viewportHeight);
 
@@ -158,9 +158,9 @@ export function MarkdownViewer({
 
   // Get visible content based on scroll offset
   const getVisibleContent = () => {
-    if (!renderedContent) return "";
+    if (!content) return "";
 
-    const lines = renderedContent.split("\n");
+    const lines = content.split("\n");
     const viewportHeight = calculateViewportHeight();
     const visibleLines = lines.slice(
       scrollOffset,
@@ -179,8 +179,8 @@ export function MarkdownViewer({
   };
 
   const displayTitle =
-    title || (filePath ? filePath.split("/").pop() : "Markdown Viewer");
-  const lines = renderedContent.split("\n");
+    title || (filePath ? filePath.split("/").pop() : "Document Viewer");
+  const lines = content.split("\n");
   const totalLines = lines.length;
   const viewportHeight = calculateViewportHeight();
   const currentLine = Math.min(scrollOffset + 1, totalLines);
@@ -216,29 +216,6 @@ export function MarkdownViewer({
       </Box>
 
       <Box flexDirection="column" flexGrow={1} overflow="hidden" marginTop={1}>
-        {/* Frontmatter display (if present, included in scrollable area) */}
-        {frontmatter &&
-          Object.keys(frontmatter).length > 0 &&
-          !loading &&
-          !error && (
-            <>
-              <Text color="cyan" dimColor>
-                ── Frontmatter ──
-              </Text>
-              {Object.entries(frontmatter)
-                .slice(0, 3)
-                .map(([key, value], index) => (
-                  <Box key={`${key}-${index}`}>
-                    <Text color="yellow">{key}:</Text>
-                    <Text> {String(value).substring(0, 50)}</Text>
-                  </Box>
-                ))}
-              <Text color="cyan" dimColor>
-                ─────────────────
-              </Text>
-            </>
-          )}
-
         {/* Main content */}
         {loading && <Text color="gray">Loading document...</Text>}
         {error && (
@@ -246,11 +223,14 @@ export function MarkdownViewer({
             <Text color="red">Error: {error}</Text>
           </Box>
         )}
-        {!loading && !error && !renderedContent && (
+        {!loading && !error && !content && (
           <Text color="gray">No content to display</Text>
         )}
-        {!loading && !error && renderedContent && (
-          <Text>{getVisibleContent()}</Text>
+        {!loading && !error && content && (
+          <SyntaxHighlight 
+            code={getVisibleContent()} 
+            language={language}
+          />
         )}
       </Box>
 

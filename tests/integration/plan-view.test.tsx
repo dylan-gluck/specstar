@@ -66,11 +66,11 @@ describe('Plan View Integration', () => {
       const frame = lastFrame();
       expect(frame).toBeDefined();
       expect(frame).toContain('Documentation');
-      expect(frame).toContain('Markdown Viewer');
+      expect(frame).toContain('Document Viewer');
       
       const lines = frame?.split('\n') || [];
       const hasLeftColumn = lines.some(line => line.includes('[1] Documentation'));
-      const hasRightColumn = lines.some(line => line.includes('Markdown Viewer'));
+      const hasRightColumn = lines.some(line => line.includes('Document Viewer'));
       
       expect(hasLeftColumn).toBe(true);
       expect(hasRightColumn).toBe(true);
@@ -125,7 +125,7 @@ const code = 'should be displayed';
       const frame = lastFrame();
       expect(frame).toBeDefined();
       expect(frame).toContain('Test Docs');
-      expect(frame).toContain('Markdown Viewer');
+      expect(frame).toContain('Document Viewer');
     });
 
     test('should handle viewer with scrolling capability', async () => {
@@ -167,7 +167,7 @@ const code = 'should be displayed';
       const frame = lastFrame();
       expect(frame).toBeDefined();
       expect(frame).toContain('Scrollable Docs');
-      expect(frame).toContain('Markdown Viewer');
+      expect(frame).toContain('Document Viewer');
       
       const hasScrollInstructions = frame?.includes('↑↓/jk') || frame?.includes('Navigate');
       expect(hasScrollInstructions).toBe(true);
@@ -212,7 +212,7 @@ const code = 'should be displayed';
       
       let frame = lastFrame();
       expect(frame).toContain('Dynamic Docs');
-      expect(frame).toContain('Markdown Viewer');
+      expect(frame).toContain('Document Viewer');
       
       const hasViewerContent = frame?.includes('No content to display') || frame?.includes('Document');
       expect(hasViewerContent).toBe(true);
@@ -263,10 +263,10 @@ const code = 'should be displayed';
       const lines = frame?.split('\n') || [];
       const contentArea = lines.filter(line => line.includes('Content line'));
       
-      const hasViewer = frame?.includes('Markdown Viewer');
+      const hasViewer = frame?.includes('Document Viewer');
       expect(hasViewer).toBe(true);
       
-      const viewerSection = frame?.split('Markdown Viewer')[1] || '';
+      const viewerSection = frame?.split('Document Viewer')[1] || '';
       const viewerLines = viewerSection.split('\n').filter(line => line.trim());
       expect(viewerLines.length).toBeGreaterThan(0);
     });

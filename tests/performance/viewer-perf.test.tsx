@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from "bun:test";
 import React from "react";
 import { render } from "ink-testing-library";
-import { MarkdownViewer } from "../../src/components/markdown-viewer";
-import { DocumentViewer } from "../../src/lib/document-viewer";
+import { DocumentViewer } from "../../src/components/document-viewer";
+import { DocumentViewer as DocumentViewerLib } from "../../src/lib/document-viewer";
 import fs from "fs/promises";
 import path from "path";
 
@@ -64,11 +64,11 @@ describe("Document Viewer Performance", () => {
     const startTime = performance.now();
     
     const { lastFrame, rerender } = render(
-      <MarkdownViewer content={largeDocument} scrollable={true} />
+      <DocumentViewer content={largeDocument} scrollable={true} />
     );
     
     await new Promise(resolve => setTimeout(resolve, 10));
-    rerender(<MarkdownViewer content={largeDocument} scrollable={true} />);
+    rerender(<DocumentViewer content={largeDocument} scrollable={true} />);
     
     const renderTime = performance.now() - startTime;
     
@@ -82,7 +82,7 @@ describe("Document Viewer Performance", () => {
     const startTime = performance.now();
     
     const { lastFrame } = render(
-      <MarkdownViewer content={hugeDocument} scrollable={true} />
+      <DocumentViewer content={hugeDocument} scrollable={true} />
     );
     
     const renderTime = performance.now() - startTime;
@@ -93,7 +93,7 @@ describe("Document Viewer Performance", () => {
 
   it("should maintain constant memory during scrolling", () => {
     const { stdin, lastFrame } = render(
-      <MarkdownViewer content={largeDocument} scrollable={true} id="perf-test" />
+      <DocumentViewer content={largeDocument} scrollable={true} id="perf-test" />
     );
     
     const initialMemory = process.memoryUsage().heapUsed;
@@ -118,7 +118,7 @@ describe("Document Viewer Performance", () => {
   });
 
   it("should process markdown efficiently", () => {
-    const viewer = new DocumentViewer({
+    const viewer = new DocumentViewerLib({
       theme: "dark",
       highlightSyntax: true,
       maxWidth: 80,
@@ -135,7 +135,7 @@ describe("Document Viewer Performance", () => {
 
   it("should handle rapid scroll events without lag", () => {
     const { stdin, lastFrame } = render(
-      <MarkdownViewer content={largeDocument} scrollable={true} id="scroll-test" />
+      <DocumentViewer content={largeDocument} scrollable={true} id="scroll-test" />
     );
     
     const startTime = performance.now();
@@ -161,7 +161,7 @@ tags: [performance, testing, validation]
 
 ${largeDocument}`;
     
-    const viewer = new DocumentViewer({
+    const viewer = new DocumentViewerLib({
       theme: "dark",
       highlightSyntax: true,
     });
@@ -176,7 +176,7 @@ ${largeDocument}`;
   });
 
   it("should cache rendered content effectively", () => {
-    const viewer = new DocumentViewer({
+    const viewer = new DocumentViewerLib({
       theme: "dark",
       highlightSyntax: true,
       maxWidth: 80,
@@ -213,7 +213,7 @@ function complexFunction${i}() {
 `)
       .join("\n");
     
-    const viewer = new DocumentViewer({
+    const viewer = new DocumentViewerLib({
       theme: "dark",
       highlightSyntax: true,
     });
@@ -227,7 +227,7 @@ function complexFunction${i}() {
   });
 
   it("should paginate large documents efficiently", () => {
-    const viewer = new DocumentViewer({
+    const viewer = new DocumentViewerLib({
       theme: "dark",
       pageSize: 20,
     });
@@ -255,7 +255,7 @@ function complexFunction${i}() {
       const startTime = performance.now();
       
       const { unmount } = render(
-        <MarkdownViewer 
+        <DocumentViewer 
           content={largeDocument} 
           scrollable={true} 
           id={`cycle-${i}`}

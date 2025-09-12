@@ -1,21 +1,25 @@
 {
   "version": "1.0.0",
-  "startPage": "observe",
   "folders": [
     {
-      "title": "Docs",
-      "path": "docs"
+      "title": "Agents",
+      "path": ".claude/agents"
     },
     {
-      "title": "Specs",
-      "path": "specs"
+      "title": "Commands",
+      "path": ".claude/commands"
     },
     {
       "title": "Templates",
       "path": "templates"
+    },
+    {
+      "title": "Specstar",
+      "path": ".specstar"
     }
   ],
   "theme": "dark",
+  "startPage": "observe",
   "autoStart": false,
   "logLevel": "info"
 }

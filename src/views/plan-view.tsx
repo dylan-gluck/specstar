@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Box, useInput, useApp, useFocusManager, Text } from "ink";
 import { type File, FileList } from "../components/file-list";
-import { MarkdownViewer } from "../components/markdown-viewer";
+import { DocumentViewer } from "../components/document-viewer";
 import { LoadingOverlay } from "../components/loading-spinner";
 import { Logger } from "../lib/logger/index";
 import { ConfigManager, type FolderConfig } from "../lib/config-manager";
@@ -30,7 +30,7 @@ export default function PlanView() {
     // Viewer pane
     if (input === "v") {
       setActivePane("viewer");
-      focus("markdown-viewer");
+      focus("document-viewer");
     }
 
     // Exit
@@ -90,7 +90,7 @@ export default function PlanView() {
 
       // Delay focus switch slightly to ensure the viewer is rendered
       setTimeout(() => {
-        focus("markdown-viewer");
+        focus("document-viewer");
       }, 50);
 
       logger.info("File selected", {
@@ -133,10 +133,10 @@ export default function PlanView() {
           ))}
         </Box>
 
-        {/* Right column - Markdown Viewer */}
+        {/* Right column - Document Viewer */}
         <Box flexBasis="70%" flexGrow={1} flexDirection="column">
-          <MarkdownViewer
-            id="markdown-viewer"
+          <DocumentViewer
+            id="document-viewer"
             filePath={selectedFile?.path}
             title={selectedFile?.name}
             scrollable={true}
