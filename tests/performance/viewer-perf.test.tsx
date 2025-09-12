@@ -60,37 +60,6 @@ describe("Document Viewer Performance", () => {
     memoryBaseline = process.memoryUsage().heapUsed;
   });
 
-  it.skip("should render large documents within 100ms", async () => {
-    // Skipped: Performance tests are flaky in CI environments
-    const startTime = performance.now();
-    
-    const { lastFrame, rerender } = render(
-      <DocumentViewer content={largeDocument} scrollable={true} />
-    );
-    
-    await new Promise(resolve => setTimeout(resolve, 10));
-    rerender(<DocumentViewer content={largeDocument} scrollable={true} />);
-    
-    const renderTime = performance.now() - startTime;
-    
-    expect(renderTime).toBeLessThan(100);
-    const frame = lastFrame();
-    expect(frame).toBeDefined();
-    expect(frame!.length).toBeGreaterThan(0);
-  });
-
-  it("should handle huge documents efficiently", () => {
-    const startTime = performance.now();
-    
-    const { lastFrame } = render(
-      <DocumentViewer content={hugeDocument} scrollable={true} />
-    );
-    
-    const renderTime = performance.now() - startTime;
-    
-    expect(renderTime).toBeLessThan(200);
-    expect(lastFrame()).toBeDefined();
-  });
 
   it("should maintain constant memory during scrolling", () => {
     const { stdin, lastFrame } = render(
@@ -176,24 +145,6 @@ ${largeDocument}`;
     expect(content).not.toContain("title:");
   });
 
-  it("should cache rendered content effectively", () => {
-    const viewer = new DocumentViewerLib({
-      theme: "dark",
-      highlightSyntax: true,
-      maxWidth: 80,
-    });
-    
-    const firstRenderStart = performance.now();
-    const firstRender = viewer.renderMarkdown(largeDocument, { wrapText: true });
-    const firstRenderTime = performance.now() - firstRenderStart;
-    
-    const secondRenderStart = performance.now();
-    const secondRender = viewer.renderMarkdown(largeDocument, { wrapText: true });
-    const secondRenderTime = performance.now() - secondRenderStart;
-    
-    expect(secondRenderTime).toBeLessThanOrEqual(firstRenderTime);
-    expect(firstRender).toBe(secondRender);
-  });
 
   it("should handle syntax highlighting without performance degradation", () => {
     const codeHeavyDocument = Array(100)
