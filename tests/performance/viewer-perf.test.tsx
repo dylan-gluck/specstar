@@ -75,7 +75,7 @@ describe("Document Viewer Performance", () => {
     expect(renderTime).toBeLessThan(100);
     const frame = lastFrame();
     expect(frame).toBeDefined();
-    expect(frame.length).toBeGreaterThan(0);
+    expect(frame!.length).toBeGreaterThan(0);
   });
 
   it("should handle huge documents efficiently", () => {

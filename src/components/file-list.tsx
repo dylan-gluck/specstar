@@ -19,7 +19,14 @@ type FileListProps = {
   onSelect?: (file: File) => void;
 };
 
-export function FileList({ id, title, files: staticFiles, directory, pattern, onSelect }: FileListProps) {
+export function FileList({
+  id,
+  title,
+  files: staticFiles,
+  directory,
+  pattern,
+  onSelect,
+}: FileListProps) {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [files, setFiles] = useState<File[]>(staticFiles || []);
   const [loading, setLoading] = useState(false);
@@ -42,14 +49,14 @@ export function FileList({ id, title, files: staticFiles, directory, pattern, on
 
   const loadFiles = async () => {
     if (!directory) return;
-    
+
     setLoading(true);
     setError(null);
-    
+
     try {
       const entries = await readdir(directory, { withFileTypes: true });
       const loadedFiles: File[] = entries
-        .filter(entry => {
+        .filter((entry) => {
           // Filter by pattern if provided
           if (pattern && !pattern.test(entry.name)) {
             return false;
@@ -57,10 +64,10 @@ export function FileList({ id, title, files: staticFiles, directory, pattern, on
           // Only show files and directories
           return entry.isFile() || entry.isDirectory();
         })
-        .map(entry => ({
+        .map((entry) => ({
           name: entry.name,
           path: join(directory, entry.name),
-          isDirectory: entry.isDirectory()
+          isDirectory: entry.isDirectory(),
         }))
         .sort((a, b) => {
           // Directories first, then alphabetical
@@ -68,10 +75,10 @@ export function FileList({ id, title, files: staticFiles, directory, pattern, on
           if (!a.isDirectory && b.isDirectory) return 1;
           return a.name.localeCompare(b.name);
         });
-      
+
       setFiles(loadedFiles);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load files');
+      setError(err instanceof Error ? err.message : "Failed to load files");
       setFiles([]);
     } finally {
       setLoading(false);
@@ -80,7 +87,7 @@ export function FileList({ id, title, files: staticFiles, directory, pattern, on
 
   useInput((input, key) => {
     if (!isFocused) return;
-    
+
     if (key.upArrow && selectedIndex > 0) {
       setSelectedIndex(selectedIndex - 1);
     }
@@ -91,29 +98,33 @@ export function FileList({ id, title, files: staticFiles, directory, pattern, on
       onSelect(files[selectedIndex]);
     }
     // Add 'r' to refresh directory listing
-    if (input === 'r' && directory) {
+    if (input === "r" && directory) {
       loadFiles();
     }
   });
 
   return (
     <FocusBox id={id} title={title}>
-      {loading && <Text color="gray">Loading...</Text>}
-      {error && <Text color="red">Error: {error}</Text>}
-      {!loading && !error && files.length === 0 && (
-        <Text color="gray">No files found</Text>
-      )}
-      {!loading && !error && files.map((file, index) => (
-        <FileItem
-          key={file.path || file.name}
-          file={file}
-          selected={isFocused && selectedIndex === index}
-        />
-      ))}
+      <Box flexDirection="column" flexGrow={1} overflow="hidden">
+        {loading && <Text color="gray">Loading...</Text>}
+        {error && <Text color="red">Error: {error}</Text>}
+        {!loading && !error && files.length === 0 && (
+          <Text color="gray">No files found</Text>
+        )}
+        {!loading &&
+          !error &&
+          files.map((file, index) => (
+            <FileItem
+              key={file.path || file.name}
+              file={file}
+              selected={isFocused && selectedIndex === index}
+            />
+          ))}
+      </Box>
       {isFocused && files.length > 0 && (
         <Box marginTop={1}>
           <Text color="gray" dimColor>
-            ↑↓ Navigate • Enter Select • R Refresh
+            ↑↓ Navigate • Enter Select
           </Text>
         </Box>
       )}
@@ -122,14 +133,10 @@ export function FileList({ id, title, files: staticFiles, directory, pattern, on
 }
 
 function FileItem({ file, selected }: { file: File; selected: boolean }) {
-  // Use prefix indicators instead of emojis
-  const prefix = file.isDirectory ? '● ' : '  ';
-  const displayName = `${prefix}${file.name}`;
-  
   return (
     <Box backgroundColor={undefined}>
-      <Text color={selected ? "green" : undefined}>
-        {displayName}
+      <Text wrap="truncate-middle" color={selected ? "green" : undefined}>
+        {file.name}
       </Text>
     </Box>
   );

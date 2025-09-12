@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Text, Box, useInput, useFocus } from "ink";
+import { Text, Box, useInput, useFocus, useStdout } from "ink";
 import { DocumentViewer } from "../lib/document-viewer";
 import chalk from "chalk";
 
@@ -37,6 +37,24 @@ export function MarkdownViewer({
   );
 
   const { isFocused } = useFocus({ id, autoFocus: false });
+  const { stdout } = useStdout();
+  const [dimensions, setDimensions] = useState({ columns: 80, rows: 24 });
+
+  // Get terminal dimensions
+  useEffect(() => {
+    const updateDimensions = () => {
+      setDimensions({
+        columns: stdout.columns || 80,
+        rows: stdout.rows || 24,
+      });
+    };
+
+    updateDimensions();
+    stdout.on("resize", updateDimensions);
+    return () => {
+      stdout.off("resize", updateDimensions);
+    };
+  }, [stdout]);
 
   // Load file content if path is provided
   useEffect(() => {
@@ -93,13 +111,29 @@ export function MarkdownViewer({
     }
   };
 
+  // Calculate available viewport height based on actual terminal dimensions
+  const calculateViewportHeight = () => {
+    // Account for:
+    // - Border (2 lines top and bottom)
+    // - Header (1 line)
+    // - Footer when focused (1 line)
+    // - Margin/padding (2 lines)
+    // - Frontmatter display if present (up to 6 lines)
+    let reservedLines = 6; // border + header + margins
+    if (isFocused && scrollable) reservedLines += 1; // footer
+    if (frontmatter && Object.keys(frontmatter).length > 0) {
+      // Frontmatter takes up to 6 lines (title + 3 entries + dividers)
+      reservedLines += 6;
+    }
+    return Math.max(1, dimensions.rows - reservedLines);
+  };
+
   // Handle scrolling
   useInput((input, key) => {
     if (!isFocused || !scrollable) return;
 
     const lines = renderedContent.split("\n");
-    const viewportHeight =
-      frontmatter && Object.keys(frontmatter).length > 0 ? 14 : 18;
+    const viewportHeight = calculateViewportHeight();
     const maxOffset = Math.max(0, lines.length - viewportHeight);
 
     if (key.upArrow || input === "k") {
@@ -127,9 +161,7 @@ export function MarkdownViewer({
     if (!renderedContent) return "";
 
     const lines = renderedContent.split("\n");
-    // Account for frontmatter display if present
-    const viewportHeight =
-      frontmatter && Object.keys(frontmatter).length > 0 ? 14 : 18;
+    const viewportHeight = calculateViewportHeight();
     const visibleLines = lines.slice(
       scrollOffset,
       scrollOffset + viewportHeight,
@@ -150,8 +182,7 @@ export function MarkdownViewer({
     title || (filePath ? filePath.split("/").pop() : "Markdown Viewer");
   const lines = renderedContent.split("\n");
   const totalLines = lines.length;
-  const viewportHeight =
-    frontmatter && Object.keys(frontmatter).length > 0 ? 14 : 18;
+  const viewportHeight = calculateViewportHeight();
   const currentLine = Math.min(scrollOffset + 1, totalLines);
   const endLine = Math.min(scrollOffset + viewportHeight, totalLines);
 
@@ -184,13 +215,7 @@ export function MarkdownViewer({
         </Text>
       </Box>
 
-      {/* Content area with fixed height */}
-      <Box
-        flexDirection="column"
-        flexGrow={1}
-        overflow="hidden"
-        marginTop={1}
-      >
+      <Box flexDirection="column" flexGrow={1} overflow="hidden" marginTop={1}>
         {/* Frontmatter display (if present, included in scrollable area) */}
         {frontmatter &&
           Object.keys(frontmatter).length > 0 &&
@@ -211,7 +236,6 @@ export function MarkdownViewer({
               <Text color="cyan" dimColor>
                 ─────────────────
               </Text>
-              <Text> </Text>
             </>
           )}
 
@@ -226,7 +250,7 @@ export function MarkdownViewer({
           <Text color="gray">No content to display</Text>
         )}
         {!loading && !error && renderedContent && (
-          <Text wrap="truncate-end">{getVisibleContent()}</Text>
+          <Text>{getVisibleContent()}</Text>
         )}
       </Box>
 

@@ -38,7 +38,7 @@ describe("MarkdownViewer Layout", () => {
     
     const output = lastFrame();
     expect(output).toBeDefined();
-    expect(output.length).toBeGreaterThan(0);
+    expect(output!.length).toBeGreaterThan(0);
   });
 
   test("flexGrow is applied to content area", () => {
@@ -134,7 +134,7 @@ describe("MarkdownViewer Error State", () => {
     
     const output = lastFrame();
     expect(output).toBeDefined();
-    expect(output.split('\n').length).toBeGreaterThan(0);
+    expect(output!.split('\n').length).toBeGreaterThan(0);
     expect(output).toContain("Error: Read permission denied");
     expect(output).toContain("test.md");
   });
@@ -147,7 +147,7 @@ describe("MarkdownViewer Error State", () => {
     const output = lastFrame();
     expect(output).toBeDefined();
     expect(output).toContain("Error: Invalid markdown syntax");
-    const lines = output.split('\n');
+    const lines = output!.split('\n');
     expect(lines.length).toBeGreaterThan(3);
   });
 
@@ -158,7 +158,7 @@ describe("MarkdownViewer Error State", () => {
     
     const output = lastFrame();
     expect(output).toBeDefined();
-    const lines = output.split('\n');
+    const lines = output!.split('\n');
     expect(lines.some(line => line.includes("Error: File system error"))).toBe(true);
     expect(output).not.toContain("height=");
     expect(output).not.toContain("width=");
