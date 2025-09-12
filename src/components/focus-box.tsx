@@ -17,7 +17,7 @@ export default function FocusBox({
     <Box
       borderStyle="classic"
       borderColor={isFocused ? "green" : "gray"}
-      flexGrow={isFocused ? 1 : 0}
+      flexGrow={1}
       paddingX={1}
       flexDirection="column"
       {...rest}
@@ -25,7 +25,7 @@ export default function FocusBox({
       <Text>
         [{id}] {isFocused ? chalk.green(title) : title}
       </Text>
-      {isFocused ? children : null}
+      {children}
     </Box>
   );
 }
