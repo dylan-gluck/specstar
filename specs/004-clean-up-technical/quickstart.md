@@ -94,7 +94,7 @@ ls -la src/components/
 # Expected: session-dashboard.tsx, empty-state.tsx
 
 # Check file sizes
-wc -l src/views/ObserveView.tsx
+wc -l src/views/observe-view.tsx
 # Expected: < 250 lines
 
 wc -l src/components/session-dashboard.tsx

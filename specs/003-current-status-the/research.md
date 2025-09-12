@@ -11,7 +11,7 @@ Research completed for five documented bugs in the Specstar TUI application. All
 
 ### 1. Session Active State Management
 
-**Current Issue**: 
+**Current Issue**:
 - `session_active` is being set to false prematurely by hooks other than `session_end`
 - Found in `.specstar/hooks.ts` where multiple hooks incorrectly modify this state
 
@@ -19,7 +19,7 @@ Research completed for five documented bugs in the Specstar TUI application. All
 **Rationale**: Clear separation of concerns - only session lifecycle hooks should control session state
 **Alternatives considered**: State machine pattern - rejected as overly complex for two-state system
 
-**Implementation Location**: 
+**Implementation Location**:
 - `.specstar/hooks.ts:397` - Already correct in `handleSessionEnd`
 - Need to audit all other hook handlers to ensure they don't modify `session_active`
 
@@ -43,11 +43,11 @@ Research completed for five documented bugs in the Specstar TUI application. All
 - `sessionPath` is configurable but shouldn't be (breaks Claude Code integration)
 - Theme is a simple string instead of structured object
 
-**Decision**: 
+**Decision**:
 - Remove `sessionPath` from user-configurable settings
 - Implement full ThemeSettings interface with bg, fg, fgAccent properties
 
-**Rationale**: 
+**Rationale**:
 - sessionPath must remain consistent for hook integration
 - Theme needs structure for proper UI customization
 
@@ -62,12 +62,12 @@ Research completed for five documented bugs in the Specstar TUI application. All
 - Emojis (📁 📄) in file lists
 - Lists overflow instead of scrolling
 
-**Decision**: 
+**Decision**:
 - Change highlighting to green text only
 - Remove all emojis from lists
 - Implement proper scrolling with viewport constraints
 
-**Rationale**: 
+**Rationale**:
 - Better terminal compatibility and readability
 - Cleaner, more professional UI
 
@@ -78,7 +78,7 @@ Research completed for five documented bugs in the Specstar TUI application. All
 
 ### 5. Observe View Refactor
 
-**Current Issue**: 
+**Current Issue**:
 - Missing left sidebar with session list
 - No green dot indicator for active sessions
 - Session details not in dashboard layout
@@ -88,7 +88,7 @@ Research completed for five documented bugs in the Specstar TUI application. All
 **Alternatives considered**: Tabs - rejected as less efficient for session monitoring
 
 **Implementation Locations**:
-- `src/views/ObserveView.tsx` - Major refactor needed
+- `src/views/observe-view.tsx` - Major refactor needed
 - Add SessionList component with active indicators
 - Enhance session details display with dashboard layout
 

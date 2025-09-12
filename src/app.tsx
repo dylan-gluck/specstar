@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useInput, useApp, Box, Text, useStdout } from "ink";
 import PlanView from "./views/plan-view";
-import ObserveView from "./views/ObserveView";
+import ObserveView from "./views/observe-view";
 import Gradient from "ink-gradient";
 import BigText from "ink-big-text";
 import { ErrorBoundary } from "./components/error-boundary";
@@ -55,7 +55,8 @@ export default function App() {
 
     // Load settings immediately without timer
     const configManager = new ConfigManager();
-    configManager.load()
+    configManager
+      .load()
       .then((settings) => {
         const startView =
           settings.startPage === "help" ? "welcome" : settings.startPage;

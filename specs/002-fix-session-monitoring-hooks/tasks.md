@@ -104,7 +104,7 @@
 
 ### ObserveView Component
 
-- [ ] T036 Implement ObserveView component in src/views/ObserveView.tsx
+- [ ] T036 Implement ObserveView component in src/views/observe-view.tsx
 - [ ] T037 Create useSessionMonitor React hook in src/hooks/useSessionMonitor.ts
 - [ ] T038 Add real-time session display with active agents, files, and tools
 - [ ] T039 Implement scroll and navigation for ObserveView

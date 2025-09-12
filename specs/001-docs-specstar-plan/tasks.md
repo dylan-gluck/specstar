@@ -85,7 +85,7 @@
 ### UI Components
 - [ ] T027 Fix dynamic file loading in FileList component in src/components/FileList.tsx
 - [ ] T028 Implement markdown rendering in MarkdownViewer component in src/components/MarkdownViewer.tsx
-- [ ] T029 Create ObserveView component for session monitoring in src/views/ObserveView.tsx
+- [ ] T029 Create ObserveView component for session monitoring in src/views/observe-view.tsx
 - [ ] T030 Wire up session state to ObserveView in src/app.tsx
 
 ## Phase 3.4: Integration

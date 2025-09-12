@@ -330,12 +330,12 @@ export async function loadSettings(): Promise<Settings> {
 
 **Rename Files:**
 ```bash
-git mv src/views/ObserveView.tsx src/views/observe-view.tsx
+git mv src/views/observe-view.tsx src/views/observe-view.tsx
 ```
 
 **Update Imports:**
 - `/Users/dylan/Workspace/projects/specstar/src/app.tsx` (line 4)
-  Change: `import ObserveView from "./views/ObserveView";`
+  Change: `import ObserveView from "./views/observe-view";`
   To: `import ObserveView from "./views/observe-view";`
 
 ### 5.2 Remove Dead Code

@@ -36,14 +36,14 @@ Fix five documented bugs in the Specstar TUI application to ensure correct sessi
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x with React JSX  
-**Primary Dependencies**: React Ink v6.3.0, Bun runtime  
-**Storage**: JSON files (.specstar/sessions/)  
-**Testing**: Bun test with ink-testing-library  
-**Target Platform**: Terminal/CLI (cross-platform via Node.js)  
-**Project Type**: single (Terminal UI application)  
-**Performance Goals**: Real-time session monitoring, instant UI response  
-**Constraints**: Terminal display limitations, must work with Claude Code hooks  
+**Language/Version**: TypeScript 5.x with React JSX
+**Primary Dependencies**: React Ink v6.3.0, Bun runtime
+**Storage**: JSON files (.specstar/sessions/)
+**Testing**: Bun test with ink-testing-library
+**Target Platform**: Terminal/CLI (cross-platform via Node.js)
+**Project Type**: single (Terminal UI application)
+**Performance Goals**: Real-time session monitoring, instant UI response
+**Constraints**: Terminal display limitations, must work with Claude Code hooks
 **Scale/Scope**: ~15 components, 2 main views (Plan, Observe), 5 bug fixes
 
 ## Constitution Check
@@ -60,7 +60,7 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 **Architecture**:
 
 - EVERY feature as library? YES (session-monitor, config-manager, hook-integrator)
-- Libraries listed: 
+- Libraries listed:
   - session-monitor: Watch and track Claude Code session state
   - config-manager: Handle settings.json and theme configuration
   - hook-integrator: Process Claude Code lifecycle hooks
@@ -208,7 +208,7 @@ _This section describes what the /tasks command will do - DO NOT execute during 
    - Bug 2: StartPage setting (test + implement) - `src/models/settings.ts`, `src/app.tsx`
    - Bug 3: Config cleanup (test + fix) - `src/models/settings.ts`
    - Bug 4: List styling (test + fix) - `src/components/file-list.tsx`
-   - Bug 5: Observe view (test + refactor) - `src/views/ObserveView.tsx`
+   - Bug 5: Observe view (test + refactor) - `src/views/observe-view.tsx`
 
 3. **Integration Test Tasks** (5 tasks):
    - Full session lifecycle test
@@ -236,8 +236,8 @@ _This section describes what the /tasks command will do - DO NOT execute during 
 
 _These phases are beyond the scope of the /plan command_
 
-**Phase 3**: Task execution (/tasks command creates tasks.md)  
-**Phase 4**: Implementation (execute tasks.md following constitutional principles)  
+**Phase 3**: Task execution (/tasks command creates tasks.md)
+**Phase 4**: Implementation (execute tasks.md following constitutional principles)
 **Phase 5**: Validation (run tests, execute quickstart.md, performance validation)
 
 ## Complexity Tracking

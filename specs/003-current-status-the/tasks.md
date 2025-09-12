@@ -69,8 +69,8 @@
 
 ## Phase 3.7: Bug 5 - Observe View Refactor
 
-- [ ] T023 Test two-column layout structure in `tests/views/ObserveView.test.tsx` (tdd-engineer: write test)
-- [ ] T024 Implement left sidebar with session list in `src/views/ObserveView.tsx` (tdd-engineer: implement)
+- [ ] T023 Test two-column layout structure in `tests/views/observe-view.test.tsx` (tdd-engineer: write test)
+- [ ] T024 Implement left sidebar with session list in `src/views/observe-view.tsx` (tdd-engineer: implement)
 - [ ] T025 Add green dot indicators for active sessions in session list (tdd-engineer: implement)
 - [ ] T026 Test session selection and detail display in dashboard (tdd-engineer: write test)
 - [ ] T027 Implement dashboard layout for session details in right panel (tdd-engineer: implement)
