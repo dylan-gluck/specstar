@@ -14,11 +14,8 @@
     "test": "bun test",
     "test:watch": "bun test --watch",
     "test:coverage": "bun test --coverage",
-    "test:e2e": "bun test e2e",
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
-    "validate": "bun run scripts/validate-quickstart.ts",
-    "clean": "rm -rf dist .specstar/logs .test-specstar",
     "install:global": "bun run build && sudo cp dist/specstar /usr/local/bin/",
     "uninstall:global": "sudo rm -f /usr/local/bin/specstar"
   },
