@@ -1,25 +1,25 @@
 {
-  "name": "specstar",
+  "name": "@specstar/cli",
   "version": "0.0.1",
-  "module": "src/index.ts",
+  "private": false,
   "type": "module",
-  "private": true,
-  "exports": {
-    ".": "./src/index.ts"
+  "bin": {
+    "specstar": "./dist/cli.js"
   },
   "scripts": {
     "dev": "bun run src/cli.tsx",
-    "build": "bun build --compile --outfile=dist/specstar src/cli.tsx",
-    "compile": "bun run build",
+    "build": "bun build src/cli.tsx --outdir dist --target node --format esm",
+    "build:binary": "bun build --compile --outfile=dist/specstar src/cli.tsx",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
     "test": "bun test",
     "test:watch": "bun test --watch",
-    "test:coverage": "bun test --coverage",
-    "lint": "tsc --noEmit",
-    "typecheck": "tsc --noEmit",
-    "install:global": "bun run build && sudo cp dist/specstar /usr/local/bin/",
+    "install:global": "bun run build:binary && sudo cp dist/specstar /usr/local/bin/",
     "uninstall:global": "sudo rm -f /usr/local/bin/specstar"
   },
   "dependencies": {
+    "@specstar/shared": "workspace:*",
+    "@trpc/client": "^11.0.0",
     "@types/minimatch": "^6.0.0",
     "cli-highlight": "^2.1.11",
     "fullscreen-ink": "^0.1.0",
@@ -39,9 +39,10 @@
     "@types/marked": "^6.0.0",
     "chalk": "^5.6.2",
     "ink-testing-library": "^4.0.0",
-    "react-devtools-core": "^6.1.5"
+    "react-devtools-core": "^6.1.5",
+    "typescript": "^5.7.2"
   },
-  "peerDependencies": {
-    "typescript": "^5"
+  "engines": {
+    "bun": ">=1.0.0"
   }
 }
