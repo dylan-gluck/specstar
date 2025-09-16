@@ -1,0 +1,94 @@
+{
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "command": "bun run $CLAUDE_PROJECT_DIR/.specstar/hooks.ts notification",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "bun run $CLAUDE_PROJECT_DIR/.specstar/hooks.ts post_tool_use",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "command": "bun run $CLAUDE_PROJECT_DIR/.specstar/hooks.ts pre_compact",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "bun run $CLAUDE_PROJECT_DIR/.specstar/hooks.ts pre_tool_use",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "command": "bun run $CLAUDE_PROJECT_DIR/.specstar/hooks.ts session_end",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "bun run $CLAUDE_PROJECT_DIR/.specstar/hooks.ts session_start",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "bun run $CLAUDE_PROJECT_DIR/.specstar/hooks.ts stop",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "command": "bun run $CLAUDE_PROJECT_DIR/.specstar/hooks.ts subagent_stop",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "bun run $CLAUDE_PROJECT_DIR/.specstar/hooks.ts user_prompt_submit",
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  }
+}

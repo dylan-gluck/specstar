@@ -1,0 +1,47 @@
+{
+  "name": "specstar",
+  "version": "0.0.1",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "dev": "bun run src/cli.tsx",
+    "build": "bun build --compile --outfile=dist/specstar src/cli.tsx",
+    "compile": "bun run build",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "test:coverage": "bun test --coverage",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "install:global": "bun run build && sudo cp dist/specstar /usr/local/bin/",
+    "uninstall:global": "sudo rm -f /usr/local/bin/specstar"
+  },
+  "dependencies": {
+    "@types/minimatch": "^6.0.0",
+    "cli-highlight": "^2.1.11",
+    "fullscreen-ink": "^0.1.0",
+    "gray-matter": "^4.0.3",
+    "ink": "^6.3.0",
+    "ink-big-text": "^2.0.0",
+    "ink-gradient": "^3.0.0",
+    "ink-syntax-highlight": "^2.0.2",
+    "ink-table": "^3.1.0",
+    "marked": "^16.2.1",
+    "meow": "^13.2.0",
+    "minimatch": "^10.0.3",
+    "react": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/marked": "^6.0.0",
+    "chalk": "^5.6.2",
+    "ink-testing-library": "^4.0.0",
+    "react-devtools-core": "^6.1.5"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

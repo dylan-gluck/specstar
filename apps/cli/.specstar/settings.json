@@ -1,0 +1,25 @@
+{
+  "version": "1.0.0",
+  "folders": [
+    {
+      "title": "Agents",
+      "path": ".claude/agents"
+    },
+    {
+      "title": "Commands",
+      "path": ".claude/commands"
+    },
+    {
+      "title": "Templates",
+      "path": "templates"
+    },
+    {
+      "title": "Specstar",
+      "path": ".specstar"
+    }
+  ],
+  "theme": "dark",
+  "startPage": "observe",
+  "autoStart": false,
+  "logLevel": "info"
+}
