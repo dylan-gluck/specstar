@@ -606,16 +606,7 @@ pnpm install
 pnpm build
 ```
 
-#### 6.3 Run Development Servers
-```bash
-# Terminal 1: Run platform
-pnpm dev --filter platform
-
-# Terminal 2: Run CLI
-pnpm dev --filter cli
-```
-
-#### 6.4 Run Tests
+#### 6.3 Run Tests
 ```bash
 pnpm test
 pnpm typecheck

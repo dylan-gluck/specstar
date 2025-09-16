@@ -228,4 +228,4 @@ _No violations - all constitutional principles satisfied_
 
 ---
 
-_Based on Constitution v2.1.1 - See `/memory/constitution.md`_
+_Based on Constitution v2.1.1 - See `../../memory/constitution.md`_

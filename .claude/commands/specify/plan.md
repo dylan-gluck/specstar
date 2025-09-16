@@ -13,7 +13,7 @@ This is the second step in the Spec-Driven Development lifecycle.
 
 Given the implementation details provided as an argument, do this:
 
-1. Run `scripts/setup-plan.sh --json` from the repo root and parse JSON for FEATURE_SPEC, IMPL_PLAN, SPECS_DIR, BRANCH. All future file paths must be absolute.
+1. Run `.specify/scripts/setup-plan.sh --json` from the repo root and parse JSON for FEATURE_SPEC, IMPL_PLAN, SPECS_DIR, BRANCH. All future file paths must be absolute.
 2. Read and analyze the feature specification to understand:
    - The feature requirements and user stories
    - Functional and non-functional requirements
@@ -26,7 +26,7 @@ Given the implementation details provided as an argument, do this:
    - Use codebase-pattern-finder to identify patterns to follow
    - Extract insights about project structure, naming conventions, and existing utilities
 
-4. Read the constitution at `/memory/constitution.md` to understand core principles:
+4. Read the constitution at `.specify/memory/constitution.md` to understand core principles:
    - Project Setup: Test infrastructure AND pre-commit hooks AND language-specific debugger together as first priority
    - Testing Strategy: 80% code, 20% tests PER TASK (implementation first, then tests)
    - Separation of Concerns: Modular, single-responsibility components
@@ -35,7 +35,7 @@ Given the implementation details provided as an argument, do this:
    - Communication: EVERY task requires commit AND devlog entry
 
 5. Execute the implementation plan template:
-   - Load `/templates/plan-template.md` (already copied to IMPL_PLAN path)
+   - Load `.specify/templates/plan-template.md` (already copied to IMPL_PLAN path)
    - Set Input path to FEATURE_SPEC
    - Run the Execution Flow (main) function steps 1-10
    - The template is self-contained and executable

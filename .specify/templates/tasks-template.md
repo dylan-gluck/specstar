@@ -8,7 +8,7 @@
 1. Load plan.md from feature directory
    → If not found: ERROR "No implementation plan found"
    → Extract: tech stack, libraries, structure
-2. Load constitutional principles from /memory/constitution.md
+2. Load constitutional principles from .specify/memory/constitution.md
    → Apply 80/20 testing PER TASK strategy
    → Ensure debugger setup included in initialization
    → Ensure separation of concerns

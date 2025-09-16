@@ -13,8 +13,8 @@ This is the first step in the Spec-Driven Development lifecycle.
 
 Given the feature description provided as an argument, do this:
 
-1. Run the script `scripts/create-new-feature.sh --json "$ARGUMENTS"` from repo root and parse its JSON output for BRANCH_NAME and SPEC_FILE.
-2. Load `templates/spec-template.md` to understand required sections.
+1. Run the script `.specify/scripts/create-new-feature.sh --json "$ARGUMENTS"` from repo root and parse its JSON output for BRANCH_NAME and SPEC_FILE.
+2. Load `.specify/templates/spec-template.md` to understand required sections.
 3. Consider constitutional principles when writing the specification:
    - Focus on WHAT users need, not HOW to implement
    - Keep specification simple and clear

@@ -7,7 +7,7 @@ set -e
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-FEATURE_DIR="$REPO_ROOT/specs/$CURRENT_BRANCH"
+FEATURE_DIR="$REPO_ROOT/.specify/specs/$CURRENT_BRANCH"
 NEW_PLAN="$FEATURE_DIR/plan.md"
 
 # Determine which agent context files to update
@@ -47,10 +47,10 @@ update_agent_file() {
         echo "Creating new $agent_name context file..."
         
         # Check if this is the SDD repo itself
-        if [ -f "$REPO_ROOT/templates/agent-file-template.md" ]; then
-            cp "$REPO_ROOT/templates/agent-file-template.md" "$temp_file"
+        if [ -f "$REPO_ROOT/.specify/templates/agent-file-template.md" ]; then
+            cp "$REPO_ROOT/.specify/templates/agent-file-template.md" "$temp_file"
         else
-            echo "ERROR: Template not found at $REPO_ROOT/templates/agent-file-template.md"
+            echo "ERROR: Template not found at $REPO_ROOT/.specify/templates/agent-file-template.md"
             return 1
         fi
         

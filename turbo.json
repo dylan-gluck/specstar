@@ -48,9 +48,7 @@
       "env": ["DATABASE_URL"]
     }
   },
-  "globalEnv": [
-    "NODE_ENV"
-  ],
+  "globalEnv": ["NODE_ENV"],
   "globalPassThroughEnv": [
     "DATABASE_URL",
     "BETTER_AUTH_SECRET",

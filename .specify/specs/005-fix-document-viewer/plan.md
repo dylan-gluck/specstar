@@ -12,7 +12,7 @@
    → codebase-locator: find relevant existing components
    → codebase-pattern-finder: identify patterns to follow
    → Extract project structure, naming conventions, utilities
-3. Load constitution from /memory/constitution.md
+3. Load constitution from ../../memory/constitution.md
    → Apply core principles to all design decisions
 4. Fill Technical Context (scan for NEEDS CLARIFICATION)
    → Detect Project Type from context (web=frontend+backend, mobile=app+api)
@@ -210,7 +210,7 @@ ios/ or android/
 *This section describes what the /tasks command will do - DO NOT execute during /plan*
 
 **Task Generation Strategy (Constitutional)**:
-- Load `/templates/tasks-template.md` as base
+- Load `../../templates/tasks-template.md` as base
 - Apply 80/20 rule PER TASK: each task includes implementation + tests
 - Single focused task for MarkdownViewer layout fix
 - Separate task for error handling improvements
@@ -281,5 +281,5 @@ ios/ or android/
 - [x] Complexity deviations documented (none required)
 
 ---
-*Based on Specstar Constitution - See `/memory/constitution.md`*
+*Based on Specstar Constitution - See `../../memory/constitution.md`*
 *Remember: Test infrastructure + debugger first | 80% code, 20% tests PER TASK | Max 250 lines/file | Simple & clean | Commit + devlog per task*

@@ -26,7 +26,7 @@ Comprehensive analysis confirms ~5,000+ lines of redundant code across 6 major a
 ## 1. Hook-integrator Directory Analysis
 
 **Decision**: Complete removal of hook-integrator directory
-**Rationale**: Entirely unused, working implementation exists in config-manager/templates/hooks.ts
+**Rationale**: Entirely unused, working implementation exists in config-manager../../templates/hooks.ts
 **Alternatives considered**: Fixing integration - rejected due to duplicate functionality
 
 ### Evidence

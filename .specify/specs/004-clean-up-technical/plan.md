@@ -267,4 +267,4 @@ ios/ or android/
 - [x] Complexity deviations documented (N/A - cleanup task)
 
 ---
-*Based on Constitution v2.1.1 - See `/memory/constitution.md`*
+*Based on Constitution v2.1.1 - See `../../memory/constitution.md`*

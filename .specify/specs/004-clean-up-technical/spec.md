@@ -76,7 +76,7 @@ As a developer maintaining the Specstar TUI application, I need the codebase to 
 Based on comprehensive codebase analysis, the following redundant implementations have been identified:
 
 1. **Hook System** (~2,000 lines redundant)
-   - Working: `src/lib/config-manager/templates/hooks.ts`
+   - Working: `src/lib/config-manager../../templates/hooks.ts`
    - Redundant: Entire `src/lib/hook-integrator/` directory
 
 2. **Session Monitoring** (~1,200 lines redundant)

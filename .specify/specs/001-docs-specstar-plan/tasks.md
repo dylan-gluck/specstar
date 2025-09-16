@@ -90,7 +90,7 @@
 
 ## Phase 3.4: Integration
 
-- [ ] T031 Generate hooks.ts script during --init in src/lib/config-manager/templates/hooks.ts
+- [ ] T031 Generate hooks.ts script during --init in src/lib/config-manager../../templates/hooks.ts
 - [ ] T032 Implement Claude Code settings.json update during --init
 - [ ] T033 Add file system watching with debouncing in src/lib/session-monitor/watcher.ts
 - [ ] T034 Implement atomic state updates in src/lib/hook-integrator/state-manager.ts
