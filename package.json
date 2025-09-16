@@ -1,0 +1,30 @@
+{
+  "name": "specstar-mono",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean",
+    "db:migrate": "pnpm --filter platform db:migrate",
+    "db:push": "pnpm --filter platform db:push",
+    "db:generate": "pnpm --filter platform db:generate"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "@types/node": "^22.5.5",
+    "typescript": "^5.7.2",
+    "prettier": "^3.4.2"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.2"
+}
