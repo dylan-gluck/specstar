@@ -75,6 +75,12 @@ importers:
       '@types/marked':
         specifier: ^6.0.0
         version: 6.0.0
+      '@types/react':
+        specifier: ^19
+        version: 19.1.13
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.1.9(@types/react@19.1.13)
       chalk:
         specifier: ^5.6.2
         version: 5.6.2

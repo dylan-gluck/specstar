@@ -625,26 +625,7 @@ pnpm lint
 - Document development workflow
 - Update contribution guidelines
 
-### 3. Archive Old Repositories
-```bash
-# Archive the original repositories
-cd ~/Workspace/projects/specstar-platform
-git tag -a archive-pre-monorepo -m "Archive before monorepo migration"
-git push --tags
-
-cd ~/Workspace/projects/specstar
-git tag -a archive-pre-monorepo -m "Archive before monorepo migration"
-git push --tags
-
-# Add deprecation notice to README
-echo "# DEPRECATED: Moved to monorepo" > README.md
-echo "This repository has been migrated to: https://github.com/yourusername/specstar-mono" >> README.md
-git add README.md
-git commit -m "Add deprecation notice"
-git push
-```
-
-### 4. Environment Configuration
+### 3. Environment Configuration
 
 Create `.env.example` files:
 
