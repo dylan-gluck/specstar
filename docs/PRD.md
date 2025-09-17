@@ -352,34 +352,34 @@ type Story = {
 
 ## Implementation Priorities
 
-### Phase 1: Authentication Foundation (Week 1)
+### Phase 1: Authentication Foundation
 1. **Add Better-auth organization plugin**
 2. **Add Better-auth API key plugin**
 3. **Run database migrations**
 4. **Test authentication flows**
 
-### Phase 2: Data Model & API (Week 1-2)
+### Phase 2: Data Model & API
 1. **Create Prisma schema for Project, Document, Story**
 2. **Generate Prisma client**
 3. **Implement tRPC procedures**
 4. **Add API key validation middleware**
 5. **Test API endpoints**
 
-### Phase 3: Web UI Implementation (Week 2-3)
+### Phase 3: Web UI Implementation
 1. **Build Dashboard page**
 2. **Build Project page**
 3. **Build Settings page (Profile, Organization, API Keys)**
 4. **Implement document viewer**
 5. **Add navigation and routing**
 
-### Phase 4: CLI Integration (Week 3-4)
+### Phase 4: CLI Integration
 1. **Add tRPC client to CLI**
 2. **Implement authentication commands**
 3. **Update Plan view to fetch remote documents**
 4. **Add document caching logic**
 5. **Test end-to-end flow**
 
-### Phase 5: Testing & Polish (Week 4)
+### Phase 5: Testing & Polish
 1. **Integration testing**
 2. **Error handling improvements**
 3. **Documentation**
@@ -388,7 +388,7 @@ type Story = {
 
 ## Success Criteria
 
-### Pre-Alpha Milestones
+### Milestones
 - [ ] Users can register and sign in
 - [ ] Users can create organizations
 - [ ] Users can generate API keys
@@ -397,24 +397,6 @@ type Story = {
 - [ ] CLI can authenticate with API key
 - [ ] CLI can fetch and display documents
 - [ ] Platform runs locally without errors
-
-## Future Enhancements (Post Pre-Alpha)
-
-### Near-term (Alpha)
-- Markdown editor with preview
-- Document versioning
-- Real-time collaboration
-- Multiple platform instance support
-- Offline mode for CLI
-- Knowledge graph integration
-
-### Long-term (Beta/MVP)
-- Cloud-hosted SaaS version
-- AI agent integration for document generation
-- Workflow automation
-- Advanced permissions and roles
-- Integration with Git repositories
-- Export to various formats
 
 ## Risks & Mitigation
 
