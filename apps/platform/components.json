@@ -21,7 +21,6 @@
   "registries": {
     "@kokonutui": "https://kokonutui.com/r/{name}.json",
     "@paceui-ui": "https://ui.paceui.com/r/{name}.json",
-    "@tailark": "https://tailark.com/r/{name}.json",
-    "@shadcnblocks": "https://shadcnblocks.com/r/{name}"
+    "@tailark": "https://tailark.com/r/{name}.json"
   }
 }

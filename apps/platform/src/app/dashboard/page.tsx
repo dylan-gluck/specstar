@@ -16,6 +16,10 @@ export default async function DashboardPage() {
     redirect("/sign-in");
   }
 
+  const organizations = await auth.api.listOrganizations({
+    headers: await headers(),
+  });
+
   // Mock data for projects - in a real app, this would come from your database
   const projects = [
     {
@@ -80,7 +84,11 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <DashboardLayout user={session.user}>
+    <DashboardLayout
+      user={session.user}
+      organizations={organizations || []}
+      activeOrganizationId={session.session.activeOrganizationId}
+    >
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">

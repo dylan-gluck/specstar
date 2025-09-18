@@ -22,7 +22,11 @@ export default async function OrganizationPage() {
     : null;
 
   return (
-    <DashboardLayout user={session.user}>
+    <DashboardLayout
+      user={session.user}
+      organizations={organizations || []}
+      activeOrganizationId={session.session.activeOrganizationId}
+    >
       <OrganizationClient
         user={session.user}
         organizations={organizations || []}

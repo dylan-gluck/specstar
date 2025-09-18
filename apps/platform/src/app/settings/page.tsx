@@ -13,8 +13,16 @@ export default async function SettingsPage() {
     redirect("/sign-in");
   }
 
+  const organizations = await auth.api.listOrganizations({
+    headers: await headers(),
+  });
+
   return (
-    <DashboardLayout user={session.user}>
+    <DashboardLayout
+      user={session.user}
+      organizations={organizations || []}
+      activeOrganizationId={session.session.activeOrganizationId}
+    >
       <SettingsClient user={session.user} />
     </DashboardLayout>
   );

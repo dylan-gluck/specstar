@@ -13,12 +13,20 @@ export default async function ApiKeysPage() {
     redirect("/sign-in");
   }
 
+  const organizations = await auth.api.listOrganizations({
+    headers: await headers(),
+  });
+
   const apiKeys = await auth.api.listApiKeys({
     headers: await headers(),
   });
 
   return (
-    <DashboardLayout user={session.user}>
+    <DashboardLayout
+      user={session.user}
+      organizations={organizations || []}
+      activeOrganizationId={session.session.activeOrganizationId}
+    >
       <ApiKeysClient user={session.user} initialApiKeys={apiKeys || []} />
     </DashboardLayout>
   );
