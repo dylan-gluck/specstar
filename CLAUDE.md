@@ -1,4 +1,4 @@
-# Specstar - CRUSH Configuration
+# CLAUDE.md
 
 Specstar is a platform & cli tool for collaborative spec-driven-development.
 

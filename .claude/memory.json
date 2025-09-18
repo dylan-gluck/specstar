@@ -1,0 +1,61 @@
+{"type":"entity","name":"Specstar Monorepo","entityType":"System","observations":["Monorepo structure with apps/* and packages/* directories","Uses pnpm workspaces for dependency management","Turborepo for build orchestration and caching","Version 0.0.1 across all packages","Platform for collaborative spec-driven development","Recent updates: monorepo refactor, Organization and ApiKey functionality added","Current objectives: Finalize data model, Knowledge Graph strategy, Backlog strategy, Agents/loops/workflows"]}
+{"type":"entity","name":"Platform App","entityType":"Application","observations":["Next.js 15.5.3 with React 19.1.0 web application","Location: apps/platform/","Uses App Router architecture","PostgreSQL database with Prisma ORM","Better-auth for authentication with organization and API key plugins","Radix UI components with Tailwind CSS v4","Mastra core integration for AI workflows","Server components for data fetching","Server actions for mutations","No test files currently implemented"]}
+{"type":"entity","name":"CLI App","entityType":"Application","observations":["Terminal UI built with React Ink 6.3.0","Location: apps/cli/","Monitors Claude Code sessions","Document viewer for planning documents","Uses Bun as runtime and build tool","Single executable compilation support","Integrates with Claude Code through lifecycle hooks","Local-only operation currently (no platform API integration)","Comprehensive test suite with contract, unit, integration, e2e tests"]}
+{"type":"entity","name":"Shared Package","entityType":"Package","observations":["Location: packages/shared/","Package name: @specstar/shared version 0.0.1","Defines core domain types (User, Organization, Project, Document, Story, ApiKey)","tRPC API infrastructure setup","Uses Zod for validation schemas","Currently minimal implementation","Not actively used by either app yet","Represents intended future state for type-safe communication","Three entry points: root, /types, /api"]}
+{"type":"entity","name":"Prisma Database","entityType":"Database","observations":["PostgreSQL as database engine","Schema location: apps/platform/prisma/schema.prisma","Models: User, Organization, Member, ApiKey, Session, Account, Verification, Invitation","Better-auth integration with auth tables","Custom client generation to src/generated/prisma","Missing business entities: Project, Document, Story","Cascade deletion rules configured","Uses @map for database table names"]}
+{"type":"entity","name":"Better Auth","entityType":"Authentication","observations":["Primary authentication system for platform","Configuration in apps/platform/src/lib/auth.ts","Email/password authentication enabled","Auto sign-in feature enabled","Plugins: organization, apiKey, nextCookies","Session management with active organization tracking","Prisma adapter for PostgreSQL","Server and client instances (auth.ts and auth-client.ts)"]}
+{"type":"entity","name":"Organization Management","entityType":"Feature","observations":["Multi-tenant organization support","Create, switch, delete organizations","Member management with invitations","Role-based access control","Unique slug generation","Organization switcher UI component","Active organization per session","Server actions for all operations"]}
+{"type":"entity","name":"API Key Management","entityType":"Feature","observations":["Comprehensive API key system","Rate limiting support","Expiration dates configurable","Metadata and permissions","Usage tracking (request counts)","One-time key display for security","Enable/disable functionality","Prefix-based key identification"]}
+{"type":"entity","name":"Session Monitor","entityType":"Module","observations":["Location: apps/cli/src/lib/session-monitor/","Watches .specstar/sessions/ directory","Real-time file change detection","Debounced file processing","In-memory session cache","Atomic file operations","Support for polling fallback","Handles Claude Code session lifecycle"]}
+{"type":"entity","name":"Config Manager","entityType":"Module","observations":["Location: apps/cli/src/lib/config-manager/","Manages .specstar/settings.json","Environment variable overrides (SPECSTAR_CONFIG_PATH)","Schema validation for configuration","Initializes project structure","Creates hooks.ts from template","Updates Claude Code settings.json","Backup creation before modifications"]}
+{"type":"entity","name":"React Ink TUI","entityType":"UI Framework","observations":["Terminal UI framework for CLI app","Keyboard-driven navigation","Views: Welcome, Plan, Observe","Global shortcuts: P (plan), O (observe), H (help), Q (quit)","Error boundaries for graceful failures","Fullscreen mode support","Box layout with borders","Color-coded key hints"]}
+{"type":"entity","name":"Mastra AI Integration","entityType":"Integration","observations":["Location: apps/platform/src/mastra/","Weather workflow and agent example","LibSQL store with in-memory config","Pino logger for telemetry","OpenAI API key required","Framework for AI agents and workflows","Evaluation data tracking"]}
+{"type":"entity","name":"Server Actions Pattern","entityType":"Pattern","observations":["Next.js server actions with 'use server' directive","Consistent auth check at start","Headers forwarding for session","Try-catch error handling","Path revalidation after mutations","Structured return format {data, error}","Used for all data operations in platform"]}
+{"type":"entity","name":"Claude Code Hooks","entityType":"Integration","observations":["Template at apps/cli/src/lib/config-manager/templates/hooks-template.ts","Supports 9 Claude Code events","Events: session_start, user_prompt_submit, tool_use, etc.","Automatic settings.json configuration","Creates .specstar/hooks.ts file","Environment variable CLAUDE_PROJECT_DIR usage","Comprehensive event metadata tracking"]}
+{"type":"entity","name":"tRPC API","entityType":"API","observations":["Setup in packages/shared/src/api/","Uses @trpc/server v11","Zod schemas for validation","Public and protected procedures defined","No auth middleware implemented yet","Not actively used in either app","Intended for platform-CLI communication"]}
+{"type":"entity","name":"Build System","entityType":"Infrastructure","observations":["Turborepo configuration in turbo.json","Shared package builds before apps","TypeScript compilation for all packages","Prisma generation as separate task","CLI binary compilation with Bun","CI/CD with GitHub Actions","Environment variables shared globally"]}
+{"type":"entity","name":"UI Component Library","entityType":"UI System","observations":["Radix UI primitives for accessibility","shadcn/ui pre-built components","Location: apps/platform/src/components/ui/","Tailwind CSS v4 with custom properties","OKLCH color space for theming","Dark mode support","Monospace fonts (Courier New, Source Code Pro)","cn() utility for class merging"]}
+{"type":"entity","name":"Logger System","entityType":"Module","observations":["Location: apps/cli/src/lib/logger/","File-based logging with rotation","Size and age-based cleanup","Console output in development","Performance timing metrics","Structured log format","Daily log file naming","Error resilience in logging"]}
+{"type":"entity","name":"Document Viewer","entityType":"Feature","observations":["Part of CLI app Plan view","Reads markdown files from configured folders","Frontmatter parsing with gray-matter","Markdown rendering with marked","File navigation with arrow keys","Configurable folder paths","Support for absolute and relative paths"]}
+{"type":"entity","name":"Dashboard","entityType":"Feature","observations":["Main entry point for platform","Server-side authentication check","Mock project data currently","Statistics grid with icons","Project cards with member counts","Organization listing","Responsive layout","Activity tracking display"]}
+{"type":"relation","from":"Specstar Monorepo","to":"Platform App","relationType":"contains"}
+{"type":"relation","from":"Specstar Monorepo","to":"CLI App","relationType":"contains"}
+{"type":"relation","from":"Specstar Monorepo","to":"Shared Package","relationType":"contains"}
+{"type":"relation","from":"Specstar Monorepo","to":"Build System","relationType":"uses"}
+{"type":"relation","from":"Platform App","to":"Prisma Database","relationType":"uses"}
+{"type":"relation","from":"Platform App","to":"Better Auth","relationType":"implements"}
+{"type":"relation","from":"Platform App","to":"Organization Management","relationType":"provides"}
+{"type":"relation","from":"Platform App","to":"API Key Management","relationType":"provides"}
+{"type":"relation","from":"Platform App","to":"Dashboard","relationType":"provides"}
+{"type":"relation","from":"Platform App","to":"Mastra AI Integration","relationType":"integrates"}
+{"type":"relation","from":"Platform App","to":"UI Component Library","relationType":"uses"}
+{"type":"relation","from":"Platform App","to":"Server Actions Pattern","relationType":"implements"}
+{"type":"relation","from":"Platform App","to":"Shared Package","relationType":"depends on"}
+{"type":"relation","from":"CLI App","to":"Session Monitor","relationType":"contains"}
+{"type":"relation","from":"CLI App","to":"Config Manager","relationType":"contains"}
+{"type":"relation","from":"CLI App","to":"React Ink TUI","relationType":"uses"}
+{"type":"relation","from":"CLI App","to":"Claude Code Hooks","relationType":"implements"}
+{"type":"relation","from":"CLI App","to":"Document Viewer","relationType":"provides"}
+{"type":"relation","from":"CLI App","to":"Logger System","relationType":"contains"}
+{"type":"relation","from":"CLI App","to":"Shared Package","relationType":"depends on"}
+{"type":"relation","from":"Better Auth","to":"Prisma Database","relationType":"connects to"}
+{"type":"relation","from":"Better Auth","to":"Organization Management","relationType":"enables"}
+{"type":"relation","from":"Better Auth","to":"API Key Management","relationType":"enables"}
+{"type":"relation","from":"Organization Management","to":"Server Actions Pattern","relationType":"uses"}
+{"type":"relation","from":"API Key Management","to":"Server Actions Pattern","relationType":"uses"}
+{"type":"relation","from":"Dashboard","to":"Server Actions Pattern","relationType":"uses"}
+{"type":"relation","from":"Dashboard","to":"UI Component Library","relationType":"uses"}
+{"type":"relation","from":"Session Monitor","to":"Claude Code Hooks","relationType":"monitors"}
+{"type":"relation","from":"Config Manager","to":"Claude Code Hooks","relationType":"generates"}
+{"type":"relation","from":"Document Viewer","to":"React Ink TUI","relationType":"renders in"}
+{"type":"relation","from":"Shared Package","to":"tRPC API","relationType":"defines"}
+{"type":"relation","from":"Build System","to":"Platform App","relationType":"builds"}
+{"type":"relation","from":"Build System","to":"CLI App","relationType":"builds"}
+{"type":"relation","from":"Build System","to":"Shared Package","relationType":"builds"}
+{"type":"relation","from":"Mastra AI Integration","to":"Platform App","relationType":"extends"}
+{"type":"relation","from":"Logger System","to":"Session Monitor","relationType":"logs for"}
+{"type":"relation","from":"UI Component Library","to":"Organization Management","relationType":"renders"}
+{"type":"relation","from":"UI Component Library","to":"API Key Management","relationType":"renders"}
+{"type":"relation","from":"UI Component Library","to":"Dashboard","relationType":"renders"}
+{"type":"relation","from":"tRPC API","to":"Platform App","relationType":"will connect"}
+{"type":"relation","from":"tRPC API","to":"CLI App","relationType":"will connect"}
