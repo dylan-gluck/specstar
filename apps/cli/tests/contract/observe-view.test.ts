@@ -8,7 +8,9 @@
  */
 
 import { describe, test, expect } from 'bun:test';
-import type { ObserveViewContract } from '../../specs/003-current-status-the/contracts/hook-contracts';
+// TODO: Re-enable when contracts are available
+// import type { ObserveViewContract } from '../../specs/003-current-status-the/contracts/hook-contracts';
+type ObserveViewContract = any;
 
 // ============================================================================
 // MOCK IMPLEMENTATIONS
@@ -166,7 +168,7 @@ describe('ObserveViewContract Session List', () => {
     });
 
     // Test each session has required fields
-    view.sessionList.sessions.forEach(session => {
+    view.sessionList.sessions.forEach((session: any) => {
       expect(session.id).toBeDefined();
       expect(typeof session.id).toBe('string');
       
@@ -191,7 +193,7 @@ describe('ObserveViewContract Session List', () => {
       }
     });
 
-    view.sessionList.sessions.forEach(session => {
+    view.sessionList.sessions.forEach((session: any) => {
       if (session.isActive) {
         expect(session.indicator).toBe('●');
       } else {
@@ -232,9 +234,9 @@ describe('ObserveViewContract Session List', () => {
       }
     });
 
-    const activeSessions = view.sessionList.sessions.filter(s => s.isActive);
+    const activeSessions = view.sessionList.sessions.filter((s: any) => s.isActive);
     expect(activeSessions).toHaveLength(3);
-    activeSessions.forEach(session => {
+    activeSessions.forEach((session: any) => {
       expect(session.indicator).toBe('●');
     });
   });
@@ -292,7 +294,7 @@ describe('ObserveViewContract Dashboard', () => {
     expect(Array.isArray(sections)).toBe(true);
     
     // Test all elements are strings
-    sections.forEach(section => {
+    sections.forEach((section: any) => {
       expect(typeof section).toBe('string');
     });
   });
@@ -474,8 +476,8 @@ describe('ObserveViewContract Edge Cases', () => {
     expect(view.sessionList.selectedId).toBe('session-50');
     
     // Validate active sessions have correct indicators
-    const activeSessions = view.sessionList.sessions.filter(s => s.isActive);
-    activeSessions.forEach(session => {
+    const activeSessions = view.sessionList.sessions.filter((s: any) => s.isActive);
+    activeSessions.forEach((session: any) => {
       expect(session.indicator).toBe('●');
     });
   });
@@ -484,7 +486,7 @@ describe('ObserveViewContract Edge Cases', () => {
     let selectedId: string | null = null;
     const mockOnSelect = (id: string) => {
       // Simulate validation in real implementation
-      const sessionExists = view.sessionList.sessions.some(s => s.id === id);
+      const sessionExists = view.sessionList.sessions.some((s: any) => s.id === id);
       if (sessionExists) {
         selectedId = id;
       }

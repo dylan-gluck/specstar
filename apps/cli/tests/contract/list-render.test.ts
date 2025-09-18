@@ -10,7 +10,10 @@
  */
 
 import { describe, test, expect } from 'bun:test';
-import type { ListItemRenderContract, SettingsContract } from '../../specs/003-current-status-the/contracts/hook-contracts.ts';
+// TODO: Re-enable when contracts are available
+// import type { ListItemRenderContract, SettingsContract } from '../../specs/003-current-status-the/contracts/hook-contracts.ts';
+type ListItemRenderContract = any;
+type SettingsContract = any;
 
 // ============================================================================
 // TEST THEMES
