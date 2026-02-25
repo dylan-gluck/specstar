@@ -11,7 +11,7 @@
 import { Show } from "solid-js";
 import type { Accessor } from "solid-js";
 import { TextAttributes } from "@opentui/core";
-import type { EnrichedIssue, UnlinkedItem, SessionId } from "../types.js";
+import type { EnrichedIssue, UnlinkedItem, SessionId, PrNumber } from "../types.js";
 import { OverviewTab } from "./overview-tab.js";
 import { ReviewTab } from "./review-tab.js";
 import { SpecTab } from "./spec-tab.js";
@@ -35,6 +35,10 @@ export interface IssueDetailProps {
   readonly onRejectSession?: (sessionId: SessionId) => void;
   readonly onNewSession?: () => void;
   readonly onOpenSessionDetail?: (sessionId: SessionId) => void;
+  readonly onApprovePR?: (prNumber: PrNumber) => void;
+  readonly onCommentPR?: (prNumber: PrNumber) => void;
+  readonly onOpenExternal?: (url: string) => void;
+  readonly onRefreshPR?: () => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -181,7 +185,15 @@ export function IssueDetail(props: IssueDetailProps) {
 
         <Show when={tab() === "review"}>
           <scrollbox flexGrow={1}>
-            <ReviewTab pr={pr} theme={t} />
+            <ReviewTab
+              pr={pr}
+              theme={t}
+              focused={() => props.focused() && tab() === "review"}
+              onApprove={props.onApprovePR}
+              onComment={props.onCommentPR}
+              onOpenExternal={props.onOpenExternal}
+              onRefresh={props.onRefreshPR}
+            />
           </scrollbox>
         </Show>
       </Show>

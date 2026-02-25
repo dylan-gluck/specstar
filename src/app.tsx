@@ -19,6 +19,7 @@ import type {
   NotionSpec,
   WorkerSession,
   SessionId,
+  PrNumber,
 } from "./types.js";
 import type { Worktree } from "../specs/001-issue-centric-tui/contracts/github.js";
 
@@ -37,6 +38,7 @@ import type { DetailTab } from "./tui/issue-detail.js";
 import { createSessionPool } from "./sessions/pool.js";
 import type { SessionPoolWithHandles } from "./sessions/pool.js";
 import { showSessionDetail } from "./tui/session-detail.js";
+import { showPromptOverlay } from "./tui/input-overlay.js";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -129,6 +131,28 @@ export function App(props: AppProps) {
     handle.sendRejection();
     pool.dismiss(sessionId, "approval_needed");
     toast("Rejected");
+  }
+
+  // PR action handlers
+  async function handleApprovePR(prNumber: PrNumber) {
+    if (!githubClientPromise) return;
+    try {
+      const client = await githubClientPromise;
+      await client.approvePR(prNumber);
+      toast.success("PR approved");
+      void refreshGithub();
+    } catch (err: unknown) {
+      toast.error(`Failed to approve PR: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+
+  function handleOpenExternal(url: string) {
+    Bun.spawn(["open", url]);
+  }
+
+  async function handleRefreshPR() {
+    await refreshGithub();
+    toast.success("PRs refreshed");
   }
 
   // UI state signals
@@ -360,6 +384,9 @@ export function App(props: AppProps) {
         handleNewSession={handleNewSession}
         handleApproveSession={handleApproveSession}
         handleRejectSession={handleRejectSession}
+        handleApprovePR={handleApprovePR}
+        handleOpenExternal={handleOpenExternal}
+        handleRefreshPR={handleRefreshPR}
       />
       <Toaster position="bottom-right" />
     </DialogProvider>
@@ -395,6 +422,9 @@ function AppInner(props: {
   handleNewSession: () => void;
   handleApproveSession: (id: SessionId) => void;
   handleRejectSession: (id: SessionId) => void;
+  handleApprovePR: (prNumber: PrNumber) => void;
+  handleOpenExternal: (url: string) => void;
+  handleRefreshPR: () => void;
 }) {
   // useDialog() is available here because AppInner renders inside DialogProvider
   const dialog = useDialog();
@@ -423,6 +453,22 @@ function AppInner(props: {
     });
   }
 
+  async function handleCommentPR(prNumber: PrNumber) {
+    const body = await showPromptOverlay(dialog as any, {
+      title: "Comment on PR",
+      placeholder: "Enter your comment...",
+      theme: props.theme,
+    });
+    if (body === undefined) return;
+    if (!props.config.github) return;
+    try {
+      const client = await createGithubClient(props.config.github.repo);
+      await client.comment(prNumber, body);
+      toast.success("Comment posted");
+    } catch (err: unknown) {
+      toast.error(`Failed to post comment: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
   return (
     <Layout
       focusedPane={props.focusedPane}
@@ -451,6 +497,10 @@ function AppInner(props: {
           onRejectSession={props.handleRejectSession}
           onNewSession={props.handleNewSession}
           onOpenSessionDetail={handleOpenSessionDetail}
+          onApprovePR={props.handleApprovePR}
+          onCommentPR={handleCommentPR}
+          onOpenExternal={props.handleOpenExternal}
+          onRefreshPR={props.handleRefreshPR}
         />
       }
       statusBar={

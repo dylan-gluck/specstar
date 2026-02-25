@@ -9,8 +9,9 @@
 
 import { Show } from "solid-js";
 import type { Accessor } from "solid-js";
+import { useKeyboard } from "@opentui/solid";
 import { TextAttributes } from "@opentui/core";
-import type { GithubPR } from "../types.js";
+import type { GithubPR, PrNumber } from "../types.js";
 import type { ResolvedTheme } from "./theme.js";
 
 // ---------------------------------------------------------------------------
@@ -20,6 +21,11 @@ import type { ResolvedTheme } from "./theme.js";
 export interface ReviewTabProps {
   readonly pr: Accessor<GithubPR | undefined>;
   readonly theme: ResolvedTheme;
+  readonly focused: Accessor<boolean>;
+  readonly onApprove?: (prNumber: PrNumber) => void;
+  readonly onComment?: (prNumber: PrNumber) => void;
+  readonly onOpenExternal?: (url: string) => void;
+  readonly onRefresh?: () => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -143,8 +149,24 @@ function ReviewSummary(props: { readonly theme: ResolvedTheme }) {
       <text fg={props.theme.foregroundBright} attributes={TextAttributes.BOLD}>
         Review Summary
       </text>
-      <text fg={props.theme.muted}>AI review summary will appear here.</text>
+      <text fg={props.theme.muted}>
+        AI review summary will be generated when a review agent completes.
+      </text>
     </box>
+  );
+}
+
+function FileIndex(props: { readonly theme: ResolvedTheme; readonly diffLineCount?: number }) {
+  return (
+    <Show when={props.diffLineCount !== undefined && props.diffLineCount > 1000}>
+      <box flexDirection="column">
+        <text fg={props.theme.foregroundBright} attributes={TextAttributes.BOLD}>
+          File Index
+        </text>
+        <text fg={props.theme.muted}>Diff exceeds 1000 lines. File summary:</text>
+        <text fg={props.theme.muted}>File index will appear here when diff data is available.</text>
+      </box>
+    </Show>
   );
 }
 
@@ -154,7 +176,20 @@ function DiffSection(props: { readonly theme: ResolvedTheme }) {
       <text fg={props.theme.foregroundBright} attributes={TextAttributes.BOLD}>
         Diff
       </text>
-      <text fg={props.theme.muted}>Diff content will be loaded here. Press r to refresh.</text>
+      <text fg={props.theme.muted}>Diff content will be loaded here.</text>
+      <text fg={props.theme.muted}>Press r to refresh.</text>
+    </box>
+  );
+}
+
+function ActionHints(props: { readonly pr: GithubPR; readonly theme: ResolvedTheme }) {
+  const canApprove = () => props.pr.state === "open";
+  return (
+    <box flexDirection="row">
+      <text fg={props.theme.muted}>
+        {canApprove() ? "a:approve  " : ""}
+        {"c:comment  e:open  r:refresh"}
+      </text>
     </box>
   );
 }
@@ -165,6 +200,27 @@ function DiffSection(props: { readonly theme: ResolvedTheme }) {
 
 export function ReviewTab(props: ReviewTabProps) {
   const t = props.theme;
+
+  useKeyboard((key) => {
+    if (!props.focused()) return;
+    const pr = props.pr();
+    if (!pr) return;
+
+    switch (key.name) {
+      case "a":
+        if (pr.state === "open") props.onApprove?.(pr.number);
+        return;
+      case "c":
+        props.onComment?.(pr.number);
+        return;
+      case "e":
+        props.onOpenExternal?.(pr.url);
+        return;
+      case "r":
+        props.onRefresh?.();
+        return;
+    }
+  });
 
   return (
     <Show
@@ -179,7 +235,9 @@ export function ReviewTab(props: ReviewTabProps) {
         <scrollbox flexDirection="column" flexGrow={1}>
           <PrMetadata pr={pr()} theme={t} />
           <ReviewSummary theme={t} />
+          <FileIndex theme={t} />
           <DiffSection theme={t} />
+          <ActionHints pr={pr()} theme={t} />
         </scrollbox>
       )}
     </Show>

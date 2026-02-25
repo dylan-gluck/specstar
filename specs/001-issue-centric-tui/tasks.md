@@ -137,8 +137,8 @@
 
 ### Implementation for User Story 4
 
-- [ ] T033 [US4] Enhance Review tab with AI review summary section, file-index summary for diffs exceeding 1000 lines (changed files with +/- counts), and PR actions: approve (`a`), comment (`c`), open externally (`e`), refresh (`r`), with toast confirmation on success in src/tui/review-tab.tsx
-- [ ] T034 [P] [US4] Implement GitHub PR command palette actions (Create PR, Approve PR, Comment on PR, Open PR in browser, Refresh PRs) with context-aware visibility conditions in src/integrations/github/commands.ts
+- [x] T033 [US4] Enhance Review tab with AI review summary section, file-index summary for diffs exceeding 1000 lines (changed files with +/- counts), and PR actions: approve (`a`), comment (`c`), open externally (`e`), refresh (`r`), with toast confirmation on success in src/tui/review-tab.tsx
+- [x] T034 [P] [US4] Implement GitHub PR command palette actions (Create PR, Approve PR, Comment on PR, Open PR in browser, Refresh PRs) with context-aware visibility conditions in src/integrations/github/commands.ts
 
 **Checkpoint**: PR review workflow is fully inline. Developers can review and act on PRs without leaving the TUI.
 
