@@ -20,11 +20,13 @@ import { createGithubClient } from "./integrations/github/client.js";
 import { createWorktreeManager } from "./integrations/github/worktree.js";
 import { createNotionClient } from "./integrations/notion/client.js";
 import { createCache } from "./db.js";
-import { resolveTheme } from "./tui/theme.js";
+import { resolveTheme, createDefaultSyntaxStyle } from "./tui/theme.js";
 import { enrichIssues, buildIssueListModel } from "./enrichment.js";
 import { Layout } from "./tui/layout.js";
 import { IssueList, getFlatItems } from "./tui/issue-list.js";
 import { StatusBar } from "./tui/status-bar.js";
+import { IssueDetail } from "./tui/issue-detail.js";
+import type { DetailTab } from "./tui/issue-detail.js";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -56,6 +58,33 @@ export function App(props: AppProps) {
   // UI state signals
   const [focusedPane, setFocusedPane] = createSignal<"left" | "right">("left");
   const [selectedIndex, setSelectedIndex] = createSignal(0);
+  const [activeTab, setActiveTab] = createSignal<DetailTab>("overview");
+  const syntaxStyle = createDefaultSyntaxStyle();
+
+  const selectedItem = createMemo(() => {
+    const model = issueListModel();
+    const flatItems = getFlatItems(model);
+    const idx = selectedIndex();
+    const current = flatItems[idx];
+    if (!current) return undefined;
+    if (current.kind === "issue") return current.issue;
+    return current.item;
+  });
+
+  const TAB_ORDER: DetailTab[] = ["overview", "spec", "review"];
+
+  function handleTabSelect(tab: 1 | 2 | 3) {
+    setActiveTab(TAB_ORDER[tab - 1]!);
+  }
+
+  function handleTabCycle(direction: "next" | "prev") {
+    const current = TAB_ORDER.indexOf(activeTab());
+    if (direction === "next") {
+      setActiveTab(TAB_ORDER[(current + 1) % TAB_ORDER.length]!);
+    } else {
+      setActiveTab(TAB_ORDER[(current - 1 + TAB_ORDER.length) % TAB_ORDER.length]!);
+    }
+  }
 
   // -------------------------------------------------------------------------
   // Integration caches (for delta detection)
@@ -236,6 +265,8 @@ export function App(props: AppProps) {
       <Layout
         focusedPane={focusedPane}
         onFocusChange={setFocusedPane}
+        onTabSelect={handleTabSelect}
+        onTabCycle={handleTabCycle}
         theme={() => theme}
         leftPane={
           <IssueList
@@ -247,9 +278,14 @@ export function App(props: AppProps) {
           />
         }
         rightPane={
-          <box flexGrow={1}>
-            <text fg={theme.muted}>{"Select an issue to view details"}</text>
-          </box>
+          <IssueDetail
+            item={selectedItem}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            theme={theme}
+            focused={() => focusedPane() === "right"}
+            syntaxStyle={syntaxStyle}
+          />
         }
         statusBar={
           <StatusBar

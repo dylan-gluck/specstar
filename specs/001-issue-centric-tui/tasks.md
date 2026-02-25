@@ -96,11 +96,11 @@
 
 ### Implementation for User Story 2
 
-- [ ] T022 [US2] Implement issue detail container with tab bar (Overview/SPEC/Review), `<Switch>`/`<Match>` content switching, per-tab scroll position preservation via refs, and handling for unlinked items (show only relevant tab) in src/tui/issue-detail.tsx
-- [ ] T023 [US2] Implement Overview tab displaying issue metadata (identifier, state, priority, assignee, branch, worktree status, URL), full description via `<markdown>`, structured requirements/acceptance criteria if present, sessions placeholder list, and compact activity log (last 10 events) in src/tui/overview-tab.tsx
-- [ ] T024 [P] [US2] Implement SPEC tab displaying spec title, status (color-coded: draft=muted, pending=warning, approved=success, denied=error), last updated time, URL, and full formatted content via `<markdown>`. Show "No spec for this issue. Press `/` > Draft Spec to create one." when no spec linked in src/tui/spec-tab.tsx
-- [ ] T025 [P] [US2] Implement Review tab displaying PR metadata (number, title, author, state, branch, CI status, review decision, URL), review summary section (placeholder for AI summary), and syntax-colored diff via `<diff>` component. Show "No pull request. Press `/` > Create PR to open one." when no PR linked in src/tui/review-tab.tsx
-- [ ] T026 [US2] Add pane focus toggle (Tab key), direct tab access (keys 1-3), and tab cycling (h/l or left/right arrows) to layout keyboard handling in src/tui/layout.tsx
+- [x] T022 [US2] Implement issue detail container with tab bar (Overview/SPEC/Review), `<Switch>`/`<Match>` content switching, per-tab scroll position preservation via refs, and handling for unlinked items (show only relevant tab) in src/tui/issue-detail.tsx
+- [x] T023 [US2] Implement Overview tab displaying issue metadata (identifier, state, priority, assignee, branch, worktree status, URL), full description via `<markdown>`, structured requirements/acceptance criteria if present, sessions placeholder list, and compact activity log (last 10 events) in src/tui/overview-tab.tsx
+- [x] T024 [P] [US2] Implement SPEC tab displaying spec title, status (color-coded: draft=muted, pending=warning, approved=success, denied=error), last updated time, URL, and full formatted content via `<markdown>`. Show "No spec for this issue. Press `/` > Draft Spec to create one." when no spec linked in src/tui/spec-tab.tsx
+- [x] T025 [P] [US2] Implement Review tab displaying PR metadata (number, title, author, state, branch, CI status, review decision, URL), review summary section (placeholder for AI summary), and syntax-colored diff via `<diff>` component. Show "No pull request. Press `/` > Create PR to open one." when no PR linked in src/tui/review-tab.tsx
+- [x] T026 [US2] Add pane focus toggle (Tab key), direct tab access (keys 1-3), and tab cycling (h/l or left/right arrows) to layout keyboard handling in src/tui/layout.tsx
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently. Developers can browse issues and view full context in three tabs.
 

@@ -8,6 +8,7 @@
  */
 
 import type { ThemeConfig, StatusBadge } from "../types.js";
+import { SyntaxStyle } from "@opentui/core";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -173,3 +174,18 @@ export function badgeColor(badge: StatusBadge, theme: ResolvedTheme): string {
       return theme.muted;
   }
 }
+
+
+// ---------------------------------------------------------------------------
+// Syntax highlighting style
+// ---------------------------------------------------------------------------
+
+/**
+ * Create a default SyntaxStyle instance for markdown/code rendering.
+ * Call once at app startup and share across components.
+ */
+export function createDefaultSyntaxStyle(): SyntaxStyle {
+  return SyntaxStyle.create();
+}
+
+export type { SyntaxStyle };

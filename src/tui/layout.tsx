@@ -8,6 +8,8 @@ export interface LayoutProps {
   readonly statusBar: JSX.Element;
   readonly focusedPane: Accessor<"left" | "right">;
   readonly onFocusChange: (pane: "left" | "right") => void;
+  readonly onTabSelect?: (tab: 1 | 2 | 3) => void;
+  readonly onTabCycle?: (direction: "next" | "prev") => void;
   readonly theme: Accessor<ResolvedTheme>;
 }
 
@@ -15,7 +17,17 @@ export function Layout(props: LayoutProps) {
   useKeyboard((key) => {
     if (key.name === "tab") {
       props.onFocusChange(props.focusedPane() === "left" ? "right" : "left");
+      return;
     }
+
+    if (props.focusedPane() !== "right") return;
+
+    if (key.name === "1") { props.onTabSelect?.(1); return; }
+    if (key.name === "2") { props.onTabSelect?.(2); return; }
+    if (key.name === "3") { props.onTabSelect?.(3); return; }
+
+    if (key.name === "h" || key.name === "left") { props.onTabCycle?.("prev"); return; }
+    if (key.name === "l" || key.name === "right") { props.onTabCycle?.("next"); return; }
   });
 
   const leftBorder = () =>
