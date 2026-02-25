@@ -4,7 +4,9 @@
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
-    "lint:fix": "oxlint --fix"
+    "lint:fix": "oxlint --fix",
+    "schema": "bun scripts/generate-schema.ts",
+    "build": "bun build.ts"
   },
   "dependencies": {
     "@oh-my-pi/pi-coding-agent": "^13.2.1",

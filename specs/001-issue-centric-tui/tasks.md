@@ -48,19 +48,19 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Define shared types, branded type helpers, and state machine types (WorkerStatus, SpecStatus, PRState transitions) in src/types.ts per contracts and data-model.md Section 5
-- [ ] T005 [P] Implement SQLite schema with all 6 tables (issues, pull_requests, worktrees, sessions, specs, memory_entries), indexes, migrations, connection management, and generic `IntegrationCache<T>` with delta detection in src/db.ts per data-model.md Section 4 and contracts/cache.ts
-- [ ] T006 [P] Implement base16 semantic theme mapping (12 color roles: background, backgroundAlt, selection, muted, foreground, foregroundBright, error, warning, success, info, accent, secondary) with ANSI fallback and hex override support in src/tui/theme.ts per research.md Section 10
-- [ ] T007 Implement configuration loading with 4-location file discovery chain ($SPECSTAR_CONFIG_FILE, XDG, ~/.specstar.json, .specstar.json), shallow-merge strategy, and JSON Schema validation in src/config.ts per contracts/config.ts
-- [ ] T008 [P] Implement Linear GraphQL client (`getIssues`, `getIssue`, `getStates`, `updateIssue`, `addComment`) and domain types (LinearIssue, LinearState, LinearFilter) in src/integrations/linear/client.ts and src/integrations/linear/types.ts per contracts/linear.ts
-- [ ] T009 [P] Implement GitHub PR client via `gh` CLI wrapper (`listPRs`, `getPR`, `createPR`, `comment`, `approvePR`) and domain types (GithubPR, CreatePROptions, Worktree) in src/integrations/github/client.ts and src/integrations/github/types.ts per contracts/github.ts
-- [ ] T010 Implement Git worktree manager (`list`, `create`, `remove`, `sync`) using git CLI in src/integrations/github/worktree.ts per contracts/github.ts WorktreeManager interface
-- [ ] T011 [P] Implement Notion API client (`listSpecs`, `getSpec`, `createSpec`, `updateSpec`, `setSpecStatus`) and domain types (NotionSpec, SpecStatus) in src/integrations/notion/client.ts and src/integrations/notion/types.ts per contracts/notion.ts
-- [ ] T012 [P] Implement project memory JSONL store (`read`, `write`, `search` by category) and types (MemoryEntry) in src/memory/store.ts and src/memory/types.ts per data-model.md Section 1.7
-- [ ] T013 Create CLI entry point with arg parsing, configuration loading, terminal setup, and `render()` call in src/index.tsx
-- [ ] T014 Create root App component with `<DialogProvider>`, `<Toaster position="bottom-right" />`, Solid signal providers for integration data (issues, PRs, specs, worktrees, sessions), and polling scaffolding (configurable intervals: Linear 30s, GitHub 30s, Worktrees 10s, Notion 60s) in src/app.tsx
-- [ ] T015 [P] Create JSON Schema generation script (`ts-json-schema-generator --path src/config.ts --type SpecstarConfig`) with `bun run schema` npm script in scripts/generate-schema.ts
-- [ ] T016 [P] Create build script for standalone binary compilation (`Bun.build` with `@opentui/solid/bun-plugin`, target `bun-darwin-arm64`) with `bun run build` npm script in build.ts
+- [x] T004 Define shared types, branded type helpers, and state machine types (WorkerStatus, SpecStatus, PRState transitions) in src/types.ts per contracts and data-model.md Section 5
+- [x] T005 [P] Implement SQLite schema with all 6 tables (issues, pull_requests, worktrees, sessions, specs, memory_entries), indexes, migrations, connection management, and generic `IntegrationCache<T>` with delta detection in src/db.ts per data-model.md Section 4 and contracts/cache.ts
+- [x] T006 [P] Implement base16 semantic theme mapping (12 color roles: background, backgroundAlt, selection, muted, foreground, foregroundBright, error, warning, success, info, accent, secondary) with ANSI fallback and hex override support in src/tui/theme.ts per research.md Section 10
+- [x] T007 Implement configuration loading with 4-location file discovery chain ($SPECSTAR_CONFIG_FILE, XDG, ~/.specstar.json, .specstar.json), shallow-merge strategy, and JSON Schema validation in src/config.ts per contracts/config.ts
+- [x] T008 [P] Implement Linear GraphQL client (`getIssues`, `getIssue`, `getStates`, `updateIssue`, `addComment`) and domain types (LinearIssue, LinearState, LinearFilter) in src/integrations/linear/client.ts and src/integrations/linear/types.ts per contracts/linear.ts
+- [x] T009 [P] Implement GitHub PR client via `gh` CLI wrapper (`listPRs`, `getPR`, `createPR`, `comment`, `approvePR`) and domain types (GithubPR, CreatePROptions, Worktree) in src/integrations/github/client.ts and src/integrations/github/types.ts per contracts/github.ts
+- [x] T010 Implement Git worktree manager (`list`, `create`, `remove`, `sync`) using git CLI in src/integrations/github/worktree.ts per contracts/github.ts WorktreeManager interface
+- [x] T011 [P] Implement Notion API client (`listSpecs`, `getSpec`, `createSpec`, `updateSpec`, `setSpecStatus`) and domain types (NotionSpec, SpecStatus) in src/integrations/notion/client.ts and src/integrations/notion/types.ts per contracts/notion.ts
+- [x] T012 [P] Implement project memory JSONL store (`read`, `write`, `search` by category) and types (MemoryEntry) in src/memory/store.ts and src/memory/types.ts per data-model.md Section 1.7
+- [x] T013 Create CLI entry point with arg parsing, configuration loading, terminal setup, and `render()` call in src/index.tsx
+- [x] T014 Create root App component with `<DialogProvider>`, `<Toaster position="bottom-right" />`, Solid signal providers for integration data (issues, PRs, specs, worktrees, sessions), and polling scaffolding (configurable intervals: Linear 30s, GitHub 30s, Worktrees 10s, Notion 60s) in src/app.tsx
+- [x] T015 [P] Create JSON Schema generation script (`ts-json-schema-generator --path src/config.ts --type SpecstarConfig`) with `bun run schema` npm script in scripts/generate-schema.ts
+- [x] T016 [P] Create build script for standalone binary compilation (`Bun.build` with `@opentui/solid/bun-plugin`, target `bun-darwin-arm64`) with `bun run build` npm script in build.ts
 
 **Checkpoint**: Foundation ready -- all integration clients fetch data, cache layer stores/detects deltas, configuration loads and validates, app shell renders. User story implementation can now begin.
 
