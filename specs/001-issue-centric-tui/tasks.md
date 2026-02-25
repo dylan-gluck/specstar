@@ -116,12 +116,12 @@
 
 ### Implementation for User Story 3
 
-- [ ] T027 [US3] Implement session pool manager with `spawn()`, `destroy()`, `list()`, `getNotifications()`, `dismiss()`, `shutdownAll()`, `subscribe()`, concurrency limit enforcement, and worker lifecycle management in src/sessions/pool.ts per contracts/session-pool.ts
-- [ ] T028 [US3] Implement worker session wrapper creating `AgentSession` via omp SDK in Bun Worker, mapping SDK events to `WorkerEvent` union (status_changed, activity, approval_needed, notification, error, shutdown_complete), handling `MainToWorkerMessage` (prompt, approve, reject, abort, shutdown), and enforcing WorkerStatus state machine transitions in src/sessions/worker.ts
-- [ ] T029 [P] [US3] Implement session event types (WorkerEvent, MainToWorkerMessage unions) and event aggregator that collects notifications across all sessions and surfaces them to the UI layer in src/sessions/events.ts
-- [ ] T030 [US3] Enhance Overview tab with sessions table (name, color-coded status, relative start time, token count), inline approval flow (press `a` to approve, `x` to reject), "No sessions. Press `n` to start one." empty state, new session creation (press `n`), and Enter to open session detail in src/tui/overview-tab.tsx
-- [ ] T031 [US3] Implement session detail full-screen overlay (Dialog size `"full"`) with conversation history, streaming output display, prompt input field, approval controls, abort button, and `useDialogKeyboard()` scoped keyboard handling in src/tui/session-detail.tsx
-- [ ] T032 [P] [US3] Implement input overlay for text prompts and choice selection using `useDialog().prompt<T>()` and `useDialog().choice<K>()` with keyboard handling in src/tui/input-overlay.tsx
+- [x] T027 [US3] Implement session pool manager with `spawn()`, `destroy()`, `list()`, `getNotifications()`, `dismiss()`, `shutdownAll()`, `subscribe()`, concurrency limit enforcement, and worker lifecycle management in src/sessions/pool.ts per contracts/session-pool.ts
+- [x] T028 [US3] Implement worker session wrapper creating `AgentSession` via omp SDK in Bun Worker, mapping SDK events to `WorkerEvent` union (status_changed, activity, approval_needed, notification, error, shutdown_complete), handling `MainToWorkerMessage` (prompt, approve, reject, abort, shutdown), and enforcing WorkerStatus state machine transitions in src/sessions/worker.ts
+- [x] T029 [P] [US3] Implement session event types (WorkerEvent, MainToWorkerMessage unions) and event aggregator that collects notifications across all sessions and surfaces them to the UI layer in src/sessions/events.ts
+- [x] T030 [US3] Enhance Overview tab with sessions table (name, color-coded status, relative start time, token count), inline approval flow (press `a` to approve, `x` to reject), "No sessions. Press `n` to start one." empty state, new session creation (press `n`), and Enter to open session detail in src/tui/overview-tab.tsx
+- [x] T031 [US3] Implement session detail full-screen overlay (Dialog size `"full"`) with conversation history, streaming output display, prompt input field, approval controls, abort button, and `useDialogKeyboard()` scoped keyboard handling in src/tui/session-detail.tsx
+- [x] T032 [P] [US3] Implement input overlay for text prompts and choice selection using `useDialog().prompt<T>()` and `useDialog().choice<K>()` with keyboard handling in src/tui/input-overlay.tsx
 
 **Checkpoint**: All three P1 user stories should now be independently functional. Developers can browse issues, view full context, and manage agent sessions.
 

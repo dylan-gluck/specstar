@@ -175,7 +175,6 @@ export function badgeColor(badge: StatusBadge, theme: ResolvedTheme): string {
   }
 }
 
-
 // ---------------------------------------------------------------------------
 // Syntax highlighting style
 // ---------------------------------------------------------------------------

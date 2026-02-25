@@ -8,11 +8,18 @@
  */
 
 import { createSignal, createEffect, createMemo, onCleanup } from "solid-js";
-import { DialogProvider } from "@opentui-ui/dialog/solid";
+import { DialogProvider, useDialog } from "@opentui-ui/dialog/solid";
 import { Toaster, toast } from "@opentui-ui/toast/solid";
 import { Database } from "bun:sqlite";
 
-import type { SpecstarConfig, LinearIssue, GithubPR, NotionSpec, WorkerSession } from "./types.js";
+import type {
+  SpecstarConfig,
+  LinearIssue,
+  GithubPR,
+  NotionSpec,
+  WorkerSession,
+  SessionId,
+} from "./types.js";
 import type { Worktree } from "../specs/001-issue-centric-tui/contracts/github.js";
 
 import { createLinearClient } from "./integrations/linear/client.js";
@@ -27,6 +34,9 @@ import { IssueList, getFlatItems } from "./tui/issue-list.js";
 import { StatusBar } from "./tui/status-bar.js";
 import { IssueDetail } from "./tui/issue-detail.js";
 import type { DetailTab } from "./tui/issue-detail.js";
+import { createSessionPool } from "./sessions/pool.js";
+import type { SessionPoolWithHandles } from "./sessions/pool.js";
+import { showSessionDetail } from "./tui/session-detail.js";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -53,7 +63,73 @@ export function App(props: AppProps) {
   const [prs, setPrs] = createSignal<readonly GithubPR[]>([]);
   const [specs, setSpecs] = createSignal<readonly NotionSpec[]>([]);
   const [worktrees, setWorktrees] = createSignal<readonly Worktree[]>([]);
-  const [sessions, _setSessions] = createSignal<readonly WorkerSession[]>([]);
+  const [sessions, setSessions] = createSignal<readonly WorkerSession[]>([]);
+
+  // -------------------------------------------------------------------------
+  // Session pool
+  // -------------------------------------------------------------------------
+
+  const pool: SessionPoolWithHandles = createSessionPool({
+    maxConcurrent: config.sessions.maxConcurrent,
+  });
+
+  // Subscribe to pool changes to keep the sessions signal in sync
+  pool.subscribe({
+    onSessionAdded: () => setSessions(pool.list()),
+    onSessionRemoved: () => setSessions(pool.list()),
+    onSessionUpdated: () => setSessions(pool.list()),
+    onNotification: (notification) => {
+      if (notification.kind === "approval_needed") {
+        toast.warning(`Session "${notification.sessionName}": approval needed`);
+      } else if (notification.kind === "error") {
+        toast.error(`Session "${notification.sessionName}": ${notification.message}`);
+      } else if (notification.kind === "completed") {
+        toast.success(`Session "${notification.sessionName}" completed`);
+      }
+    },
+  });
+
+  onCleanup(() => {
+    void pool.shutdownAll();
+  });
+
+  // Session action handlers
+  async function handleNewSession() {
+    const cwd = config.sessions.worktreeBase;
+    try {
+      await pool.spawn({
+        cwd,
+        name: `Session ${pool.size + 1}`,
+        model: config.sessions.model,
+        thinkingLevel: config.sessions.thinkingLevel,
+      });
+      toast.success("Session started");
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error
+          ? err.message
+          : typeof err === "object" && err !== null && "message" in err
+            ? String((err as { message: unknown }).message)
+            : String(err);
+      toast.error(`Failed to start session: ${msg}`);
+    }
+  }
+
+  function handleApproveSession(sessionId: SessionId) {
+    const handle = pool.getHandle(sessionId);
+    if (!handle || handle.status !== "approval") return;
+    handle.sendApproval();
+    pool.dismiss(sessionId, "approval_needed");
+    toast.success("Approved");
+  }
+
+  function handleRejectSession(sessionId: SessionId) {
+    const handle = pool.getHandle(sessionId);
+    if (!handle || handle.status !== "approval") return;
+    handle.sendRejection();
+    pool.dismiss(sessionId, "approval_needed");
+    toast("Rejected");
+  }
 
   // UI state signals
   const [focusedPane, setFocusedPane] = createSignal<"left" | "right">("left");
@@ -262,42 +338,130 @@ export function App(props: AppProps) {
 
   return (
     <DialogProvider>
-      <Layout
+      <AppInner
+        config={config}
+        theme={theme}
+        syntaxStyle={syntaxStyle}
+        pool={pool}
         focusedPane={focusedPane}
-        onFocusChange={setFocusedPane}
-        onTabSelect={handleTabSelect}
-        onTabCycle={handleTabCycle}
-        theme={() => theme}
-        leftPane={
-          <IssueList
-            model={issueListModel}
-            selectedIndex={selectedIndex}
-            onSelect={setSelectedIndex}
-            theme={theme}
-            focused={() => focusedPane() === "left"}
-          />
-        }
-        rightPane={
-          <IssueDetail
-            item={selectedItem}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            theme={theme}
-            focused={() => focusedPane() === "right"}
-            syntaxStyle={syntaxStyle}
-          />
-        }
-        statusBar={
-          <StatusBar
-            issueCount={issueCount}
-            sessionCount={sessionCount}
-            attentionCount={attentionCount}
-            focusedPane={focusedPane}
-            theme={theme}
-          />
-        }
+        setFocusedPane={setFocusedPane}
+        selectedIndex={selectedIndex}
+        setSelectedIndex={setSelectedIndex}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        handleTabSelect={handleTabSelect}
+        handleTabCycle={handleTabCycle}
+        issueListModel={issueListModel}
+        selectedItem={selectedItem}
+        issueCount={issueCount}
+        sessionCount={sessionCount}
+        attentionCount={attentionCount}
+        sessions={sessions}
+        handleNewSession={handleNewSession}
+        handleApproveSession={handleApproveSession}
+        handleRejectSession={handleRejectSession}
       />
       <Toaster position="bottom-right" />
     </DialogProvider>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Inner component (rendered inside DialogProvider for useDialog() access)
+// ---------------------------------------------------------------------------
+
+function AppInner(props: {
+  config: SpecstarConfig;
+  theme: ReturnType<typeof resolveTheme>;
+  syntaxStyle: ReturnType<typeof createDefaultSyntaxStyle>;
+  pool: SessionPoolWithHandles;
+  focusedPane: ReturnType<typeof createSignal<"left" | "right">>[0];
+  setFocusedPane: ReturnType<typeof createSignal<"left" | "right">>[1];
+  selectedIndex: ReturnType<typeof createSignal<number>>[0];
+  setSelectedIndex: ReturnType<typeof createSignal<number>>[1];
+  activeTab: ReturnType<typeof createSignal<DetailTab>>[0];
+  setActiveTab: ReturnType<typeof createSignal<DetailTab>>[1];
+  handleTabSelect: (tab: 1 | 2 | 3) => void;
+  handleTabCycle: (direction: "next" | "prev") => void;
+  issueListModel: () => ReturnType<typeof buildIssueListModel>;
+  selectedItem: () =>
+    | ReturnType<typeof buildIssueListModel>["attention"][number]
+    | import("./types.js").UnlinkedItem
+    | undefined;
+  issueCount: () => number;
+  sessionCount: () => number;
+  attentionCount: () => number;
+  sessions: () => readonly WorkerSession[];
+  handleNewSession: () => void;
+  handleApproveSession: (id: SessionId) => void;
+  handleRejectSession: (id: SessionId) => void;
+}) {
+  // useDialog() is available here because AppInner renders inside DialogProvider
+  const dialog = useDialog();
+
+  function handleOpenSessionDetail(sessionId: SessionId) {
+    const handle = props.pool.getHandle(sessionId);
+    if (!handle) return;
+    void showSessionDetail(dialog as any, {
+      session: handle.toSession(),
+      theme: props.theme,
+      onPrompt: (text) => handle.sendPrompt(text),
+      onApprove: () => {
+        handle.sendApproval();
+        props.pool.dismiss(sessionId, "approval_needed");
+        toast.success("Approved");
+      },
+      onReject: () => {
+        handle.sendRejection();
+        props.pool.dismiss(sessionId, "approval_needed");
+        toast("Rejected");
+      },
+      onAbort: () => {
+        handle.sendAbort();
+        toast.warning("Session aborted");
+      },
+    });
+  }
+
+  return (
+    <Layout
+      focusedPane={props.focusedPane}
+      onFocusChange={props.setFocusedPane}
+      onTabSelect={props.handleTabSelect}
+      onTabCycle={props.handleTabCycle}
+      theme={() => props.theme}
+      leftPane={
+        <IssueList
+          model={props.issueListModel}
+          selectedIndex={props.selectedIndex}
+          onSelect={props.setSelectedIndex}
+          theme={props.theme}
+          focused={() => props.focusedPane() === "left"}
+        />
+      }
+      rightPane={
+        <IssueDetail
+          item={props.selectedItem as any}
+          activeTab={props.activeTab}
+          onTabChange={props.setActiveTab}
+          theme={props.theme}
+          focused={() => props.focusedPane() === "right"}
+          syntaxStyle={props.syntaxStyle}
+          onApproveSession={props.handleApproveSession}
+          onRejectSession={props.handleRejectSession}
+          onNewSession={props.handleNewSession}
+          onOpenSessionDetail={handleOpenSessionDetail}
+        />
+      }
+      statusBar={
+        <StatusBar
+          issueCount={props.issueCount}
+          sessionCount={props.sessionCount}
+          attentionCount={props.attentionCount}
+          focusedPane={props.focusedPane}
+          theme={props.theme}
+        />
+      }
+    />
   );
 }
