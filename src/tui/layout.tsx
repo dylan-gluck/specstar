@@ -10,6 +10,7 @@ export interface LayoutProps {
   readonly onFocusChange: (pane: "left" | "right") => void;
   readonly onTabSelect?: (tab: 1 | 2 | 3) => void;
   readonly onTabCycle?: (direction: "next" | "prev") => void;
+  readonly onCommandPalette?: () => void;
   readonly theme: Accessor<ResolvedTheme>;
 }
 
@@ -17,6 +18,11 @@ export function Layout(props: LayoutProps) {
   useKeyboard((key) => {
     if (key.name === "tab") {
       props.onFocusChange(props.focusedPane() === "left" ? "right" : "left");
+      return;
+    }
+
+    if (key.name === "/") {
+      props.onCommandPalette?.();
       return;
     }
 

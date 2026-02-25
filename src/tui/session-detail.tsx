@@ -36,17 +36,10 @@ export interface SessionDetailProps {
 /**
  * Subset of `useDialog()` return required by {@link showSessionDetail}.
  *
- * `show` renders the detail overlay; `prompt` is passed through to
+ * `prompt` renders the detail overlay; `choice` is passed through to
  * {@link showPromptOverlay} for the nested prompt input.
  */
 interface DialogHandle {
-  show(options: {
-    content: (ctx: {
-      dismiss: () => void;
-      dialogId: DialogId;
-    }) => () => import("solid-js").JSX.Element;
-    size?: string;
-  }): void;
   prompt<T>(options: {
     content: (ctx: {
       resolve: (value: T) => void;
@@ -202,38 +195,33 @@ export async function showSessionDetail(
     onAbort: () => void;
   },
 ): Promise<void> {
-  return new Promise<void>((resolve) => {
-    dialog.show({
-      content: (ctx) => {
-        const requestPrompt = async () => {
-          const text = await showPromptOverlay(dialog, {
-            title: "Send prompt",
-            placeholder: "Enter your prompt...",
-            theme: options.theme,
-          });
-          if (text != null && text.length > 0) {
-            options.onPrompt(text);
-          }
-        };
+  await dialog.prompt<void>({
+    content: (ctx) => {
+      const requestPrompt = async () => {
+        const text = await showPromptOverlay(dialog, {
+          title: "Send prompt",
+          placeholder: "Enter your prompt...",
+          theme: options.theme,
+        });
+        if (text != null && text.length > 0) {
+          options.onPrompt(text);
+        }
+      };
 
-        return () => (
-          <SessionDetail
-            session={options.session}
-            theme={options.theme}
-            dialogId={ctx.dialogId}
-            onPrompt={options.onPrompt}
-            onApprove={options.onApprove}
-            onReject={options.onReject}
-            onAbort={options.onAbort}
-            onRequestPrompt={requestPrompt}
-            onClose={() => {
-              ctx.dismiss();
-              resolve();
-            }}
-          />
-        );
-      },
-      size: "full",
-    });
+      return () => (
+        <SessionDetail
+          session={options.session}
+          theme={options.theme}
+          dialogId={ctx.dialogId}
+          onPrompt={options.onPrompt}
+          onApprove={options.onApprove}
+          onReject={options.onReject}
+          onAbort={options.onAbort}
+          onRequestPrompt={requestPrompt}
+          onClose={() => ctx.dismiss()}
+        />
+      );
+    },
+    size: "full",
   });
 }

@@ -39,6 +39,13 @@ import { createSessionPool } from "./sessions/pool.js";
 import type { SessionPoolWithHandles } from "./sessions/pool.js";
 import { showSessionDetail } from "./tui/session-detail.js";
 import { showPromptOverlay } from "./tui/input-overlay.js";
+import { showCommandPalette } from "./tui/command-palette.js";
+import { getLinearCommands } from "./integrations/linear/commands.js";
+import { getGithubCommands } from "./integrations/github/commands.js";
+import { getNotionCommands } from "./integrations/notion/commands.js";
+import { getSessionCommands } from "./sessions/commands.js";
+import type { PaletteCommand, PaletteContext } from "./tui/palette-types.js";
+import type { EnrichedIssue, UnlinkedItem } from "./types.js";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -387,6 +394,9 @@ export function App(props: AppProps) {
         handleApprovePR={handleApprovePR}
         handleOpenExternal={handleOpenExternal}
         handleRefreshPR={handleRefreshPR}
+        refreshLinear={refreshLinear}
+        refreshGithub={refreshGithub}
+        refreshNotion={refreshNotion}
       />
       <Toaster position="bottom-right" />
     </DialogProvider>
@@ -425,6 +435,9 @@ function AppInner(props: {
   handleApprovePR: (prNumber: PrNumber) => void;
   handleOpenExternal: (url: string) => void;
   handleRefreshPR: () => void;
+  refreshLinear: () => Promise<void>;
+  refreshGithub: () => Promise<void>;
+  refreshNotion: () => Promise<void>;
 }) {
   // useDialog() is available here because AppInner renders inside DialogProvider
   const dialog = useDialog();
@@ -469,12 +482,65 @@ function AppInner(props: {
       toast.error(`Failed to post comment: ${err instanceof Error ? err.message : String(err)}`);
     }
   }
+
+  // -- Command Palette --
+  const allCommands: readonly PaletteCommand[] = [
+    ...getLinearCommands(),
+    ...getGithubCommands(),
+    ...getNotionCommands(),
+    ...getSessionCommands(),
+  ];
+
+  function buildPaletteContext(): PaletteContext {
+    const item = props.selectedItem();
+    const selectedIssue: EnrichedIssue | undefined =
+      item && "issue" in item ? (item as EnrichedIssue) : undefined;
+    const selectedUnlinked: UnlinkedItem | undefined =
+      item && "type" in item ? (item as UnlinkedItem) : undefined;
+
+    return {
+      selectedIssue,
+      selectedUnlinked,
+      sessions: props.sessions(),
+      pool: props.pool,
+      toast: {
+        success: toast.success,
+        error: toast.error,
+        warning: toast.warning,
+        info: toast.info,
+      },
+      async promptInput(label: string, placeholder?: string) {
+        return showPromptOverlay(dialog as any, {
+          title: label,
+          placeholder: placeholder ?? "",
+          theme: props.theme,
+        });
+      },
+      refreshAll: async () => {
+        await Promise.all([props.refreshLinear(), props.refreshGithub(), props.refreshNotion()]);
+      },
+      refreshLinear: props.refreshLinear,
+      refreshGithub: props.refreshGithub,
+      refreshNotion: props.refreshNotion,
+      currentBranch: undefined,
+      theme: props.theme,
+    };
+  }
+
+  function handleCommandPalette() {
+    void showCommandPalette(dialog as any, {
+      commands: allCommands,
+      context: buildPaletteContext(),
+      theme: props.theme,
+    });
+  }
   return (
     <Layout
       focusedPane={props.focusedPane}
       onFocusChange={props.setFocusedPane}
       onTabSelect={props.handleTabSelect}
       onTabCycle={props.handleTabCycle}
+      onCommandPalette={handleCommandPalette}
       theme={() => props.theme}
       leftPane={
         <IssueList

@@ -154,12 +154,12 @@
 
 ### Implementation for User Story 5
 
-- [ ] T035 [US5] Implement command palette component (Dialog size `"large"`) with fuzzy search input, categorized action list (Issue, Session, PR, Spec, Worktree, Global), context-sensitive filtering (conditions evaluated against selected issue state), keyboard navigation, and `useDialogKeyboard()` scoped input handling in src/tui/command-palette.tsx
-- [ ] T036 [P] [US5] Implement Linear command palette actions (Capture Issue, Refine Ticket, Update Issue State, Add Comment) with context conditions in src/integrations/linear/commands.ts
-- [ ] T037 [P] [US5] Implement session command palette actions (New Session, Abort Session, Approve All Pending, Shutdown All) with context conditions in src/sessions/commands.ts
-- [ ] T038 [P] [US5] Implement Notion command palette actions (Draft Spec, Refresh Specs, Open Spec in Browser) with context conditions in src/integrations/notion/commands.ts
-- [ ] T039 [US5] Implement workflow engine with YAML discovery (4 directories: `.specstar/workflows/`, `~/.omp/agent/workflows/`, `.omp/workflows/`, config `workflowDirs`), definition validation, DAG execution planner (dependency waves), and swarm pipeline bridge in src/workflows/engine.ts, src/workflows/types.ts, and src/workflows/bridge.ts per contracts/workflow.ts
-- [ ] T040 [P] [US5] Implement built-in workflow definitions (capture-issue, refine-issue, draft-spec, plan-cycle) as YAML-loadable step pipelines in src/workflows/builtins/capture-issue.ts, src/workflows/builtins/refine-issue.ts, src/workflows/builtins/draft-spec.ts, and src/workflows/builtins/plan-cycle.ts
+- [x] T035 [US5] Implement command palette component (Dialog size `"large"`) with fuzzy search input, categorized action list (Issue, Session, PR, Spec, Worktree, Global), context-sensitive filtering (conditions evaluated against selected issue state), keyboard navigation, and `useDialogKeyboard()` scoped input handling in src/tui/command-palette.tsx
+- [x] T036 [P] [US5] Implement Linear command palette actions (Capture Issue, Refine Ticket, Update Issue State, Add Comment) with context conditions in src/integrations/linear/commands.ts
+- [x] T037 [P] [US5] Implement session command palette actions (New Session, Abort Session, Approve All Pending, Shutdown All) with context conditions in src/sessions/commands.ts
+- [x] T038 [P] [US5] Implement Notion command palette actions (Draft Spec, Refresh Specs, Open Spec in Browser) with context conditions in src/integrations/notion/commands.ts
+- [x] T039 [US5] Implement workflow engine with YAML discovery (4 directories: `.specstar/workflows/`, `~/.omp/agent/workflows/`, `.omp/workflows/`, config `workflowDirs`), definition validation, DAG execution planner (dependency waves), and swarm pipeline bridge in src/workflows/engine.ts, src/workflows/types.ts, and src/workflows/bridge.ts per contracts/workflow.ts
+- [x] T040 [P] [US5] Implement built-in workflow definitions (capture-issue, refine-issue, draft-spec, plan-cycle) as YAML-loadable step pipelines in src/workflows/builtins/capture-issue.ts, src/workflows/builtins/refine-issue.ts, src/workflows/builtins/draft-spec.ts, and src/workflows/builtins/plan-cycle.ts
 
 **Checkpoint**: Command palette is the universal action gateway. All available actions are discoverable and executable via fuzzy search.
 
