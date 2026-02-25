@@ -1091,7 +1091,7 @@ await Bun.build({
   plugins: [solidPlugin],
   compile: {
     target: "bun-darwin-arm64",
-    outfile: "./specstar",
+    outfile: "./dist/specstar",
   },
 });
 ```

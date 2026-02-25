@@ -13,7 +13,8 @@ import { initDatabase } from "./db.js";
 import { App } from "./app.js";
 import { createSessionPool } from "./sessions/pool.js";
 
-const VERSION = "0.1.0";
+declare const __APP_VERSION__: string;
+const VERSION = typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "dev";
 
 const HELP = `Specstar - Issue-Centric TUI
 

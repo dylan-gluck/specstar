@@ -114,7 +114,7 @@ await Bun.build({
   plugins: [solidPlugin],
   compile: {
     target: "bun-darwin-arm64",
-    outfile: "./specstar",
+    outfile: "./dist/specstar",
   },
 });
 ```
@@ -123,12 +123,12 @@ await Bun.build({
 bun run build.ts
 ```
 
-Output: `./specstar` binary in project root.
+Output: `./dist/specstar` binary in `dist/` directory.
 
 Symlink for global access:
 
 ```bash
-ln -sf "$(pwd)/specstar" /usr/local/bin/specstar
+ln -sf "$(pwd)/dist/specstar" /usr/local/bin/specstar
 ```
 
 ## Project Structure

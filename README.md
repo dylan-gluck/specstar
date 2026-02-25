@@ -128,13 +128,13 @@ bun run dev
 bun run build
 ```
 
-Produces `./specstar` (compiled native binary via Bun). Run with:
+Produces `./dist/specstar` (compiled native binary via Bun). Run with:
 
 ```sh
-./specstar
-./specstar --config path/to/config.json
-./specstar --version
-./specstar --help
+./dist/specstar
+./dist/specstar --config path/to/config.json
+./dist/specstar --version
+./dist/specstar --help
 ```
 
 ### TUI layout
@@ -307,7 +307,7 @@ bun run schema       # Regenerate specstar.schema.json from config types
 
 ### Build
 
-The build script (`build.ts`) uses Bun's bundler with the SolidJS plugin to compile `src/index.tsx` into a standalone native binary at `./specstar`. The Solid plugin is required for JSX transformation.
+The build script (`build.ts`) uses Bun's bundler with the SolidJS plugin to compile `src/index.tsx` into a standalone native binary at `./dist/specstar`. The Solid plugin is required for JSX transformation.
 
 ### Tests
 
