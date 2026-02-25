@@ -10,9 +10,9 @@ Replace the four-card grid dashboard (Linear, Sessions, GitHub PRs, Worktrees) w
 ## Technical Context
 
 **Language/Version**: TypeScript (strict mode) on Bun runtime (latest stable)
-**Primary Dependencies**: `@opentui/solid` ^0.1.82 (terminal rendering + Solid bindings), `@oh-my-pi/pi-coding-agent` ^13.2.1 (agent session SDK), `solid-js` ^1.9.11 (reactivity)
+**Primary Dependencies**: `@opentui/solid` ^0.1.82 (terminal rendering + Solid bindings), `@opentui-ui/dialog` (modal/dialog UI), `@opentui-ui/toast` (toast notifications), `@oh-my-pi/pi-coding-agent` ^13.2.1 (agent session SDK), `solid-js` ^1.9.11 (reactivity)
 **Storage**: Bun SQLite (`.specstar/cache.db`) for integration cache + session tracking; JSONL for project memory (`.specstar/memory/`); JSONL for session logs (managed by omp SDK)
-**Testing**: `bun test` (Bun's built-in test runner); OpenTUI provides `renderToString` from `@opentui/solid/test` for headless snapshot testing
+**Testing**: `bun test` (Bun's built-in Jest-compatible test runner; imports from `bun:test`); OpenTUI provides `renderToString` from `@opentui/solid/test` for headless snapshot testing; `pilotty` CLI for visual TUI snapshot testing
 **Target Platform**: macOS arm64 (primary, compiled binary via `Bun.build` with `bun-darwin-arm64` target); Linux x64 as secondary
 **Project Type**: Standalone terminal application (compiled binary, owns terminal, not an omp extension)
 **Performance Goals**: <100ms input latency with 200 issues + 20 sessions + 50 PRs; startup to interactive <2s with warm cache; no visual flicker on data refresh (delta detection)
@@ -86,7 +86,7 @@ specs/001-issue-centric-tui/
 ├── research.md          # Phase 0 output
 ├── data-model.md        # Phase 1 output
 ├── quickstart.md        # Phase 1 output
-├── contracts/           # Phase 1 output
+├── contracts/           # Phase 1 output (8 files: linear, github, notion, session-pool, cache, workflow, enrichment, config)
 └── tasks.md             # Phase 2 output (NOT created by this command)
 ```
 
@@ -96,7 +96,7 @@ specs/001-issue-centric-tui/
 src/
 ├── index.tsx                     # CLI entry point, render()
 ├── app.tsx                       # Root component, state provider, signals
-├── config.ts                     # Configuration loading and validation
+├── config.ts                     # Configuration loading, JSON Schema validation
 ├── types.ts                      # Shared type definitions, branded types
 ├── db.ts                         # SQLite schema, migrations, queries
 │
@@ -107,13 +107,13 @@ src/
 │   ├── overview-tab.tsx          # Overview tab (metadata, description, sessions, activity)
 │   ├── spec-tab.tsx              # SPEC tab (spec content, approve/deny)
 │   ├── review-tab.tsx            # Review tab (PR metadata, review summary, diff)
-│   ├── command-palette.tsx        # Modal command palette (fuzzy search)
-│   ├── input-overlay.tsx         # Text input / choice selection overlay
-│   ├── text-overlay.tsx          # Scrollable text viewer (diffs, logs)
-│   ├── session-detail.tsx        # Full-screen session overlay
+│   ├── command-palette.tsx        # Modal command palette (Dialog-based, fuzzy search)
+│   ├── input-overlay.tsx         # Text input / choice selection (Dialog prompt/choice)
+│   ├── text-overlay.tsx          # Scrollable text viewer (Dialog full-screen)
+│   ├── session-detail.tsx        # Full-screen session overlay (Dialog full-screen)
 │   ├── status-bar.tsx            # Bottom status bar
-│   ├── notification.tsx          # Toast notification stack
-│   └── theme.ts                  # Color palette, style functions
+│   ├── notification.tsx          # Toast notification (Toaster from @opentui-ui/toast/solid)
+│   └── theme.ts                  # Base16 theme mapping, semantic color roles
 │
 ├── integrations/
 │   ├── linear/
@@ -155,6 +155,13 @@ test/
 ├── integration/                  # Cross-service integration tests
 └── unit/                         # Unit tests per module
 ```
+
+scripts/
+├── generate-schema.ts           # ts-json-schema-generator: SpecstarConfig -> specstar.schema.json
+
+Agent Skills:
+├── Coding agents: activate `opentui` skill for implementation tasks
+├── Review agents: activate `pilotty` skill + use `pilotty` CLI for TUI testing
 
 **Structure Decision**: Single project with domain-separated directories under `src/`. The TUI layer (`tui/`) depends on signal abstractions, not concrete integration clients. Integration modules (`integrations/`) own their data types and client implementations. Session management (`sessions/`) is isolated as a supervisor-actor pattern via Bun Workers. This aligns with the DESIGN.md package structure while adapting to the issue-centric layout (replacing `tui/dashboard.tsx` + `tui/card.tsx` with `tui/layout.tsx` + `tui/issue-list.tsx` + `tui/issue-detail.tsx`).
 

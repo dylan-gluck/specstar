@@ -161,6 +161,13 @@ A developer uses Specstar on terminals of various sizes. The layout adapts: side
 - **FR-017**: System MUST persist cached data locally so the UI renders instantly on startup, with background refresh updating data asynchronously.
 - **FR-018**: System MUST preserve issue selection across data refreshes by matching on issue ID. If the selected issue disappears, selection moves to the nearest neighbor with a toast notification.
 - **FR-019**: All keyboard bindings MUST be user-configurable through the configuration file.
+- **FR-020**: Modal UI (command palette, input overlays, session detail, confirmations) MUST use the `@opentui-ui/dialog` component via `DialogProvider` and `useDialog()` from `@opentui-ui/dialog/solid`. Async dialog methods (`confirm()`, `alert()`, `prompt<T>()`, `choice<K>()`) MUST be used for interactive dialogs. `useDialogKeyboard()` MUST be used for keyboard handling within stacked dialogs.
+- **FR-021**: Non-blocking notifications MUST use the `@opentui-ui/toast` component via `Toaster` and `toast` from `@opentui-ui/toast/solid`. Toast types (`success`, `error`, `warning`, `info`, `loading`) MUST map to notification semantics. Duration presets from `TOAST_DURATION` MUST be used for consistent timing.
+- **FR-022**: The TUI MUST use the user's terminal base16 color theme by default. Users MUST be able to override the theme via the settings file. Theme colors MUST be mapped to semantic roles (foreground, background, accent, error, warning, success, muted).
+- **FR-023**: Configuration MUST be JSON format (not YAML). Config files MUST use `.json` extension. The configuration MUST be validated against a JSON Schema at load time. Invalid configuration MUST produce actionable error messages referencing the schema.
+- **FR-024**: The JSON Schema for configuration MUST be generated from TypeScript types using `ts-json-schema-generator`. The schema MUST be regenerated as part of the build process whenever config types change. A `$schema` field in config files MUST point to the generated schema for editor autocompletion.
+- **FR-025**: Coding agent tasks MUST activate the `opentui` skill when starting implementation work. Review agent tasks MUST use the `pilotty` skill and `pilotty` CLI tool to test TUI rendering and interactions.
+- **FR-026**: All keyboard bindings MUST be customizable via the JSON settings file. Keybind overrides MUST be validated against the schema. Default keybindings MUST be documented in the generated JSON Schema.
 
 ### Key Entities
 
@@ -194,6 +201,6 @@ A developer uses Specstar on terminals of various sizes. The layout adapts: side
 - The terminal emulator supports basic ANSI escape sequences for colors, bold, and cursor movement.
 - Agent sessions are managed by an external session pool accessible locally.
 - Git is installed and the project is a git repository with remote configured.
-- Configuration follows the existing file discovery chain (`$SPECSTAR_CONFIG_FILE` > XDG > home dir > project-level).
+- Configuration uses JSON format with JSON Schema validation. File discovery chain: `$SPECSTAR_CONFIG_FILE` > `$XDG_CONFIG_HOME/specstar/config.json` > `~/.specstar.json` > `.specstar.json` in cwd.
 - Industry-standard error handling: user-friendly messages with retry options for transient failures.
 - Standard session-based authentication for integrations via API keys stored in configuration.

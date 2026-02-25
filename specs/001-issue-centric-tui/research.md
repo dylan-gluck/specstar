@@ -141,3 +141,123 @@ This is modeled as a pure function taking enriched issue data, not stored state.
 
 **Alternatives considered**:
 - **Backward-compatible keybindings**: Keep old names as aliases. Rejected because this is a greenfield implementation; there are no existing users with custom keybinding configs.
+
+---
+
+### 9. UI Components: Dialog and Toast
+
+**Decision**: Modal UI (command palette, input overlays, confirmations, session detail) uses `@opentui-ui/dialog`. Non-blocking notifications use `@opentui-ui/toast`. Both via their Solid.js adapters.
+
+**Rationale**: The opentui-ui ecosystem provides purpose-built terminal UI primitives that integrate with the OpenTUI rendering pipeline. Using community components avoids reinventing dialog stack management, focus trapping, backdrop rendering, toast queuing, and animation.
+
+**Dialog integration (Solid)**:
+- `DialogProvider` wraps the app root with configurable size presets and theme
+- `useDialog()` returns `show()`, `close()`, `closeAll()`, `replace()`, plus async methods: `confirm()`, `alert()`, `prompt<T>()`, `choice<K>()`
+- `useDialogKeyboard(handler, dialogId)` scopes keyboard events to the topmost dialog in a stack -- critical for nested overlays (e.g., command palette opens a confirmation)
+- `useDialogState(selector)` provides reactive dialog state (Solid accessors)
+- Size presets: `small` (40 cols), `medium` (60), `large` (80), `full` (terminal width - 4)
+
+**Toast integration (Solid)**:
+- `<Toaster position="bottom-right" />` component at app root
+- `toast()`, `toast.success()`, `toast.error()`, `toast.warning()`, `toast.info()`, `toast.loading()` callable from anywhere
+- `toast.promise()` for async operations with loading/success/error states
+- `TOAST_DURATION` presets: `SHORT` (2s), `DEFAULT` (4s), `LONG` (6s), `EXTENDED` (10s), `PERSISTENT` (Infinity)
+- `useToasts()` returns reactive accessor for current toast array
+
+**Mapping to existing spec**:
+- `command-palette.tsx` -> `useDialog().show()` with size `"large"` and `useDialogKeyboard()` for fuzzy search input
+- `input-overlay.tsx` -> `useDialog().prompt<T>()` or `useDialog().choice<K>()`
+- `text-overlay.tsx` -> `useDialog().show()` with size `"full"`
+- `session-detail.tsx` -> `useDialog().show()` with size `"full"` and custom keyboard handler
+- `notification.tsx` -> replaced entirely by `<Toaster />` + `toast.*()` calls
+- Tool approval confirmation -> `useDialog().confirm()`
+
+**Alternatives considered**:
+- **Custom modal implementation**: Build own backdrop + focus management. Rejected because dialog stacking and focus restoration are error-prone; the library handles edge cases (ESC key, programmatic close, promise resolution on dismiss).
+- **Custom toast system**: Build own notification stack. Rejected because toast timing, positioning, stacking modes, and update-in-place are solved problems in the library.
+
+---
+
+### 10. Theme Strategy: Base16 Terminal Colors
+
+**Decision**: Use the user's terminal base16 color palette by default. Allow full theme override via JSON settings. Map base16 slots to semantic color roles.
+
+**Rationale**: Terminal applications inherit the user's color scheme when using ANSI color codes (colors 0-15). Base16 is the de facto standard for terminal color theming, supported by all major terminal emulators and theme frameworks. By default, Specstar should look native in any terminal. Users who want a specific aesthetic (e.g., for screenshots or branding) can override individual semantic colors in settings.
+
+**Base16 to semantic mapping**:
+
+| Semantic Role | Base16 Slot | ANSI | Usage |
+|---|---|---|---|
+| `background` | base00 | 0 | Primary background |
+| `backgroundAlt` | base01 | 18 | Panels, selected items |
+| `selection` | base02 | 19 | Active selection highlight |
+| `muted` | base03 | 8 | Comments, inactive text |
+| `foreground` | base05 | 7 | Primary text |
+| `foregroundBright` | base06 | 15 | Headings, emphasis |
+| `error` | base08 | 1 | Errors, `apprvl`/`error` badges |
+| `warning` | base09 | 3 | Warnings, `ci:fail` badge |
+| `success` | base0B | 2 | Success, `done`/`ci:pass` badges |
+| `info` | base0D | 4 | Information, links |
+| `accent` | base0E | 5 | Active elements, focused borders |
+| `secondary` | base0C | 6 | Secondary accent, `spec` badge |
+
+**Override mechanism**: The `theme` section in `config.json` allows overriding any semantic color with a hex value or base16 slot reference. When `theme` is absent or empty, all colors resolve to the terminal's current palette via ANSI codes.
+
+**Alternatives considered**:
+- **Hard-coded dark theme**: Ship a specific color palette. Rejected because it clashes with user terminal themes and ignores accessibility preferences (high contrast, light themes).
+- **Multiple built-in themes**: Ship 3-4 themes (dark, light, solarized, etc.). Rejected as premature. Base16 inheritance covers 95% of cases. Custom overrides cover the rest.
+
+---
+
+### 11. Configuration Format: JSON with Schema Validation
+
+**Decision**: Configuration files use JSON format (`.json`). A JSON Schema is generated from TypeScript config types via `ts-json-schema-generator` and bundled with the application. Config is validated against the schema at load time.
+
+**Rationale**: JSON is the native serialization format for TypeScript/JavaScript. YAML adds a parser dependency, introduces indentation-sensitivity bugs, and lacks schema tooling parity. JSON Schema provides:
+- Editor autocompletion (VS Code, JetBrains, vim-coc) via `$schema` field
+- Type-safe validation at load time without hand-written validators
+- Self-documenting configuration (descriptions from JSDoc flow into schema)
+- Single source of truth: TypeScript types are the authority; schema is derived
+
+**ts-json-schema-generator integration**:
+- Dev dependency: `ts-json-schema-generator`
+- Build script: `bun run schema` generates `specstar.schema.json` from `src/config.ts` type `SpecstarConfig`
+- CLI: `npx ts-json-schema-generator --path src/config.ts --type SpecstarConfig --tsconfig tsconfig.json -o specstar.schema.json`
+- Config files include `{ "$schema": "./specstar.schema.json" }` for editor support
+- Schema regenerated on build; checked into version control for portability
+
+**File discovery chain (updated from YAML)**:
+1. `$SPECSTAR_CONFIG_FILE` -- explicit path override
+2. `$XDG_CONFIG_HOME/specstar/config.json` (default: `~/.config/specstar/config.json`)
+3. `~/.specstar.json`
+4. `.specstar.json` in cwd (project-level)
+
+Merge strategy unchanged: project-level merges onto global. Nested objects shallow-merged; arrays concatenated.
+
+**Alternatives considered**:
+- **YAML configuration**: More human-readable for simple cases. Rejected because: (a) YAML parsing is a runtime dependency, (b) YAML has no equivalent of `$schema` for editor autocompletion, (c) YAML's implicit type coercion (e.g., `yes` -> `true`, `3.0` -> `3`) causes subtle bugs, (d) JSON Schema validation tooling is more mature for JSON input.
+- **TOML configuration**: Good for flat configs. Rejected because nested config structures (keybindings, integration configs) are awkward in TOML, and JSON Schema tooling does not natively target TOML.
+- **Hand-written validation**: Write custom `validateConfig()` function. Rejected because it duplicates type information and drifts from types over time. Schema generation is zero-maintenance.
+
+---
+
+### 12. Agent Skills and Testing Tools
+
+**Decision**: Coding agents activate the `opentui` skill for implementation tasks. Review agents use the `pilotty` skill and `pilotty` CLI for TUI testing. All tests use the `bun` native test runner.
+
+**Rationale**:
+- **`opentui` skill**: Provides coding agents with OpenTUI component API knowledge, JSX element reference, layout patterns, and `@opentui/solid` bindings. Without this skill, agents lack context on terminal rendering primitives.
+- **`pilotty` skill + CLI**: Pilotty is the TUI testing framework that enables headless visual testing of OpenTUI applications. Review agents use it to verify rendering correctness, layout behavior, and interaction flows. The `pilotty` CLI captures terminal output, replays interactions, and compares snapshots.
+- **`bun test`**: Bun's built-in test runner is Jest-compatible with native TypeScript support, snapshot testing, lifecycle hooks, and watch mode. No configuration needed -- it auto-discovers `*.test.ts` and `*.spec.ts` files. Importing from `bun:test` provides `describe`, `test`, `expect`, `beforeEach`, `afterEach`, `mock`, etc.
+
+**Testing stack**:
+- Unit tests: `bun test` with `*.test.ts` files in `test/unit/`
+- Contract tests: `bun test` with `*.test.ts` files in `test/contract/`
+- Integration tests: `bun test` with `*.test.ts` files in `test/integration/`
+- TUI rendering tests: `pilotty` CLI for visual snapshot testing
+- Component tests: OpenTUI `testRender()` + `renderToString()` for headless component testing
+
+**Alternatives considered**:
+- **Vitest**: Feature-rich but adds a dependency when Bun's runner is sufficient and faster (no separate process, native TypeScript).
+- **Jest**: Requires `ts-jest` or `babel` transforms. Bun's runner is compatible and zero-config.
+- **Manual TUI testing**: Rejected for review agents. Pilotty provides deterministic headless testing that agents can execute without a real terminal.
