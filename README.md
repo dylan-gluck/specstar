@@ -298,20 +298,23 @@ src/
 ```sh
 bun run dev          # Run in development mode (interpreted)
 bun run build        # Compile standalone binary
+bun run build:link   # Compile and symlink to ~/.local/bin/specstar
+bun run test         # Run unit test suite
 bun run lint         # Run oxlint
 bun run lint:fix     # Run oxlint with auto-fix
 bun run fmt          # Format with oxfmt
 bun run fmt:check    # Check formatting without writing
 bun run schema       # Regenerate specstar.schema.json from config types
-```
 
 ### Build
 
-The build script (`build.ts`) uses Bun's bundler with the SolidJS plugin to compile `src/index.tsx` into a standalone native binary at `./dist/specstar`. The Solid plugin is required for JSX transformation.
+The build script (`build.ts`) uses Bun's bundler with `target: "bun"` and the SolidJS plugin to compile `src/index.tsx` into a standalone native binary at `./dist/specstar`. The Solid plugin handles JSX transformation at build time; the `bunfig.toml` preload is only used for dev and test.
+
+After building, `bun run build:link` symlinks the binary into `~/.local/bin/specstar` so it is available globally.
 
 ### Tests
 
-Run `bun test` to execute the unit test suite. Tests live in `test/unit/` mirroring the `src/` structure.
+Run `bun test` (or `bun run test`) to execute the unit test suite. Tests live in `test/unit/` mirroring the `src/` structure. The `[test]` section in `bunfig.toml` configures the Solid preload and test root automatically.
 
 ### Schema generation
 

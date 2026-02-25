@@ -1,13 +1,14 @@
 {
   "version": "0.0.1",
   "scripts": {
-    "dev": "bun src/index.tsx",
+    "dev": "bun --preload @opentui/solid/preload src/index.tsx",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "schema": "bun scripts/generate-schema.ts",
     "build": "bun build.ts",
+    "build:link": "bun run build && ln -sf $(pwd)/dist/specstar ~/.local/bin/specstar",
     "test": "bun test"
   },
   "dependencies": {

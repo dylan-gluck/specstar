@@ -4,6 +4,7 @@ import solidPlugin from "@opentui/solid/bun-plugin";
 
 const result = await Bun.build({
   entrypoints: ["./src/index.tsx"],
+  target: "bun",
   plugins: [solidPlugin],
   compile: {
     outfile: "./dist/specstar",
