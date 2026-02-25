@@ -8,7 +8,7 @@
  * @module integrations/github/commands
  */
 
-import type { GithubClient } from "../../../specs/001-issue-centric-tui/contracts/github.js";
+import type { GithubClient } from "../../contracts/github.js";
 import type { PaletteCommand, PaletteContext } from "../../tui/palette-types.js";
 
 /** Extract the selected PR from palette context (enriched issue or unlinked PR). */

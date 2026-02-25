@@ -5,7 +5,7 @@ import type {
   NotionDatabaseId,
   NotionError,
   SpecStatus,
-} from "../../../specs/001-issue-centric-tui/contracts/notion.js";
+} from "../../contracts/notion.js";
 
 // ---------------------------------------------------------------------------
 // Notion REST API base

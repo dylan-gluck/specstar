@@ -25,7 +25,7 @@ export type {
   LinearNetworkError,
   LinearEvent,
   LinearClient,
-} from "../specs/001-issue-centric-tui/contracts/linear.js";
+} from "./contracts/linear.js";
 
 export type {
   PrNumber,
@@ -46,7 +46,7 @@ export type {
   WorktreeEvent,
   GithubClient,
   WorktreeManager,
-} from "../specs/001-issue-centric-tui/contracts/github.js";
+} from "./contracts/github.js";
 
 export type {
   NotionPageId,
@@ -60,7 +60,7 @@ export type {
   NotionNetworkError,
   NotionEvent,
   NotionClient,
-} from "../specs/001-issue-centric-tui/contracts/notion.js";
+} from "./contracts/notion.js";
 
 export type {
   SessionId,
@@ -76,7 +76,7 @@ export type {
   SessionNotFoundError,
   SessionSpawnError,
   SessionPool,
-} from "../specs/001-issue-centric-tui/contracts/session-pool.js";
+} from "./contracts/session-pool.js";
 
 export type {
   IssueSection,
@@ -88,7 +88,7 @@ export type {
   ResolveBadgeFn,
   EnrichmentError,
   EnrichmentService,
-} from "../specs/001-issue-centric-tui/contracts/enrichment.js";
+} from "./contracts/enrichment.js";
 
 export type {
   KeyExtractor,
@@ -96,7 +96,7 @@ export type {
   CacheCorruptionError,
   CacheWriteError,
   IntegrationCache,
-} from "../specs/001-issue-centric-tui/contracts/cache.js";
+} from "./contracts/cache.js";
 
 export type {
   ThemeConfig,
@@ -106,7 +106,7 @@ export type {
   SessionsConfig,
   SpecstarKeybindings,
   SpecstarConfig,
-} from "../specs/001-issue-centric-tui/contracts/config.js";
+} from "./contracts/config.js";
 
 export type {
   WorkflowId,
@@ -123,7 +123,7 @@ export type {
   WorkflowValidationError,
   WorkflowExecutionError,
   WorkflowEngine,
-} from "../specs/001-issue-centric-tui/contracts/workflow.js";
+} from "./contracts/workflow.js";
 
 // ---------------------------------------------------------------------------
 // Branded type constructors
@@ -140,21 +140,21 @@ function brand<T>(value: unknown): T {
 import type {
   LinearIssueId,
   LinearTeamId,
-} from "../specs/001-issue-centric-tui/contracts/linear.js";
-import type { PrNumber, WorktreePath } from "../specs/001-issue-centric-tui/contracts/github.js";
+} from "./contracts/linear.js";
+import type { PrNumber, WorktreePath } from "./contracts/github.js";
 import type {
   NotionPageId,
   NotionDatabaseId,
-} from "../specs/001-issue-centric-tui/contracts/notion.js";
+} from "./contracts/notion.js";
 import type {
   SessionId,
   WorkerStatus,
-} from "../specs/001-issue-centric-tui/contracts/session-pool.js";
+} from "./contracts/session-pool.js";
 import type {
   WorkflowId,
   WorkflowHandleId,
-} from "../specs/001-issue-centric-tui/contracts/workflow.js";
-import type { StatusBadge } from "../specs/001-issue-centric-tui/contracts/enrichment.js";
+} from "./contracts/workflow.js";
+import type { StatusBadge } from "./contracts/enrichment.js";
 
 export function linearIssueId(id: string): LinearIssueId {
   return brand<LinearIssueId>(id);
@@ -249,7 +249,7 @@ export function isValidWorkerTransition(from: WorkerStatus, to: WorkerStatus): b
 // State machine: SpecStatus transitions
 // ---------------------------------------------------------------------------
 
-import type { SpecStatus } from "../specs/001-issue-centric-tui/contracts/notion.js";
+import type { SpecStatus } from "./contracts/notion.js";
 
 const SPEC_STATUS_TRANSITIONS: Record<SpecStatus, readonly SpecStatus[]> = {
   draft: ["pending"],

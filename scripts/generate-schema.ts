@@ -3,7 +3,7 @@ const proc = Bun.spawn(
     "bunx",
     "ts-json-schema-generator",
     "--path",
-    "specs/001-issue-centric-tui/contracts/config.ts",
+    "src/contracts/config.ts",
     "--type",
     "SpecstarConfig",
     "--tsconfig",

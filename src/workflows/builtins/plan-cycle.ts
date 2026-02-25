@@ -1,4 +1,4 @@
-import type { WorkflowDefinition } from "../../../specs/001-issue-centric-tui/contracts/workflow.js";
+import type { WorkflowDefinition } from "../../contracts/workflow.js";
 import { workflowId } from "../../types.js";
 
 export const planCycle: WorkflowDefinition = {

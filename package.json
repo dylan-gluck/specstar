@@ -7,7 +7,8 @@
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "schema": "bun scripts/generate-schema.ts",
-    "build": "bun build.ts"
+    "build": "bun build.ts",
+    "test": "bun test"
   },
   "dependencies": {
     "@oh-my-pi/pi-coding-agent": "^13.2.1",

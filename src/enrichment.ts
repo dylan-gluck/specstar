@@ -8,10 +8,10 @@
  * @module enrichment
  */
 
-import type { LinearIssue } from "../specs/001-issue-centric-tui/contracts/linear.js";
-import type { GithubPR, Worktree } from "../specs/001-issue-centric-tui/contracts/github.js";
-import type { NotionSpec } from "../specs/001-issue-centric-tui/contracts/notion.js";
-import type { WorkerSession } from "../specs/001-issue-centric-tui/contracts/session-pool.js";
+import type { LinearIssue } from "./contracts/linear.js";
+import type { GithubPR, Worktree } from "./contracts/github.js";
+import type { NotionSpec } from "./contracts/notion.js";
+import type { WorkerSession } from "./contracts/session-pool.js";
 import type {
   IssueSection,
   StatusBadge,
@@ -19,7 +19,7 @@ import type {
   UnlinkedItem,
   EnrichmentResult,
   EnrichmentService,
-} from "../specs/001-issue-centric-tui/contracts/enrichment.js";
+} from "./contracts/enrichment.js";
 import { BADGE_PRIORITY } from "./types.js";
 
 // ---------------------------------------------------------------------------

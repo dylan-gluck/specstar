@@ -12,4 +12,4 @@ export type {
   GithubEvent,
   WorktreeEvent,
   GithubClient,
-} from "../../../specs/001-issue-centric-tui/contracts/github.js";
+} from "../../contracts/github.js";

@@ -3,7 +3,7 @@ import type {
   WorktreePath,
   WorktreeManager,
   WorktreeError,
-} from "../../../specs/001-issue-centric-tui/contracts/github.js";
+} from "../../contracts/github.js";
 
 import { worktreePath } from "../../types.js";
 

@@ -7,4 +7,4 @@ export type {
   LinearIssueUpdate,
   LinearError,
   LinearEvent,
-} from "../../../specs/001-issue-centric-tui/contracts/linear.js";
+} from "../../contracts/linear.js";

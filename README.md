@@ -311,16 +311,16 @@ The build script (`build.ts`) uses Bun's bundler with the SolidJS plugin to comp
 
 ### Tests
 
-Test directories exist at `test/unit/`, `test/integration/`, and `test/contract/`. No test runner is currently configured. This is planned work.
+Run `bun test` to execute the unit test suite. Tests live in `test/unit/` mirroring the `src/` structure.
 
 ### Schema generation
 
-Running `bun run schema` generates `specstar.schema.json` from the `SpecstarConfig` type in `specs/001-issue-centric-tui/contracts/config.ts`. This file is the single source of truth for the configuration shape. Regenerate after modifying any config interface.
+Running `bun run schema` generates `specstar.schema.json` from the `SpecstarConfig` type in `src/contracts/config.ts`. This file is the single source of truth for the configuration shape. Regenerate after modifying any config interface.
 
 ### Contributing
 
 1. Read the design documents in `docs/` before making architectural changes.
-2. Config types live in `specs/001-issue-centric-tui/contracts/config.ts`. After changes, run `bun run schema` to regenerate the JSON schema.
+2. Config types live in `src/contracts/config.ts`. After changes, run `bun run schema` to regenerate the JSON schema.
 3. Run `bun run lint` and `bun run fmt:check` before committing.
 4. The enrichment module (`src/enrichment.ts`) is the logical center of the application. Changes to how issues, PRs, specs, or sessions relate to each other happen there.
 5. Integration clients are isolated under `src/integrations/<service>/`. Each exposes a client and command palette actions.

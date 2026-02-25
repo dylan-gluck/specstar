@@ -7,7 +7,7 @@ import type {
   LinearIssueUpdate,
   LinearState,
   LinearError,
-} from "../../../specs/001-issue-centric-tui/contracts/linear.js";
+} from "../../contracts/linear.js";
 
 const ENDPOINT = "https://api.linear.app/graphql";
 

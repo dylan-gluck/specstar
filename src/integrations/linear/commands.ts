@@ -2,7 +2,7 @@ import type { PaletteCommand, PaletteContext } from "../../tui/palette-types.js"
 import type {
   LinearClient,
   LinearIssueId,
-} from "../../../specs/001-issue-centric-tui/contracts/linear.js";
+} from "../../contracts/linear.js";
 const captureIssue: PaletteCommand = {
   id: "linear.capture-issue",
   label: "Capture Issue",

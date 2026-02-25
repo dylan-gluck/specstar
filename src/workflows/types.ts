@@ -23,7 +23,7 @@ export type {
   WorkflowValidationError,
   WorkflowExecutionError,
   WorkflowEngine,
-} from "../../specs/001-issue-centric-tui/contracts/workflow.js";
+} from "../contracts/workflow.js";
 
 // ---------------------------------------------------------------------------
 // YAML schema (for future YAML-based workflow definitions)

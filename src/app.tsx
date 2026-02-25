@@ -22,7 +22,7 @@ import type {
   SessionId,
   PrNumber,
 } from "./types.js";
-import type { Worktree } from "../specs/001-issue-centric-tui/contracts/github.js";
+import type { Worktree } from "./contracts/github.js";
 
 import { createLinearClient } from "./integrations/linear/client.js";
 import { createGithubClient } from "./integrations/github/client.js";
