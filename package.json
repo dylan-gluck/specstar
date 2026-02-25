@@ -1,20 +1,31 @@
 {
-	"scripts": {
-		"dev": "bun src/index.tsx",
-		"fmt": "oxfmt",
-		"fmt:check": "oxfmt --check",
-		"lint": "oxlint",
-		"lint:fix": "oxlint --fix"
-	},
-	"devDependencies": {
-		"@types/bun": "latest",
-		"@types/react": "^19.2.14",
-		"oxfmt": "^0.35.0",
-		"oxlint": "^1.50.0"
-	},
-	"dependencies": {
-		"@oh-my-pi/pi-coding-agent": "^13.2.1",
-		"@opentui/solid": "^0.1.82",
-		"solid-js": "^1.9.11"
-	}
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "bun --preload @opentui/solid/preload src/index.tsx",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "schema": "bun scripts/generate-schema.ts",
+    "build": "bun build.ts",
+    "build:link": "bun run build && ln -sf $(pwd)/dist/specstar ~/.local/bin/specstar",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@oh-my-pi/pi-coding-agent": "^13.2.1",
+    "@opentui-ui/dialog": "^0.1.2",
+    "@opentui-ui/toast": "^0.0.5",
+    "@opentui/solid": "^0.1.82",
+    "solid-js": "^1.9.11"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/react": "^19.2.14",
+    "oxfmt": "^0.35.0",
+    "oxlint": "^1.50.0",
+    "ts-json-schema-generator": "^2.5.0"
+  },
+  "trustedDependencies": [
+    "protobufjs"
+  ]
 }

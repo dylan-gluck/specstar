@@ -1,1 +1,3 @@
+[test]
 preload = ["@opentui/solid/preload"]
+root = "test"

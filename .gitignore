@@ -1,1 +1,43 @@
-node_modules
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Compiled binary (legacy; build now targets dist/)
+specstar
+# Environment
+.env
+.env.*
+!.env.example
+
+# SQLite cache
+.specstar/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Generated schema (regenerated via `bun run schema`)
+specstar.schema.json
+
+# Test coverage
+coverage/
+
+# Temporary files
+*.tmp
+
+
+# Local skill symlinks
+.omp/skills/

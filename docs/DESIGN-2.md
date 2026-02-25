@@ -54,6 +54,7 @@ The prior iteration used a four-card grid dashboard: Linear issues, Sessions, Gi
 ```
 
 **Proportions:**
+
 - Left pane: 30-35% of terminal width (min 28 columns, max 50 columns).
 - Right pane: remaining width.
 - Status bar: 1 row, full width, bottom.
@@ -69,6 +70,7 @@ The prior iteration used a four-card grid dashboard: Linear issues, Sessions, Gi
 ### Data Sources
 
 Issues are pulled from the configured Linear workspace and enriched with local state:
+
 - **Linear API**: identifier, title, description, state, priority, assignee, branch, URL.
 - **Local enrichment**: linked session (by branch match), linked PR (by branch match), linked spec (by issue ID in Notion), worktree status.
 
@@ -76,12 +78,12 @@ Issues are pulled from the configured Linear workspace and enriched with local s
 
 Issues in the list are grouped into four sections, rendered top-to-bottom:
 
-| Section | Criteria | Sort | Visual |
-|---------|----------|------|--------|
-| **Attention** | Has pending approval, error, or completed-needs-review status | By urgency (approval > error > completed) | `!` prefix, highlighted row |
-| **Active** | Has a running session or open PR, state = In Progress | By last activity (most recent first) | Normal rendering |
-| **Backlog** | State = Todo, Backlog, or Triage; no active session | By priority (urgent first), then updated_at | Dimmed compared to Active |
-| **Unlinked** | Sessions or PRs that don't match any tracked issue | By type (PR first, then sessions) | Badge prefix: `[PR]`, `[S]` |
+| Section       | Criteria                                                      | Sort                                        | Visual                      |
+| ------------- | ------------------------------------------------------------- | ------------------------------------------- | --------------------------- |
+| **Attention** | Has pending approval, error, or completed-needs-review status | By urgency (approval > error > completed)   | `!` prefix, highlighted row |
+| **Active**    | Has a running session or open PR, state = In Progress         | By last activity (most recent first)        | Normal rendering            |
+| **Backlog**   | State = Todo, Backlog, or Triage; no active session           | By priority (urgent first), then updated_at | Dimmed compared to Active   |
+| **Unlinked**  | Sessions or PRs that don't match any tracked issue            | By type (PR first, then sessions)           | Badge prefix: `[PR]`, `[S]` |
 
 Section headers are rendered as separator rows with the section name. Sections with zero items are hidden entirely (no empty headers).
 
@@ -98,20 +100,20 @@ Each row shows:
 - **Title**: Truncated to fit available width, with ellipsis.
 - **Status badge**: Short status token reflecting the most relevant state:
 
-| Badge | Meaning |
-|-------|---------|
-| `apprvl` | A session linked to this issue needs tool approval |
-| `error` | A session linked to this issue has errored |
-| `done` | Session completed, PR ready for review |
-| `wrkng` | Session is actively working |
-| `idle` | Session exists but is idle |
-| `review` | PR is open and awaiting review |
-| `draft` | PR is in draft state |
-| `ci:fail` | PR CI is failing |
-| `ci:pass` | PR CI passing, no review yet |
-| `merged` | PR merged |
-| `spec` | Spec drafted, awaiting approval |
-| `--` | No active session, PR, or spec |
+| Badge     | Meaning                                            |
+| --------- | -------------------------------------------------- |
+| `apprvl`  | A session linked to this issue needs tool approval |
+| `error`   | A session linked to this issue has errored         |
+| `done`    | Session completed, PR ready for review             |
+| `wrkng`   | Session is actively working                        |
+| `idle`    | Session exists but is idle                         |
+| `review`  | PR is open and awaiting review                     |
+| `draft`   | PR is in draft state                               |
+| `ci:fail` | PR CI is failing                                   |
+| `ci:pass` | PR CI passing, no review yet                       |
+| `merged`  | PR merged                                          |
+| `spec`    | Spec drafted, awaiting approval                    |
+| `--`      | No active session, PR, or spec                     |
 
 When multiple statuses apply (e.g., session working + PR open), the most urgent one wins. Priority: `apprvl` > `error` > `done` > `wrkng` > `review` > `ci:fail` > `spec` > remaining.
 
@@ -125,12 +127,12 @@ When multiple statuses apply (e.g., session working + PR open), the most urgent 
 
 ### Empty States
 
-| Condition | Display |
-|-----------|---------|
-| No Linear configured | "Linear not configured. Press `/` > Setup" |
-| No issues match filters | "No issues found" |
-| Linear API error | "Linear: connection error (r to retry)" |
-| Loading (first fetch) | "Loading issues..." with spinner |
+| Condition               | Display                                    |
+| ----------------------- | ------------------------------------------ |
+| No Linear configured    | "Linear not configured. Press `/` > Setup" |
+| No issues match filters | "No issues found"                          |
+| Linear API error        | "Linear: connection error (r to retry)"    |
+| Loading (first fetch)   | "Loading issues..." with spinner           |
 
 ---
 
@@ -160,6 +162,7 @@ The right pane renders the detail view for the currently selected issue in the l
 ### Unlinked Item Detail
 
 When an unlinked item is selected in the left pane:
+
 - **Unlinked PR**: The right pane shows only the Review tab content (PR metadata, diff). Overview and SPEC tabs are disabled/hidden.
 - **Unlinked Session**: The right pane shows only the Overview tab with session detail (status, conversation, controls). SPEC and Review tabs are disabled/hidden.
 
@@ -225,6 +228,7 @@ Sessions:
 - If no sessions exist: "No sessions. Press `n` to start one."
 
 **Session interaction within Overview:**
+
 - When the sessions section is focused and `Enter` is pressed on a session row, the session detail overlay opens (full-screen overlay with conversation, prompt input, and approval controls -- same as the prior iteration's `SessionDetail`).
 - `n` spawns a new session for this issue.
 - `a` approves a pending tool call (if the selected session is in `approval` status).
@@ -248,13 +252,13 @@ Activity:
 
 ### Overview Tab States
 
-| State | Rendering |
-|-------|-----------|
-| **Issue with full data** | All sections populated |
-| **Issue with sparse data** | Description shows raw text; Requirements section hidden; Sessions shows "No sessions" |
-| **Issue loading detail** | Skeleton/placeholder for description while fetching full issue from Linear API |
+| State                         | Rendering                                                                                  |
+| ----------------------------- | ------------------------------------------------------------------------------------------ |
+| **Issue with full data**      | All sections populated                                                                     |
+| **Issue with sparse data**    | Description shows raw text; Requirements section hidden; Sessions shows "No sessions"      |
+| **Issue loading detail**      | Skeleton/placeholder for description while fetching full issue from Linear API             |
 | **Unlinked session selected** | Shows session detail inline: status, conversation preview, controls. Other sections hidden |
-| **No issue selected** | "Select an issue from the list" centered message |
+| **No issue selected**         | "Select an issue from the list" centered message                                           |
 
 ---
 
@@ -264,7 +268,7 @@ The SPEC tab shows the technical specification associated with the issue. Specs 
 
 ### Layout
 
-```
+````
 +--[ SPEC: AUTH-142 Rate Limiting Specification ]--------+
 |                                                         |
 |  Status: approved       Last updated: 2h ago            |
@@ -296,7 +300,7 @@ The SPEC tab shows the technical specification associated with the issue. Specs 
 |                                                         |
 |  (scrollable)                                            |
 +---------------------------------------------------------+
-```
+````
 
 ### Header
 
@@ -312,6 +316,7 @@ The SPEC tab shows the technical specification associated with the issue. Specs 
 ### Content
 
 The spec document body, fetched from Notion and rendered as formatted text. Markdown-like formatting:
+
 - Headers (`##`, `###`) rendered with bold/color.
 - Code blocks rendered with background color or indent.
 - Lists rendered with bullets/numbers.
@@ -319,24 +324,24 @@ The spec document body, fetched from Notion and rendered as formatted text. Mark
 
 ### SPEC Tab States
 
-| State | Rendering |
-|-------|-----------|
-| **Spec exists and loaded** | Full content rendered with header |
-| **Spec exists, loading** | Header with status, body shows "Loading spec content..." |
-| **Spec exists, load failed** | Header with status, body shows "Failed to load spec. Press `r` to retry." |
-| **No spec linked** | Centered message: "No spec for this issue. Press `/` > Draft Spec to create one." |
-| **Notion not configured** | "Notion not configured. Press `/` > Setup" |
-| **Spec pending approval** | Yellow banner at top: "This spec is pending approval. Press `a` to approve, `x` to deny." |
+| State                        | Rendering                                                                                 |
+| ---------------------------- | ----------------------------------------------------------------------------------------- |
+| **Spec exists and loaded**   | Full content rendered with header                                                         |
+| **Spec exists, loading**     | Header with status, body shows "Loading spec content..."                                  |
+| **Spec exists, load failed** | Header with status, body shows "Failed to load spec. Press `r` to retry."                 |
+| **No spec linked**           | Centered message: "No spec for this issue. Press `/` > Draft Spec to create one."         |
+| **Notion not configured**    | "Notion not configured. Press `/` > Setup"                                                |
+| **Spec pending approval**    | Yellow banner at top: "This spec is pending approval. Press `a` to approve, `x` to deny." |
 
 ### SPEC Tab Actions
 
-| Key | Action | Condition |
-|-----|--------|-----------|
-| `a` | Approve spec | Spec status = `pending` |
-| `x` | Deny spec | Spec status = `pending` |
-| `e` | Open spec in browser (Notion) | Spec exists |
-| `r` | Refresh/reload spec content | Spec exists |
-| `d` | Draft spec (command palette) | No spec exists |
+| Key | Action                        | Condition               |
+| --- | ----------------------------- | ----------------------- |
+| `a` | Approve spec                  | Spec status = `pending` |
+| `x` | Deny spec                     | Spec status = `pending` |
+| `e` | Open spec in browser (Notion) | Spec exists             |
+| `r` | Refresh/reload spec content   | Spec exists             |
+| `d` | Draft spec (command palette)  | No spec exists          |
 
 ---
 
@@ -387,6 +392,7 @@ The Review tab presents the pull request associated with the issue's branch. It 
 ### Section 1: PR Metadata
 
 A compact card showing:
+
 - **PR number and title**
 - **Author**: GitHub username or `agent (<session-name>)` if created by a specstar session.
 - **State**: `open` | `draft` | `closed` | `merged`, colored:
@@ -403,16 +409,17 @@ A compact card showing:
 
 The output of a review agent session, if one has been run. This is stored as a session artifact.
 
-| State | Rendering |
-|-------|-----------|
-| **Review session completed** | Formatted summary text |
-| **Review session running** | "Review in progress..." with a spinner |
-| **No review session** | "No review yet. Press `/` > Review PR to start one." |
-| **Review session errored** | "Review failed. Press `/` > Review PR to retry." |
+| State                        | Rendering                                            |
+| ---------------------------- | ---------------------------------------------------- |
+| **Review session completed** | Formatted summary text                               |
+| **Review session running**   | "Review in progress..." with a spinner               |
+| **No review session**        | "No review yet. Press `/` > Review PR to start one." |
+| **Review session errored**   | "Review failed. Press `/` > Review PR to retry."     |
 
 ### Section 3: Diff
 
 The PR diff fetched via `gh pr diff`. Rendered with syntax-aware coloring:
+
 - Added lines: green with `+` prefix.
 - Removed lines: red with `-` prefix.
 - Context lines: default color.
@@ -432,24 +439,24 @@ Files changed (7):
 
 ### Review Tab States
 
-| State | Rendering |
-|-------|-----------|
-| **PR exists with full data** | All three sections populated |
-| **PR exists, diff loading** | Metadata shown, diff shows "Loading diff..." |
-| **PR exists, diff failed** | Metadata shown, diff shows "Failed to load diff. Press `r` to retry." |
-| **No PR for this issue** | Centered: "No pull request. Press `/` > Create PR to open one." |
-| **GitHub not configured** | "GitHub not configured. Press `/` > Setup" |
-| **Multiple PRs** | Show most recent PR. Note at bottom: "2 other PRs exist for this branch." (future: PR selector) |
+| State                        | Rendering                                                                                       |
+| ---------------------------- | ----------------------------------------------------------------------------------------------- |
+| **PR exists with full data** | All three sections populated                                                                    |
+| **PR exists, diff loading**  | Metadata shown, diff shows "Loading diff..."                                                    |
+| **PR exists, diff failed**   | Metadata shown, diff shows "Failed to load diff. Press `r` to retry."                           |
+| **No PR for this issue**     | Centered: "No pull request. Press `/` > Create PR to open one."                                 |
+| **GitHub not configured**    | "GitHub not configured. Press `/` > Setup"                                                      |
+| **Multiple PRs**             | Show most recent PR. Note at bottom: "2 other PRs exist for this branch." (future: PR selector) |
 
 ### Review Tab Actions
 
-| Key | Action | Condition |
-|-----|--------|-----------|
-| `a` | Approve PR | PR state = open, review_decision != approved |
-| `c` | Comment on PR | PR exists |
-| `e` | Open PR in browser | PR exists |
-| `r` | Refresh PR data + diff | PR exists |
-| `v` | Start review session | PR exists, no review session running |
+| Key | Action                 | Condition                                    |
+| --- | ---------------------- | -------------------------------------------- |
+| `a` | Approve PR             | PR state = open, review_decision != approved |
+| `c` | Comment on PR          | PR exists                                    |
+| `e` | Open PR in browser     | PR exists                                    |
+| `r` | Refresh PR data + diff | PR exists                                    |
+| `v` | Start review session   | PR exists, no review session running         |
 
 ---
 
@@ -463,21 +470,21 @@ The status bar is a single row at the bottom of the terminal, always visible.
 
 ### Segments
 
-| Segment | Content |
-|---------|---------|
-| **App name** | "Specstar", colored cyan |
-| **Active count** | Number of issues with running sessions (e.g., "3 active") |
+| Segment             | Content                                                                                   |
+| ------------------- | ----------------------------------------------------------------------------------------- |
+| **App name**        | "Specstar", colored cyan                                                                  |
+| **Active count**    | Number of issues with running sessions (e.g., "3 active")                                 |
 | **Attention count** | Number of issues in the Attention section (e.g., "1 needs attention"), colored red if > 0 |
-| **Shortcuts** | Context-sensitive hints for the focused pane |
+| **Shortcuts**       | Context-sensitive hints for the focused pane                                              |
 
 ### Context-Sensitive Shortcuts
 
-| Focus | Hints |
-|-------|-------|
-| Left pane | `Tab: detail  /: cmd  j/k: select  Enter: actions` |
-| Right pane (Overview) | `Tab: list  1-3: tab  n: new session  /: cmd` |
-| Right pane (SPEC) | `Tab: list  1-3: tab  a: approve  r: refresh` |
-| Right pane (Review) | `Tab: list  1-3: tab  a: approve  c: comment  r: refresh` |
+| Focus                 | Hints                                                     |
+| --------------------- | --------------------------------------------------------- |
+| Left pane             | `Tab: detail  /: cmd  j/k: select  Enter: actions`        |
+| Right pane (Overview) | `Tab: list  1-3: tab  n: new session  /: cmd`             |
+| Right pane (SPEC)     | `Tab: list  1-3: tab  a: approve  r: refresh`             |
+| Right pane (Review)   | `Tab: list  1-3: tab  a: approve  c: comment  r: refresh` |
 
 ---
 
@@ -524,64 +531,64 @@ Actions are grouped by category and filtered based on the current context (selec
 
 **Issue Actions** (when an issue is selected):
 
-| Action | Description | Condition |
-|--------|-------------|-----------|
-| Refine ticket | Spawn session to rewrite with codebase context | Issue selected |
-| Draft spec | Spawn session to generate technical spec | Issue selected, no spec exists |
-| Start worker | Create worktree + session for implementation | Issue selected, spec approved or no spec |
-| Change state | Update Linear issue state | Issue selected |
-| Open in browser | Open Linear URL | Issue selected |
-| Create PR | Open PR from issue branch | Branch exists, no PR |
+| Action          | Description                                    | Condition                                |
+| --------------- | ---------------------------------------------- | ---------------------------------------- |
+| Refine ticket   | Spawn session to rewrite with codebase context | Issue selected                           |
+| Draft spec      | Spawn session to generate technical spec       | Issue selected, no spec exists           |
+| Start worker    | Create worktree + session for implementation   | Issue selected, spec approved or no spec |
+| Change state    | Update Linear issue state                      | Issue selected                           |
+| Open in browser | Open Linear URL                                | Issue selected                           |
+| Create PR       | Open PR from issue branch                      | Branch exists, no PR                     |
 
 **Session Actions** (when issue has linked sessions):
 
-| Action | Description | Condition |
-|--------|-------------|-----------|
-| Open session | View full session detail overlay | Session exists |
-| Send prompt | Quick prompt input | Session status = idle |
-| Steer | Send steering instruction | Session status = working |
-| Approve | Approve pending tool call | Session status = approval |
-| Reject | Reject pending tool call | Session status = approval |
-| Abort | Abort current operation | Session status = working |
-| Shutdown | Terminate session | Session exists |
+| Action       | Description                      | Condition                 |
+| ------------ | -------------------------------- | ------------------------- |
+| Open session | View full session detail overlay | Session exists            |
+| Send prompt  | Quick prompt input               | Session status = idle     |
+| Steer        | Send steering instruction        | Session status = working  |
+| Approve      | Approve pending tool call        | Session status = approval |
+| Reject       | Reject pending tool call         | Session status = approval |
+| Abort        | Abort current operation          | Session status = working  |
+| Shutdown     | Terminate session                | Session exists            |
 
 **PR Actions** (when issue has linked PR):
 
-| Action | Description | Condition |
-|--------|-------------|-----------|
-| Review PR | Spawn review agent session | PR exists |
-| Approve PR | Approve via `gh pr review` | PR open |
-| Comment | Post comment on PR | PR exists |
-| View diff | Open diff in scrollable overlay | PR exists |
-| Open in browser | Open GitHub PR URL | PR exists |
+| Action          | Description                     | Condition |
+| --------------- | ------------------------------- | --------- |
+| Review PR       | Spawn review agent session      | PR exists |
+| Approve PR      | Approve via `gh pr review`      | PR open   |
+| Comment         | Post comment on PR              | PR exists |
+| View diff       | Open diff in scrollable overlay | PR exists |
+| Open in browser | Open GitHub PR URL              | PR exists |
 
 **Spec Actions** (when issue has linked spec):
 
-| Action | Description | Condition |
-|--------|-------------|-----------|
-| Approve spec | Set spec status to approved | Spec status = pending |
-| Deny spec | Set spec status to denied | Spec status = pending |
-| Open in Notion | Open Notion page URL | Spec exists |
-| Refresh spec | Reload spec content | Spec exists |
+| Action         | Description                 | Condition             |
+| -------------- | --------------------------- | --------------------- |
+| Approve spec   | Set spec status to approved | Spec status = pending |
+| Deny spec      | Set spec status to denied   | Spec status = pending |
+| Open in Notion | Open Notion page URL        | Spec exists           |
+| Refresh spec   | Reload spec content         | Spec exists           |
 
 **Worktree Actions** (when issue has linked worktree):
 
-| Action | Description | Condition |
-|--------|-------------|-----------|
-| Sync worktree | `git pull --rebase` | Worktree exists |
+| Action          | Description                         | Condition       |
+| --------------- | ----------------------------------- | --------------- |
+| Sync worktree   | `git pull --rebase`                 | Worktree exists |
 | Delete worktree | Shut down session + remove worktree | Worktree exists |
 
 **Global Actions** (always available):
 
-| Action | Description |
-|--------|-------------|
+| Action        | Description                                |
+| ------------- | ------------------------------------------ |
 | Capture issue | Quick issue creation with codebase context |
-| New session | Create a blank unlinked session |
-| Run workflow | Select and launch a workflow pipeline |
-| Plan cycle | Run cycle planning workflow |
-| Setup | Interactive configuration wizard |
-| Refresh all | Force-refresh all integrations |
-| Quit | Shutdown all sessions and exit |
+| New session   | Create a blank unlinked session            |
+| Run workflow  | Select and launch a workflow pipeline      |
+| Plan cycle    | Run cycle planning workflow                |
+| Setup         | Interactive configuration wizard           |
+| Refresh all   | Force-refresh all integrations             |
+| Quit          | Shutdown all sessions and exit             |
 
 ### Palette Behavior
 
@@ -623,6 +630,7 @@ Full-screen overlay showing a single session's conversation, streaming output, a
 ```
 
 **States:**
+
 - `working`: Streaming output, tool calls appearing in real-time.
 - `idle`: Cursor in prompt input, ready for user message.
 - `approval`: Tool call highlighted with approve/reject prompt. Pulsing indicator.
@@ -668,72 +676,72 @@ Types: `success` (green), `error` (red, longer timeout), `info` (blue).
 
 ### Global Keys (always active, not captured by overlays)
 
-| Key | Action |
-|-----|--------|
+| Key      | Action                             |
+| -------- | ---------------------------------- |
 | `Ctrl+Q` | Quit (shutdown all sessions, exit) |
-| `Ctrl+R` | Refresh all integration data |
+| `Ctrl+R` | Refresh all integration data       |
 
 ### Pane Keys (when no overlay is active)
 
-| Key | Action |
-|-----|--------|
+| Key   | Action                                        |
+| ----- | --------------------------------------------- |
 | `Tab` | Toggle focus between left pane and right pane |
-| `/` | Open command palette |
+| `/`   | Open command palette                          |
 
 ### Left Pane Keys (when left pane is focused)
 
-| Key | Action |
-|-----|--------|
-| `Up` / `k` | Select previous issue |
-| `Down` / `j` | Select next issue |
-| `Enter` | Open command palette with issue context |
-| `r` | Refresh issue data |
-| `n` | Quick: start new session for selected issue |
+| Key          | Action                                      |
+| ------------ | ------------------------------------------- |
+| `Up` / `k`   | Select previous issue                       |
+| `Down` / `j` | Select next issue                           |
+| `Enter`      | Open command palette with issue context     |
+| `r`          | Refresh issue data                          |
+| `n`          | Quick: start new session for selected issue |
 
 ### Right Pane Keys (when right pane is focused)
 
-| Key | Action |
-|-----|--------|
-| `Left` / `h` | Switch to previous tab |
-| `Right` / `l` | Switch to next tab |
-| `1` | Jump to Overview tab |
-| `2` | Jump to SPEC tab |
-| `3` | Jump to Review tab |
-| `Up` / `k` | Scroll tab content up |
-| `Down` / `j` | Scroll tab content down |
-| `Enter` | Primary action for focused element (e.g., open session from Overview) |
+| Key           | Action                                                                |
+| ------------- | --------------------------------------------------------------------- |
+| `Left` / `h`  | Switch to previous tab                                                |
+| `Right` / `l` | Switch to next tab                                                    |
+| `1`           | Jump to Overview tab                                                  |
+| `2`           | Jump to SPEC tab                                                      |
+| `3`           | Jump to Review tab                                                    |
+| `Up` / `k`    | Scroll tab content up                                                 |
+| `Down` / `j`  | Scroll tab content down                                               |
+| `Enter`       | Primary action for focused element (e.g., open session from Overview) |
 
 ### Tab-Specific Keys
 
-| Tab | Key | Action |
-|-----|-----|--------|
-| Overview | `n` | New session for this issue |
+| Tab      | Key | Action                            |
+| -------- | --- | --------------------------------- |
+| Overview | `n` | New session for this issue        |
 | Overview | `a` | Approve pending session tool call |
-| SPEC | `a` | Approve spec |
-| SPEC | `x` | Deny spec |
-| SPEC | `e` | Open spec in Notion |
-| Review | `a` | Approve PR |
-| Review | `c` | Comment on PR |
-| Review | `e` | Open PR in browser |
-| Review | `v` | Start review session |
+| SPEC     | `a` | Approve spec                      |
+| SPEC     | `x` | Deny spec                         |
+| SPEC     | `e` | Open spec in Notion               |
+| Review   | `a` | Approve PR                        |
+| Review   | `c` | Comment on PR                     |
+| Review   | `e` | Open PR in browser                |
+| Review   | `v` | Start review session              |
 
 ### Overlay Keys
 
-| Overlay | Key | Action |
-|---------|-----|--------|
-| All overlays | `Escape` | Close overlay |
-| Session Detail | `Enter` | Send prompt |
-| Session Detail | `Ctrl+A` | Approve tool call |
-| Session Detail | `Ctrl+X` | Reject tool call |
-| Session Detail | `Ctrl+C` | Abort operation |
-| Session Detail | `Up`/`Down` | Scroll conversation |
-| Command Palette | Typing | Filter actions |
-| Command Palette | `Up`/`Down` | Navigate actions |
-| Command Palette | `Enter` | Execute action |
-| Input Overlay | `Enter` | Submit |
-| Input Overlay | `Up`/`Down` | Navigate choices |
-| Text Overlay | `Up`/`Down` | Scroll |
-| Text Overlay | `g` / `G` | Jump to top / bottom |
+| Overlay         | Key         | Action               |
+| --------------- | ----------- | -------------------- |
+| All overlays    | `Escape`    | Close overlay        |
+| Session Detail  | `Enter`     | Send prompt          |
+| Session Detail  | `Ctrl+A`    | Approve tool call    |
+| Session Detail  | `Ctrl+X`    | Reject tool call     |
+| Session Detail  | `Ctrl+C`    | Abort operation      |
+| Session Detail  | `Up`/`Down` | Scroll conversation  |
+| Command Palette | Typing      | Filter actions       |
+| Command Palette | `Up`/`Down` | Navigate actions     |
+| Command Palette | `Enter`     | Execute action       |
+| Input Overlay   | `Enter`     | Submit               |
+| Input Overlay   | `Up`/`Down` | Navigate choices     |
+| Text Overlay    | `Up`/`Down` | Scroll               |
+| Text Overlay    | `g` / `G`   | Jump to top / bottom |
 
 All keys are configurable via `config.keybindings`.
 
@@ -767,6 +775,7 @@ refresh()
 ```
 
 **Enrichment** is the process of linking integration data to issues:
+
 - **Session -> Issue**: Session's `cwd` matches a worktree, worktree's branch matches an issue's branch.
 - **PR -> Issue**: PR's `headRef` matches an issue's branch, or PR title/branch contains the issue identifier.
 - **Spec -> Issue**: Spec's `issueId` field matches the issue ID.
@@ -774,13 +783,13 @@ refresh()
 
 ### Polling Intervals
 
-| Integration | Default | Configurable |
-|-------------|---------|-------------|
-| Linear | 30s | `linear.refreshInterval` |
-| GitHub PRs | 30s | `github.refreshInterval` |
-| Worktrees | 10s | (local, cheap) |
-| Notion specs | 60s | `notion.refreshInterval` |
-| Sessions | Live | Event-driven, not polled |
+| Integration  | Default | Configurable             |
+| ------------ | ------- | ------------------------ |
+| Linear       | 30s     | `linear.refreshInterval` |
+| GitHub PRs   | 30s     | `github.refreshInterval` |
+| Worktrees    | 10s     | (local, cheap)           |
+| Notion specs | 60s     | `notion.refreshInterval` |
+| Sessions     | Live    | Event-driven, not polled |
 
 ### Delta Detection
 
@@ -807,7 +816,7 @@ linear:
   refreshInterval: 30
 
 github:
-  repo: "owner/repo"        # auto-detected from git remote
+  repo: "owner/repo" # auto-detected from git remote
   refreshInterval: 30
 
 notion:
@@ -848,10 +857,10 @@ The issue list can be filtered by configuration:
 
 ```yaml
 linear:
-  assignedToMe: true          # Show only issues assigned to the authenticated user
-  states: ["backlog", "todo", "in_progress"]  # Filter by state
+  assignedToMe: true # Show only issues assigned to the authenticated user
+  states: ["backlog", "todo", "in_progress"] # Filter by state
   # OR
-  filter: "custom-linear-filter-id"  # Use a saved Linear filter
+  filter: "custom-linear-filter-id" # Use a saved Linear filter
 ```
 
 ---
@@ -860,14 +869,14 @@ linear:
 
 Workflows are unchanged from the prior design. They are launched from the command palette and execute as headless agent sessions. The key workflows and how they interact with the new UI:
 
-| Workflow | Trigger | Visible Effect |
-|----------|---------|---------------|
-| **Capture Issue** | `/` > Capture issue | New issue appears in Backlog section after creation |
-| **Refine Issue** | `/` > Refine ticket | Session appears in Overview tab; issue description updates on completion |
-| **Draft Spec** | `/` > Draft spec | Session appears in Overview tab; SPEC tab populates on completion |
-| **Implementation** | `/` > Start worker | Worktree created, session appears in Overview tab; Review tab populates when PR is created |
-| **Review PR** | `/` > Review PR | Review session appears; Review tab summary populates on completion |
-| **Cycle Planning** | `/` > Plan cycle | Global workflow, not tied to a specific issue; results shown in a text overlay |
+| Workflow           | Trigger             | Visible Effect                                                                             |
+| ------------------ | ------------------- | ------------------------------------------------------------------------------------------ |
+| **Capture Issue**  | `/` > Capture issue | New issue appears in Backlog section after creation                                        |
+| **Refine Issue**   | `/` > Refine ticket | Session appears in Overview tab; issue description updates on completion                   |
+| **Draft Spec**     | `/` > Draft spec    | Session appears in Overview tab; SPEC tab populates on completion                          |
+| **Implementation** | `/` > Start worker  | Worktree created, session appears in Overview tab; Review tab populates when PR is created |
+| **Review PR**      | `/` > Review PR     | Review session appears; Review tab summary populates on completion                         |
+| **Cycle Planning** | `/` > Plan cycle    | Global workflow, not tied to a specific issue; results shown in a text overlay             |
 
 ---
 
@@ -885,9 +894,10 @@ Workflows are unchanged from the prior design. They are launched from the comman
 ### No Integrations Configured
 
 If no integrations are configured at all:
+
 - Left pane shows: "No integrations configured. Press `/` > Setup to get started."
 - Right pane shows: "Select an issue to see details."
-- Status bar: "Specstar | No integrations | /: cmd  Ctrl+Q: quit"
+- Status bar: "Specstar | No integrations | /: cmd Ctrl+Q: quit"
 
 ### Multiple Sessions Per Issue
 
@@ -896,6 +906,7 @@ An issue may have multiple sessions (e.g., a refine session, a spec session, and
 ### Issue Disappears During Selection
 
 If the selected issue is removed from the Linear query results (e.g., state changed to Done and the filter excludes Done):
+
 - Selection moves to the nearest neighbor in the list.
 - If the list is now empty, right pane shows the empty state.
 - A toast notification: "AUTH-142 no longer matches filters."
@@ -910,6 +921,7 @@ If the selected issue is removed from the Linear query results (e.g., state chan
 ### Concurrent Approval Requests
 
 If multiple sessions across different issues need approval simultaneously:
+
 - All such issues appear in the Attention section, sorted by timestamp (oldest first).
 - The status bar shows the count: "3 need attention".
 - No modal interruption; the user can address approvals in any order by selecting the issue and pressing `a` or opening the session detail.

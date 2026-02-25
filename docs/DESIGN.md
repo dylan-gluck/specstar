@@ -99,18 +99,18 @@ specstar (binary, owns terminal)
 
 ## Stack
 
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| Runtime | Bun | JS runtime, bundler, SQLite, workers, JSONL |
-| UI Framework | OpenTUI + Solid | Terminal rendering, fine-grained reactivity |
-| Agent SDK | `@oh-my-pi/pi-coding-agent` | `createAgentSession()`, session management, events |
-| Agent RPC | `@oh-my-pi/pi-coding-agent` (RPC) | Cross-process agent communication via JSONL/stdio |
-| Orchestration | `@oh-my-pi/swarm-extension` | YAML workflow definitions, pipeline execution |
-| Type Schemas | `ts-json-schema-generator` | TypeScript types to JSON Schema for structured output |
-| Styling | chalk | ANSI color/style for text content |
-| Config | yaml | YAML config file parsing |
-| Data | Bun SQLite | Integration cache, session tracking, project state |
-| Data Streaming | Bun JSONL | Session event streaming, session file persistence |
+| Layer          | Technology                        | Purpose                                               |
+| -------------- | --------------------------------- | ----------------------------------------------------- |
+| Runtime        | Bun                               | JS runtime, bundler, SQLite, workers, JSONL           |
+| UI Framework   | OpenTUI + Solid                   | Terminal rendering, fine-grained reactivity           |
+| Agent SDK      | `@oh-my-pi/pi-coding-agent`       | `createAgentSession()`, session management, events    |
+| Agent RPC      | `@oh-my-pi/pi-coding-agent` (RPC) | Cross-process agent communication via JSONL/stdio     |
+| Orchestration  | `@oh-my-pi/swarm-extension`       | YAML workflow definitions, pipeline execution         |
+| Type Schemas   | `ts-json-schema-generator`        | TypeScript types to JSON Schema for structured output |
+| Styling        | chalk                             | ANSI color/style for text content                     |
+| Config         | yaml                              | YAML config file parsing                              |
+| Data           | Bun SQLite                        | Integration cache, session tracking, project state    |
+| Data Streaming | Bun JSONL                         | Session event streaming, session file persistence     |
 
 ---
 
@@ -204,19 +204,19 @@ Project-level config merges onto global. Nested objects are shallow-merged; arra
 
 ```yaml
 linear:
-  apiKey: "lin_api_..."           # or SPECSTAR_LINEAR_API_KEY env var
+  apiKey: "lin_api_..." # or SPECSTAR_LINEAR_API_KEY env var
   teamId: "TEAM-UUID"
   assignedToMe: true
   filter: "custom-filter"
-  refreshInterval: 30             # seconds
+  refreshInterval: 30 # seconds
 
 github:
-  repo: "owner/repo"             # auto-detected from git remote if omitted
+  repo: "owner/repo" # auto-detected from git remote if omitted
   refreshInterval: 30
 
 notion:
-  apiKey: "ntn_..."              # or SPECSTAR_NOTION_API_KEY env var
-  databaseId: "..."              # Notion database for specs
+  apiKey: "ntn_..." # or SPECSTAR_NOTION_API_KEY env var
+  databaseId: "..." # Notion database for specs
   refreshInterval: 60
 
 sessions:
@@ -243,15 +243,16 @@ workflowDirs:
 
 ### Environment Variables
 
-| Variable | Purpose |
-|----------|---------|
+| Variable                  | Purpose                   |
+| ------------------------- | ------------------------- |
 | `SPECSTAR_LINEAR_API_KEY` | Linear API authentication |
 | `SPECSTAR_NOTION_API_KEY` | Notion API authentication |
-| `SPECSTAR_CONFIG_FILE` | Config file path override |
+| `SPECSTAR_CONFIG_FILE`    | Config file path override |
 
 ### Setup Wizard
 
 `specstar setup` runs an interactive wizard that:
+
 1. Detects GitHub repo from git remote
 2. Prompts for Linear API key, validates it, lists teams for selection
 3. Prompts for Notion API key and database selection
@@ -363,12 +364,12 @@ type SessionId = string & { readonly __brand: unique symbol };
 
 /** Worker session lifecycle states. */
 type WorkerStatus =
-  | "starting"     // Session being created
-  | "idle"         // Awaiting input
-  | "working"      // Agent is streaming/executing
-  | "approval"     // Agent needs human approval
-  | "error"        // Session encountered an error
-  | "shutdown";    // Session terminated
+  | "starting" // Session being created
+  | "idle" // Awaiting input
+  | "working" // Agent is streaming/executing
+  | "approval" // Agent needs human approval
+  | "error" // Session encountered an error
+  | "shutdown"; // Session terminated
 
 /** Notification requiring user attention. */
 interface SessionNotification {
@@ -496,6 +497,7 @@ Two-column, four-card grid with status bar:
 ```
 
 **Layout algorithm:**
+
 1. Two columns, equal width.
 2. Cards placed by `column` and `order`.
 3. Fixed-height cards get `minHeight` rows; remaining space distributed equally among flex cards.
@@ -506,45 +508,45 @@ Two-column, four-card grid with status bar:
 
 #### Global Keys
 
-| Key | Action |
-|-----|--------|
-| `Tab` | Cycle focus to next card |
-| `Shift+Tab` | Cycle focus to previous card |
-| `/` | Open command palette |
-| `Ctrl+R` | Refresh all integrations |
-| `Ctrl+Q` | Quit (shuts down all sessions) |
-| `1`-`4` | Jump to card by position |
+| Key         | Action                         |
+| ----------- | ------------------------------ |
+| `Tab`       | Cycle focus to next card       |
+| `Shift+Tab` | Cycle focus to previous card   |
+| `/`         | Open command palette           |
+| `Ctrl+R`    | Refresh all integrations       |
+| `Ctrl+Q`    | Quit (shuts down all sessions) |
+| `1`-`4`     | Jump to card by position       |
 
 #### Card Navigation
 
-| Key | Action |
-|-----|--------|
-| `Up` / `k` | Select previous row |
-| `Down` / `j` | Select next row |
-| `Enter` | Primary action (opens command palette for card) |
-| `d` | Secondary action |
-| `r` | Refresh current card |
+| Key          | Action                                          |
+| ------------ | ----------------------------------------------- |
+| `Up` / `k`   | Select previous row                             |
+| `Down` / `j` | Select next row                                 |
+| `Enter`      | Primary action (opens command palette for card) |
+| `d`          | Secondary action                                |
+| `r`          | Refresh current card                            |
 
 #### Command Palette
 
-| Key | Action |
-|-----|--------|
-| `/` or `Escape` | Close palette |
-| `Up` / `Down` | Navigate actions |
-| `Enter` | Execute selected action |
-| Typing | Filter actions (fuzzy match) |
-| `Backspace` | Remove last filter character |
+| Key             | Action                       |
+| --------------- | ---------------------------- |
+| `/` or `Escape` | Close palette                |
+| `Up` / `Down`   | Navigate actions             |
+| `Enter`         | Execute selected action      |
+| Typing          | Filter actions (fuzzy match) |
+| `Backspace`     | Remove last filter character |
 
 #### Session Detail View
 
-| Key | Action |
-|-----|--------|
-| `Escape` | Return to dashboard |
-| `Enter` | Send prompt |
-| `Ctrl+C` | Abort current agent operation |
-| `Ctrl+A` | Approve pending tool call |
-| `Ctrl+X` | Reject pending tool call |
-| `Up` / `Down` | Scroll conversation |
+| Key           | Action                        |
+| ------------- | ----------------------------- |
+| `Escape`      | Return to dashboard           |
+| `Enter`       | Send prompt                   |
+| `Ctrl+C`      | Abort current agent operation |
+| `Ctrl+A`      | Approve pending tool call     |
+| `Ctrl+X`      | Reject pending tool call      |
+| `Up` / `Down` | Scroll conversation           |
 
 **Implementation:** All keys are configurable via `SpecstarKeybindings`. The dashboard intercepts global keys before delegating to the focused card. Overlays receive input exclusively when active.
 
@@ -554,70 +556,71 @@ The command palette is the primary interaction surface. Actions are context-sens
 
 #### Global Actions (always available)
 
-| Action | Description |
-|--------|-------------|
-| New session | Create a blank worker session |
-| New session from ticket | Select ticket, create worktree + session |
-| Capture issue | Quick issue creation with codebase context |
-| Run workflow | Select and launch a workflow |
-| Refresh all | Force-refresh all integrations |
-| Quit | Shutdown all sessions and exit |
+| Action                  | Description                                |
+| ----------------------- | ------------------------------------------ |
+| New session             | Create a blank worker session              |
+| New session from ticket | Select ticket, create worktree + session   |
+| Capture issue           | Quick issue creation with codebase context |
+| Run workflow            | Select and launch a workflow               |
+| Refresh all             | Force-refresh all integrations             |
+| Quit                    | Shutdown all sessions and exit             |
 
 #### Linear Context Actions
 
-| Action | Description |
-|--------|-------------|
-| Refine ticket | Spawn session to rewrite ticket with codebase context |
-| Draft spec | Spawn session to produce technical specification in Notion |
-| Start worker | Create worktree + session for selected ticket |
-| Change state | Update ticket state |
-| Open in browser | Open Linear issue URL |
+| Action          | Description                                                |
+| --------------- | ---------------------------------------------------------- |
+| Refine ticket   | Spawn session to rewrite ticket with codebase context      |
+| Draft spec      | Spawn session to produce technical specification in Notion |
+| Start worker    | Create worktree + session for selected ticket              |
+| Change state    | Update ticket state                                        |
+| Open in browser | Open Linear issue URL                                      |
 
 #### GitHub Context Actions
 
-| Action | Description |
-|--------|-------------|
-| Review PR | Spawn review agent session |
+| Action            | Description                        |
+| ----------------- | ---------------------------------- |
+| Review PR         | Spawn review agent session         |
 | Checkout worktree | Create/open worktree for PR branch |
-| View diff | Show PR diff in scrollable overlay |
-| Approve / Comment | Interact with the PR |
-| Open in browser | Open GitHub PR URL |
+| View diff         | Show PR diff in scrollable overlay |
+| Approve / Comment | Interact with the PR               |
+| Open in browser   | Open GitHub PR URL                 |
 
 #### Worktree Context Actions
 
-| Action | Description |
-|--------|-------------|
-| Open session | Jump to session running in worktree |
-| Create PR | Open a pull request from worktree branch |
-| Sync | Pull --rebase the worktree |
-| Delete | Shut down session and remove worktree |
+| Action       | Description                              |
+| ------------ | ---------------------------------------- |
+| Open session | Jump to session running in worktree      |
+| Create PR    | Open a pull request from worktree branch |
+| Sync         | Pull --rebase the worktree               |
+| Delete       | Shut down session and remove worktree    |
 
 #### Session Context Actions
 
-| Action | Description |
-|--------|-------------|
-| Open | Enter session detail view |
-| Send prompt | Quick prompt without entering detail view |
-| Steer | Send steering message to interrupt |
-| Abort | Abort current operation |
-| Approve | Approve pending tool call |
-| Shutdown | Terminate session |
-| View worktree | Focus the associated worktree card |
+| Action        | Description                               |
+| ------------- | ----------------------------------------- |
+| Open          | Enter session detail view                 |
+| Send prompt   | Quick prompt without entering detail view |
+| Steer         | Send steering message to interrupt        |
+| Abort         | Abort current operation                   |
+| Approve       | Approve pending tool call                 |
+| Shutdown      | Terminate session                         |
+| View worktree | Focus the associated worktree card        |
 
 ### Overlays
 
 All overlays follow the same lifecycle:
+
 1. `showOverlay(component)` -- renders over dashboard
 2. Overlay receives keyboard input exclusively
 3. On close (Escape or action completion) -- overlay removed, focus returns to dashboard
 
-| Overlay | Purpose | Trigger |
-|---------|---------|---------|
-| `CommandPalette` | Fuzzy-searchable action list | `/` key |
-| `InputOverlay` | Text input or choice selection | Action callbacks |
-| `TextOverlay` | Scrollable read-only text (diffs, logs) | View diff, view logs |
-| `SessionDetail` | Full session conversation + controls | Enter on session row |
-| `NotificationStack` | Toast messages (success, error, info) | Async operation results |
+| Overlay             | Purpose                                 | Trigger                 |
+| ------------------- | --------------------------------------- | ----------------------- |
+| `CommandPalette`    | Fuzzy-searchable action list            | `/` key                 |
+| `InputOverlay`      | Text input or choice selection          | Action callbacks        |
+| `TextOverlay`       | Scrollable read-only text (diffs, logs) | View diff, view logs    |
+| `SessionDetail`     | Full session conversation + controls    | Enter on session row    |
+| `NotificationStack` | Toast messages (success, error, info)   | Async operation results |
 
 ---
 
@@ -678,6 +681,7 @@ interface WorkerSessionOptions {
 ```
 
 **Creation flow:**
+
 1. Generate branded `SessionId` (`s-<random8>`)
 2. Call `createAgentSession({ cwd, hasUI: false, systemPrompt, model, thinkingLevel })`
 3. Subscribe to agent events, map to `WorkerStatus` transitions
@@ -685,6 +689,7 @@ interface WorkerSessionOptions {
 5. Return `WorkerSession` handle
 
 **Status transitions:**
+
 ```
 starting -> idle -> working -> idle (loop)
                  -> approval -> working (on approve/reject)
@@ -744,6 +749,7 @@ class WorkflowEngine {
 ```
 
 **Discovery directories:**
+
 1. `.specstar/workflows/`
 2. `~/.omp/agent/workflows/`
 3. `.omp/workflows/`
@@ -760,6 +766,7 @@ class WorkflowEngine {
 **Client:** Direct GraphQL over `fetch()`. No SDK dependency.
 
 **Queries:**
+
 - `getIssues(filter)` -- Fetch active issues for team, optionally filtered by assignee
 - `getIssue(id)` -- Full issue detail with description and comments
 - `getStates(teamId)` -- Team workflow states (cached for state change UI)
@@ -767,14 +774,15 @@ class WorkflowEngine {
 - `addComment(issueId, body)` -- Post a comment
 
 **Data type:**
+
 ```typescript
 interface LinearIssue {
   id: string;
-  identifier: string;          // e.g. "AUTH-142"
+  identifier: string; // e.g. "AUTH-142"
   title: string;
   description?: string;
   state: { name: string; type: string };
-  priority: number;            // 0=none, 1=urgent, 2=high, 3=medium, 4=low
+  priority: number; // 0=none, 1=urgent, 2=high, 3=medium, 4=low
   assignee?: { name: string };
   branch?: string;
   url: string;
@@ -789,6 +797,7 @@ interface LinearIssue {
 **Client:** Wraps `gh` CLI for authentication and API access. Auto-detects repo from git remote origin.
 
 **Operations:**
+
 - `listPRs()` -- Open PRs with status, CI, review state
 - `getPR(number)` -- Full PR detail including body
 - `createPR(opts)` -- Create PR from branch
@@ -796,6 +805,7 @@ interface LinearIssue {
 - `approvePR(number)` -- Approve via `gh pr review --approve`
 
 **Data type:**
+
 ```typescript
 interface GithubPR {
   number: number;
@@ -807,7 +817,7 @@ interface GithubPR {
   headRef: string;
   url: string;
   updatedAt: string;
-  ticketId?: string;           // Extracted from branch/title
+  ticketId?: string; // Extracted from branch/title
 }
 ```
 
@@ -816,6 +826,7 @@ interface GithubPR {
 **Client:** Notion API for spec document management.
 
 **Operations:**
+
 - `listSpecs(databaseId)` -- Fetch spec documents from the configured database
 - `getSpec(pageId)` -- Full page content
 - `createSpec(issueId, title, content)` -- Create a new spec document
@@ -823,10 +834,11 @@ interface GithubPR {
 - `setSpecStatus(pageId, status)` -- Update spec review status
 
 **Data type:**
+
 ```typescript
 interface NotionSpec {
-  id: string;                  // Notion page ID
-  issueId: string;             // Linked Linear issue
+  id: string; // Notion page ID
+  issueId: string; // Linked Linear issue
   title: string;
   status: "draft" | "pending" | "approved" | "denied";
   url: string;
@@ -839,12 +851,14 @@ interface NotionSpec {
 ### Worktree Manager
 
 **Operations:**
+
 - `list()` -- All git worktrees with branch, commit, dirty status
 - `create(branch, baseBranch?)` -- Create worktree under `config.sessions.worktreeBase`
 - `remove(path)` -- Remove worktree (shuts down associated session first)
 - `sync(path)` -- `git pull --rebase` in worktree
 
 **Enrichment:** Raw worktree data is enriched by cross-referencing:
+
 - Session by matching `cwd` to worktree path
 - PR by matching `headRef` to worktree branch
 - Ticket by extracting identifier from branch name (`/^([A-Z]+-\d+)/i`)
@@ -862,6 +876,7 @@ Workflows are the core value proposition. They encode the engineering team proce
 **Trigger:** Command palette "Capture issue"
 **Input:** Freeform description of a problem or task
 **Process:**
+
 1. Agent reads codebase structure, project memory, and existing issues
 2. Generates a structured issue: title, description, requirements, ACs, suggested labels
 3. Surfaces for human review in the "needs attention" queue
@@ -872,6 +887,7 @@ Workflows are the core value proposition. They encode the engineering team proce
 **Trigger:** Command palette "Refine ticket" on a Linear issue
 **Input:** Existing Linear issue (may have sparse description)
 **Process:**
+
 1. Agent reads full issue detail from Linear
 2. Scans codebase for relevant files, types, tests
 3. Reads project memory for context
@@ -885,6 +901,7 @@ Workflows are the core value proposition. They encode the engineering team proce
 **Trigger:** Command palette "Draft spec" on a Linear issue
 **Input:** Refined Linear issue with clear requirements
 **Process:**
+
 1. Agent reads issue requirements and ACs
 2. Analyzes codebase: data models, API contracts, existing patterns
 3. Produces technical specification covering:
@@ -902,6 +919,7 @@ Workflows are the core value proposition. They encode the engineering team proce
 **Trigger:** Command palette "Start worker" on a spec-approved issue
 **Input:** Issue + approved spec
 **Process:**
+
 1. Creates git worktree with branch named after issue identifier
 2. Spawns headless agent session in the worktree
 3. Agent reads spec from Notion as primary context
@@ -915,6 +933,7 @@ Workflows are the core value proposition. They encode the engineering team proce
 **Trigger:** Command palette "Plan cycle"
 **Input:** Upcoming cycle/sprint dates, team capacity
 **Process:**
+
 1. Agent reads current backlog from Linear
 2. Analyzes project memory for priorities, milestones
 3. Generates cycle plan: issue assignments, capacity allocation, risk flags
@@ -1027,17 +1046,22 @@ Project memory provides persistent context across sessions. Stored as JSONL in `
 
 ### Categories
 
-| File | Content | Example |
-|------|---------|---------|
-| `project.jsonl` | Architecture, conventions, decisions | "Uses Express middleware chain for auth" |
-| `people.jsonl` | Team members, areas of expertise | "Alice: auth/security lead" |
-| `glossary.jsonl` | Domain terms, abbreviations | "SLO: Service Level Objective, 99.9% uptime target" |
+| File             | Content                              | Example                                             |
+| ---------------- | ------------------------------------ | --------------------------------------------------- |
+| `project.jsonl`  | Architecture, conventions, decisions | "Uses Express middleware chain for auth"            |
+| `people.jsonl`   | Team members, areas of expertise     | "Alice: auth/security lead"                         |
+| `glossary.jsonl` | Domain terms, abbreviations          | "SLO: Service Level Objective, 99.9% uptime target" |
 
 ### Format
 
 Each line is a JSON object:
+
 ```json
-{"key": "auth-architecture", "value": "Redis-backed session store with JWT refresh tokens. See src/auth/README.md", "updatedAt": "2026-02-25T10:00:00Z"}
+{
+  "key": "auth-architecture",
+  "value": "Redis-backed session store with JWT refresh tokens. See src/auth/README.md",
+  "updatedAt": "2026-02-25T10:00:00Z"
+}
 ```
 
 ### Usage
@@ -1060,16 +1084,16 @@ bun src/index.tsx                 # Run in development mode
 ### Compile
 
 ```typescript
-import solidPlugin from "@opentui/solid/bun-plugin"
+import solidPlugin from "@opentui/solid/bun-plugin";
 
 await Bun.build({
   entrypoints: ["./src/index.tsx"],
   plugins: [solidPlugin],
   compile: {
     target: "bun-darwin-arm64",
-    outfile: "./specstar",
+    outfile: "./dist/specstar",
   },
-})
+});
 ```
 
 Produces a single self-contained binary. The Solid plugin transforms JSX at build time.
@@ -1077,6 +1101,7 @@ Produces a single self-contained binary. The Solid plugin transforms JSX at buil
 ### Distribution
 
 The compiled binary can be:
+
 1. Symlinked to `~/.bun/bin/specstar` (and `ss` alias)
 2. Distributed as a standalone executable (no runtime dependency)
 
@@ -1086,17 +1111,17 @@ The compiled binary can be:
 
 ### Unit Tests
 
-| Module | Focus |
-|--------|-------|
-| `table.test.ts` | Column width calculation, scroll behavior, selection stability across data refreshes, edge cases (empty, single row, overflow) |
-| `card.test.ts` | Border rendering, focus indicator, dimension allocation, title truncation |
-| `command-palette.test.ts` | Fuzzy matching, action filtering, keyboard navigation, action execution |
-| `pool.test.ts` | Max concurrency enforcement, notification aggregation, shutdown ordering, events |
-| `linear-client.test.ts` | GraphQL query construction, response parsing, error handling |
-| `github-client.test.ts` | `gh` CLI output parsing, PR state mapping, ticket extraction from branch names |
-| `notion-client.test.ts` | API request construction, page/block parsing, markdown-to-blocks conversion |
-| `db.test.ts` | Schema migrations, cache CRUD, delta detection |
-| `workflow.test.ts` | Workflow discovery, YAML validation, pipeline execution with mock agents |
+| Module                    | Focus                                                                                                                          |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `table.test.ts`           | Column width calculation, scroll behavior, selection stability across data refreshes, edge cases (empty, single row, overflow) |
+| `card.test.ts`            | Border rendering, focus indicator, dimension allocation, title truncation                                                      |
+| `command-palette.test.ts` | Fuzzy matching, action filtering, keyboard navigation, action execution                                                        |
+| `pool.test.ts`            | Max concurrency enforcement, notification aggregation, shutdown ordering, events                                               |
+| `linear-client.test.ts`   | GraphQL query construction, response parsing, error handling                                                                   |
+| `github-client.test.ts`   | `gh` CLI output parsing, PR state mapping, ticket extraction from branch names                                                 |
+| `notion-client.test.ts`   | API request construction, page/block parsing, markdown-to-blocks conversion                                                    |
+| `db.test.ts`              | Schema migrations, cache CRUD, delta detection                                                                                 |
+| `workflow.test.ts`        | Workflow discovery, YAML validation, pipeline execution with mock agents                                                       |
 
 ### Integration Tests
 
