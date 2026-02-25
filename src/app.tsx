@@ -61,16 +61,6 @@ export function App(props: AppProps) {
   const [activeTab, setActiveTab] = createSignal<DetailTab>("overview");
   const syntaxStyle = createDefaultSyntaxStyle();
 
-  const selectedItem = createMemo(() => {
-    const model = issueListModel();
-    const flatItems = getFlatItems(model);
-    const idx = selectedIndex();
-    const current = flatItems[idx];
-    if (!current) return undefined;
-    if (current.kind === "issue") return current.issue;
-    return current.item;
-  });
-
   const TAB_ORDER: DetailTab[] = ["overview", "spec", "review"];
 
   function handleTabSelect(tab: 1 | 2 | 3) {
@@ -216,6 +206,16 @@ export function App(props: AppProps) {
   );
 
   const issueListModel = createMemo(() => buildIssueListModel(enrichmentResult()));
+
+  const selectedItem = createMemo(() => {
+    const model = issueListModel();
+    const flatItems = getFlatItems(model);
+    const idx = selectedIndex();
+    const current = flatItems[idx];
+    if (!current) return undefined;
+    if (current.kind === "issue") return current.issue;
+    return current.item;
+  });
 
   // Preserve selected issue across refreshes by matching on issue ID
   let lastSelectedIssueId: string | undefined;
