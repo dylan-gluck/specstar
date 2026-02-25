@@ -175,8 +175,8 @@
 
 ### Implementation for User Story 6
 
-- [ ] T041 [US6] Enhance SPEC tab with pending approval banner ("This spec is pending approval. Press `a` to approve, `x` to deny."), approve action (`a` -> `setSpecStatus("approved")`), deny action (`x` -> `setSpecStatus("denied")`), refresh action (`r` -> `getSpec()`), open externally (`e`), and status badge update propagation in src/tui/spec-tab.tsx
-- [ ] T042 [P] [US6] Implement scrollable text overlay (Dialog size `"full"`) for full-screen viewing of long spec content, issue descriptions, and other text with keyboard scrolling in src/tui/text-overlay.tsx
+- [x] T041 [US6] Enhance SPEC tab with pending approval banner ("This spec is pending approval. Press `a` to approve, `x` to deny."), approve action (`a` -> `setSpecStatus("approved")`), deny action (`x` -> `setSpecStatus("denied")`), refresh action (`r` -> `getSpec()`), open externally (`e`), and status badge update propagation in src/tui/spec-tab.tsx
+- [x] T042 [P] [US6] Implement scrollable text overlay (Dialog size `"full"`) for full-screen viewing of long spec content, issue descriptions, and other text with keyboard scrolling in src/tui/text-overlay.tsx
 
 **Checkpoint**: Spec workflow is fully inline. Developers can read, approve, deny, and manage specs without leaving the TUI.
 

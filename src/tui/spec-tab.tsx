@@ -9,14 +9,21 @@
 
 import { Show } from "solid-js";
 import type { Accessor } from "solid-js";
+import { useKeyboard } from "@opentui/solid";
 import { TextAttributes } from "@opentui/core";
-import type { NotionSpec, SpecStatus } from "../types.js";
+import type { NotionPageId, NotionSpec, SpecStatus } from "../types.js";
 import type { ResolvedTheme, SyntaxStyle } from "./theme.js";
 
 export interface SpecTabProps {
   readonly spec: Accessor<NotionSpec | undefined>;
   readonly theme: ResolvedTheme;
   readonly syntaxStyle: SyntaxStyle;
+  readonly focused?: Accessor<boolean>;
+  readonly onApprove?: (specId: NotionPageId) => void;
+  readonly onDeny?: (specId: NotionPageId) => void;
+  readonly onRefresh?: (specId: NotionPageId) => void;
+  readonly onOpenExternal?: (url: string) => void;
+  readonly onViewFullScreen?: (spec: NotionSpec) => void;
 }
 
 /** Map a spec status to the appropriate theme color. */
@@ -39,6 +46,30 @@ function specStatusLabel(status: SpecStatus): string {
 }
 
 export function SpecTab(props: SpecTabProps) {
+  useKeyboard((key) => {
+    if (!props.focused?.()) return;
+    const s = props.spec();
+    if (!s) return;
+
+    switch (key.name) {
+      case "a":
+        if (s.status === "pending") props.onApprove?.(s.id);
+        return;
+      case "x":
+        if (s.status === "pending") props.onDeny?.(s.id);
+        return;
+      case "r":
+        props.onRefresh?.(s.id);
+        return;
+      case "e":
+        props.onOpenExternal?.(s.url);
+        return;
+      case "f":
+        props.onViewFullScreen?.(s);
+        return;
+    }
+  });
+
   return (
     <Show
       when={props.spec()}
@@ -64,6 +95,14 @@ export function SpecTab(props: SpecTabProps) {
             <text fg={props.theme.info}>{spec().url}</text>
           </box>
 
+          <Show when={spec().status === "pending"}>
+            <box paddingX={1} width="100%" backgroundColor={props.theme.warning}>
+              <text fg={props.theme.background} attributes={TextAttributes.BOLD}>
+                This spec is pending approval. Press a to approve, x to deny.
+              </text>
+            </box>
+          </Show>
+
           {/* Content section */}
           <Show
             when={spec().content}
@@ -75,6 +114,14 @@ export function SpecTab(props: SpecTabProps) {
               <markdown content={content()} syntaxStyle={props.syntaxStyle} />
             )}
           </Show>
+
+          <box paddingTop={1} paddingX={1}>
+            <text fg={props.theme.muted}>
+              {spec().status === "pending"
+                ? "a approve | x deny | r refresh | e open | f fullscreen"
+                : "r refresh | e open | f fullscreen"}
+            </text>
+          </box>
         </scrollbox>
       )}
     </Show>

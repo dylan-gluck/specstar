@@ -17,6 +17,7 @@ import type {
   LinearIssue,
   GithubPR,
   NotionSpec,
+  NotionPageId,
   WorkerSession,
   SessionId,
   PrNumber,
@@ -39,6 +40,7 @@ import { createSessionPool } from "./sessions/pool.js";
 import type { SessionPoolWithHandles } from "./sessions/pool.js";
 import { showSessionDetail } from "./tui/session-detail.js";
 import { showPromptOverlay } from "./tui/input-overlay.js";
+import { showTextOverlay } from "./tui/text-overlay.js";
 import { showCommandPalette } from "./tui/command-palette.js";
 import { getLinearCommands } from "./integrations/linear/commands.js";
 import { getGithubCommands } from "./integrations/github/commands.js";
@@ -160,6 +162,41 @@ export function App(props: AppProps) {
   async function handleRefreshPR() {
     await refreshGithub();
     toast.success("PRs refreshed");
+  }
+
+  // Spec action handlers
+  async function handleApproveSpec(specId: NotionPageId) {
+    if (!notionClient) return;
+    try {
+      await notionClient.setSpecStatus(specId, "approved");
+      toast.success("Spec approved");
+      void refreshNotion();
+    } catch (err: unknown) {
+      toast.error(`Failed to approve spec: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+
+  async function handleDenySpec(specId: NotionPageId) {
+    if (!notionClient) return;
+    try {
+      await notionClient.setSpecStatus(specId, "denied");
+      toast.success("Spec denied");
+      void refreshNotion();
+    } catch (err: unknown) {
+      toast.error(`Failed to deny spec: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+
+  async function handleRefreshSpec(specId: NotionPageId) {
+    if (!notionClient) return;
+    try {
+      const fresh = await notionClient.getSpec(specId);
+      // Update the spec in the specs signal with refreshed content
+      setSpecs((prev) => prev.map((s) => (s.id === specId ? fresh : s)));
+      toast.success("Spec refreshed");
+    } catch (err: unknown) {
+      toast.error(`Failed to refresh spec: ${err instanceof Error ? err.message : String(err)}`);
+    }
   }
 
   // UI state signals
@@ -394,6 +431,10 @@ export function App(props: AppProps) {
         handleApprovePR={handleApprovePR}
         handleOpenExternal={handleOpenExternal}
         handleRefreshPR={handleRefreshPR}
+        handleApproveSpec={handleApproveSpec}
+        handleDenySpec={handleDenySpec}
+        handleRefreshSpec={handleRefreshSpec}
+        notionClient={notionClient}
         refreshLinear={refreshLinear}
         refreshGithub={refreshGithub}
         refreshNotion={refreshNotion}
@@ -435,6 +476,10 @@ function AppInner(props: {
   handleApprovePR: (prNumber: PrNumber) => void;
   handleOpenExternal: (url: string) => void;
   handleRefreshPR: () => void;
+  handleApproveSpec: (specId: NotionPageId) => void;
+  handleDenySpec: (specId: NotionPageId) => void;
+  handleRefreshSpec: (specId: NotionPageId) => void;
+  notionClient: ReturnType<typeof createNotionClient> | undefined;
   refreshLinear: () => Promise<void>;
   refreshGithub: () => Promise<void>;
   refreshNotion: () => Promise<void>;
@@ -481,6 +526,24 @@ function AppInner(props: {
     } catch (err: unknown) {
       toast.error(`Failed to post comment: ${err instanceof Error ? err.message : String(err)}`);
     }
+  }
+
+  function handleViewSpecFullScreen(spec: NotionSpec) {
+    void showTextOverlay(dialog as any, {
+      title: spec.title,
+      content: spec.content ?? "Spec content not loaded. Close and press r to refresh.",
+      theme: props.theme,
+      syntaxStyle: props.syntaxStyle,
+      status: `[${spec.status}]`,
+      statusColor:
+        spec.status === "approved"
+          ? props.theme.success
+          : spec.status === "denied"
+            ? props.theme.error
+            : spec.status === "pending"
+              ? props.theme.warning
+              : props.theme.muted,
+    });
   }
 
   // -- Command Palette --
@@ -567,6 +630,10 @@ function AppInner(props: {
           onCommentPR={handleCommentPR}
           onOpenExternal={props.handleOpenExternal}
           onRefreshPR={props.handleRefreshPR}
+          onApproveSpec={props.handleApproveSpec}
+          onDenySpec={props.handleDenySpec}
+          onRefreshSpec={props.handleRefreshSpec}
+          onViewSpecFullScreen={handleViewSpecFullScreen}
         />
       }
       statusBar={

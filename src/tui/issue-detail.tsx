@@ -11,7 +11,14 @@
 import { Show } from "solid-js";
 import type { Accessor } from "solid-js";
 import { TextAttributes } from "@opentui/core";
-import type { EnrichedIssue, UnlinkedItem, SessionId, PrNumber } from "../types.js";
+import type {
+  EnrichedIssue,
+  UnlinkedItem,
+  SessionId,
+  PrNumber,
+  NotionPageId,
+  NotionSpec,
+} from "../types.js";
 import { OverviewTab } from "./overview-tab.js";
 import { ReviewTab } from "./review-tab.js";
 import { SpecTab } from "./spec-tab.js";
@@ -39,6 +46,10 @@ export interface IssueDetailProps {
   readonly onCommentPR?: (prNumber: PrNumber) => void;
   readonly onOpenExternal?: (url: string) => void;
   readonly onRefreshPR?: () => void;
+  readonly onApproveSpec?: (specId: NotionPageId) => void;
+  readonly onDenySpec?: (specId: NotionPageId) => void;
+  readonly onRefreshSpec?: (specId: NotionPageId) => void;
+  readonly onViewSpecFullScreen?: (spec: NotionSpec) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -179,7 +190,17 @@ export function IssueDetail(props: IssueDetailProps) {
 
         <Show when={tab() === "spec"}>
           <scrollbox flexGrow={1}>
-            <SpecTab spec={spec} theme={t} syntaxStyle={props.syntaxStyle} />
+            <SpecTab
+              spec={spec}
+              theme={t}
+              syntaxStyle={props.syntaxStyle}
+              focused={() => props.focused() && tab() === "spec"}
+              onApprove={props.onApproveSpec}
+              onDeny={props.onDenySpec}
+              onRefresh={props.onRefreshSpec}
+              onOpenExternal={props.onOpenExternal}
+              onViewFullScreen={props.onViewSpecFullScreen}
+            />
           </scrollbox>
         </Show>
 
