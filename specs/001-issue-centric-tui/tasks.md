@@ -190,7 +190,7 @@
 
 ### Implementation for User Story 7
 
-- [ ] T043 [US7] Implement responsive layout with `useTerminalDimensions()` breakpoint detection (>80: side-by-side with 30-35% left pane; 60-80: compressed left pane showing only indicator and identifier; <60: stacked vertical with list 40% / detail 60%), dynamic flexDirection switching, and selection/scroll state preservation across resize events in src/tui/layout.tsx and src/tui/issue-list.tsx
+- [x] T043 [US7] Implement responsive layout with `useTerminalDimensions()` breakpoint detection (>80: side-by-side with 30-35% left pane; 60-80: compressed left pane showing only indicator and identifier; <60: stacked vertical with list 40% / detail 60%), dynamic flexDirection switching, and selection/scroll state preservation across resize events in src/tui/layout.tsx and src/tui/issue-list.tsx
 
 **Checkpoint**: All user stories should now be independently functional across all supported terminal sizes.
 

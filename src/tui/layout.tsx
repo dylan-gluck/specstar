@@ -1,6 +1,9 @@
-import { useKeyboard } from "@opentui/solid";
+import { useKeyboard, useTerminalDimensions } from "@opentui/solid";
+import { Match, Switch } from "solid-js";
 import type { Accessor, JSX } from "solid-js";
 import type { ResolvedTheme } from "./theme.js";
+
+export type LayoutMode = "wide" | "compressed" | "stacked";
 
 export interface LayoutProps {
   readonly leftPane: JSX.Element;
@@ -57,23 +60,59 @@ export function Layout(props: LayoutProps) {
   const rightBorder = () =>
     props.focusedPane() === "right" ? props.theme().accent : props.theme().muted;
 
+  const dims = useTerminalDimensions();
+  const layoutMode = (): LayoutMode => {
+    const w = dims().width;
+    if (w > 80) return "wide";
+    if (w >= 60) return "compressed";
+    return "stacked";
+  };
+
   return (
-    <box flexDirection="column" width="100%" height="100%">
-      <box flexDirection="row" flexGrow={1}>
-        <box
-          width="35%"
-          minWidth={28}
-          maxWidth={50}
-          borderStyle="single"
-          borderColor={leftBorder()}
-        >
-          {props.leftPane}
+    <Switch>
+      <Match when={layoutMode() === "wide"}>
+        <box flexDirection="column" width="100%" height="100%">
+          <box flexDirection="row" flexGrow={1}>
+            <box
+              width="35%"
+              minWidth={28}
+              maxWidth={50}
+              borderStyle="single"
+              borderColor={leftBorder()}
+            >
+              {props.leftPane}
+            </box>
+            <box flexGrow={1} borderStyle="single" borderColor={rightBorder()}>
+              {props.rightPane}
+            </box>
+          </box>
+          {props.statusBar}
         </box>
-        <box flexGrow={1} borderStyle="single" borderColor={rightBorder()}>
-          {props.rightPane}
+      </Match>
+      <Match when={layoutMode() === "compressed"}>
+        <box flexDirection="column" width="100%" height="100%">
+          <box flexDirection="row" flexGrow={1}>
+            <box width={22} borderStyle="single" borderColor={leftBorder()}>
+              {props.leftPane}
+            </box>
+            <box flexGrow={1} borderStyle="single" borderColor={rightBorder()}>
+              {props.rightPane}
+            </box>
+          </box>
+          {props.statusBar}
         </box>
-      </box>
-      {props.statusBar}
-    </box>
+      </Match>
+      <Match when={layoutMode() === "stacked"}>
+        <box flexDirection="column" width="100%" height="100%">
+          <box height="40%" borderStyle="single" borderColor={leftBorder()}>
+            {props.leftPane}
+          </box>
+          <box flexGrow={1} borderStyle="single" borderColor={rightBorder()}>
+            {props.rightPane}
+          </box>
+          {props.statusBar}
+        </box>
+      </Match>
+    </Switch>
   );
 }

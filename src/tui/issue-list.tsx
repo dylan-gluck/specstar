@@ -9,7 +9,7 @@
 
 import { createMemo, For, Show } from "solid-js";
 import type { Accessor } from "solid-js";
-import { useKeyboard } from "@opentui/solid";
+import { useKeyboard, useTerminalDimensions } from "@opentui/solid";
 import { TextAttributes } from "@opentui/core";
 import type { EnrichedIssue, UnlinkedItem } from "../types.js";
 import type { IssueListModel } from "../enrichment.js";
@@ -75,6 +75,7 @@ function IssueRow(props: {
   readonly isAttention: boolean;
   readonly selected: boolean;
   readonly theme: ResolvedTheme;
+  readonly compact: boolean;
 }) {
   const prefix = props.isAttention ? "! " : "  ";
   const color = badgeColor(props.enriched.badge, props.theme);
@@ -86,7 +87,11 @@ function IssueRow(props: {
     >
       <text>{prefix}</text>
       <text fg={color}>{`[${props.enriched.badge}]`}</text>
-      <text>{` ${props.enriched.issue.identifier} ${props.enriched.issue.title}`}</text>
+      <text>
+        {props.compact
+          ? ` ${props.enriched.issue.identifier}`
+          : ` ${props.enriched.issue.identifier} ${props.enriched.issue.title}`}
+      </text>
     </box>
   );
 }
@@ -95,11 +100,20 @@ function UnlinkedRow(props: {
   readonly item: UnlinkedItem;
   readonly selected: boolean;
   readonly theme: ResolvedTheme;
+  readonly compact: boolean;
 }) {
-  const label =
-    props.item.type === "pr"
-      ? `  [PR] #${props.item.pr.number} ${props.item.pr.title}`
-      : `  [S] ${props.item.session.name} ${props.item.session.status}`;
+  let label: string;
+  if (props.compact) {
+    label =
+      props.item.type === "pr"
+        ? `  [PR] #${props.item.pr.number}`
+        : `  [S] ${props.item.session.name}`;
+  } else {
+    label =
+      props.item.type === "pr"
+        ? `  [PR] #${props.item.pr.number} ${props.item.pr.title}`
+        : `  [S] ${props.item.session.name} ${props.item.session.status}`;
+  }
 
   return (
     <box backgroundColor={props.selected ? props.theme.backgroundAlt : undefined}>
@@ -114,6 +128,9 @@ function UnlinkedRow(props: {
 
 export function IssueList(props: IssueListProps) {
   const t = props.theme;
+
+  const dims = useTerminalDimensions();
+  const compact = () => dims().width >= 60 && dims().width <= 80;
 
   const flatItems = createMemo(() => getFlatItems(props.model()));
   const totalItems = createMemo(() => flatItems().length);
@@ -171,6 +188,7 @@ export function IssueList(props: IssueListProps) {
               isAttention={true}
               selected={props.selectedIndex() === attentionOffset + i()}
               theme={t}
+              compact={compact()}
             />
           )}
         </For>
@@ -185,6 +203,7 @@ export function IssueList(props: IssueListProps) {
               isAttention={false}
               selected={props.selectedIndex() === activeOffset() + i()}
               theme={t}
+              compact={compact()}
             />
           )}
         </For>
@@ -199,6 +218,7 @@ export function IssueList(props: IssueListProps) {
               isAttention={false}
               selected={props.selectedIndex() === backlogOffset() + i()}
               theme={t}
+              compact={compact()}
             />
           )}
         </For>
@@ -212,6 +232,7 @@ export function IssueList(props: IssueListProps) {
               item={item}
               selected={props.selectedIndex() === unlinkedOffset() + i()}
               theme={t}
+              compact={compact()}
             />
           )}
         </For>
