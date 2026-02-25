@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: User description: "Issue-centric TUI for spec-driven development and async agent orchestration"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Browse and Triage Issues at a Glance (Priority: P1)
 
@@ -138,7 +138,7 @@ A developer uses Specstar on terminals of various sizes. The layout adapts: side
 - What happens when the diff fails to load? The Review tab shows metadata but the diff section displays "Failed to load diff. Press `r` to retry."
 - What happens when multiple PRs exist for one branch? The most recent PR is shown with a note: "N other PRs exist for this branch."
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -178,7 +178,7 @@ A developer uses Specstar on terminals of various sizes. The layout adapts: side
 - **Worktree**: A local git working tree linked to an issue by branch. Has a path and clean/dirty status.
 - **Workflow**: A named pipeline of headless agent sessions. Triggered from the command palette. Types include capture, refine, draft spec, implement, review, and cycle planning.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

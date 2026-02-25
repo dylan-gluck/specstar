@@ -71,6 +71,7 @@ interface WorkerSession {
 
 **Owner**: Session pool service.
 **Relationships**: Linked to an issue by:
+
 1. `branch` matching `LinearIssue.branch`, OR
 2. `issueIdentifier` matching `LinearIssue.identifier`, OR
 3. `worktreePath` matching a `Worktree.path` whose `branch` matches an issue.
@@ -125,6 +126,7 @@ interface GithubPR {
 
 **Owner**: GitHub integration service.
 **Relationships**: Linked to an issue by:
+
 1. `headRef` matching `LinearIssue.branch`, OR
 2. `ticketId` matching `LinearIssue.identifier` (extracted via regex from branch/title).
 
@@ -457,18 +459,22 @@ const enriched: EnrichedIssue[] = issues.map((issue) => {
 const unlinked: UnlinkedItem[] = [
   ...prs
     .filter((pr) => !linkedPRNumbers.has(pr.number))
-    .map((pr): UnlinkedPR => ({
-      kind: "pr",
-      pr,
-      badge: resolvePRBadge(pr),
-    })),
+    .map(
+      (pr): UnlinkedPR => ({
+        kind: "pr",
+        pr,
+        badge: resolvePRBadge(pr),
+      }),
+    ),
   ...sessions
     .filter((s) => !linkedSessionIds.has(s.id))
-    .map((s): UnlinkedSession => ({
-      kind: "session",
-      session: s,
-      badge: resolveSessionBadge(s),
-    })),
+    .map(
+      (s): UnlinkedSession => ({
+        kind: "session",
+        session: s,
+        badge: resolveSessionBadge(s),
+      }),
+    ),
 ];
 ```
 
@@ -480,29 +486,29 @@ const unlinked: UnlinkedItem[] = [
 
 Uses `resolveSessionBadge`:
 
-| `session.status` | Badge |
-|---|---|
-| `approval` | `apprvl` |
-| `error` | `error` |
-| `working` | `wrkng` |
-| `idle` | `idle` |
-| `starting` | `idle` |
-| `shutdown` | `--` |
+| `session.status` | Badge    |
+| ---------------- | -------- |
+| `approval`       | `apprvl` |
+| `error`          | `error`  |
+| `working`        | `wrkng`  |
+| `idle`           | `idle`   |
+| `starting`       | `idle`   |
+| `shutdown`       | `--`     |
 
 ### 3.2 UnlinkedPR Badge
 
 Uses `resolvePRBadge`:
 
-| Condition (evaluated in order) | Badge |
-|---|---|
-| `pr.ciStatus === "fail"` | `ci:fail` |
-| `pr.state === "merged"` | `merged` |
-| `pr.state === "closed"` | `--` |
-| `pr.reviewDecision === "approved"` | `review` |
-| `pr.ciStatus === "pass"` | `ci:pass` |
-| `pr.state === "draft"` | `draft` |
-| `pr.state === "open"` | `review` |
-| fallback | `--` |
+| Condition (evaluated in order)     | Badge     |
+| ---------------------------------- | --------- |
+| `pr.ciStatus === "fail"`           | `ci:fail` |
+| `pr.state === "merged"`            | `merged`  |
+| `pr.state === "closed"`            | `--`      |
+| `pr.reviewDecision === "approved"` | `review`  |
+| `pr.ciStatus === "pass"`           | `ci:pass` |
+| `pr.state === "draft"`             | `draft`   |
+| `pr.state === "open"`              | `review`  |
+| fallback                           | `--`      |
 
 ---
 
@@ -648,26 +654,27 @@ stateDiagram-v2
 
 #### Transition Table
 
-| Current State | Event | Next State | Guard |
-|---|---|---|---|
-| `starting` | `session_ready` | `idle` | Agent session created successfully |
-| `starting` | `init_failed` | `error` | Session creation threw |
-| `starting` | `dispose` | `shutdown` | Always allowed |
-| `idle` | `prompt_sent` | `working` | Prompt is non-empty string |
-| `idle` | `dispose` | `shutdown` | Always allowed |
-| `working` | `turn_complete` | `idle` | Agent finished turn without error |
-| `working` | `approval_needed` | `approval` | Tool requires human approval |
-| `working` | `execution_error` | `error` | Agent threw or tool failed fatally |
-| `working` | `dispose` | `shutdown` | Always allowed (aborts current work) |
-| `approval` | `approved` | `working` | User approved the tool call |
-| `approval` | `rejected` | `working` | User rejected; agent receives rejection and continues |
-| `approval` | `approval_error` | `error` | Approval handler threw |
-| `approval` | `dispose` | `shutdown` | Always allowed |
-| `error` | `retry` | `idle` | Error is recoverable; session still alive |
-| `error` | `dispose` | `shutdown` | Always allowed |
-| `shutdown` | *(none)* | *(terminal)* | No transitions out of shutdown |
+| Current State | Event             | Next State   | Guard                                                 |
+| ------------- | ----------------- | ------------ | ----------------------------------------------------- |
+| `starting`    | `session_ready`   | `idle`       | Agent session created successfully                    |
+| `starting`    | `init_failed`     | `error`      | Session creation threw                                |
+| `starting`    | `dispose`         | `shutdown`   | Always allowed                                        |
+| `idle`        | `prompt_sent`     | `working`    | Prompt is non-empty string                            |
+| `idle`        | `dispose`         | `shutdown`   | Always allowed                                        |
+| `working`     | `turn_complete`   | `idle`       | Agent finished turn without error                     |
+| `working`     | `approval_needed` | `approval`   | Tool requires human approval                          |
+| `working`     | `execution_error` | `error`      | Agent threw or tool failed fatally                    |
+| `working`     | `dispose`         | `shutdown`   | Always allowed (aborts current work)                  |
+| `approval`    | `approved`        | `working`    | User approved the tool call                           |
+| `approval`    | `rejected`        | `working`    | User rejected; agent receives rejection and continues |
+| `approval`    | `approval_error`  | `error`      | Approval handler threw                                |
+| `approval`    | `dispose`         | `shutdown`   | Always allowed                                        |
+| `error`       | `retry`           | `idle`       | Error is recoverable; session still alive             |
+| `error`       | `dispose`         | `shutdown`   | Always allowed                                        |
+| `shutdown`    | _(none)_          | _(terminal)_ | No transitions out of shutdown                        |
 
 **Invalid transitions** (must throw `InvalidTransitionError`):
+
 - `starting` -> `working` (must pass through `idle`)
 - `starting` -> `approval` (must pass through `working`)
 - `idle` -> `approval` (must pass through `working`)
@@ -699,15 +706,16 @@ stateDiagram-v2
 
 #### Transition Table
 
-| Current State | Event | Next State | Guard |
-|---|---|---|---|
-| `draft` | `submit_for_review` | `pending` | Spec content is non-empty |
-| `pending` | `approve` | `approved` | Reviewer action |
-| `pending` | `deny` | `denied` | Reviewer action |
-| `denied` | `revise` | `draft` | New content provided |
-| `approved` | `revise` | `draft` | Re-opening an approved spec for changes |
+| Current State | Event               | Next State | Guard                                   |
+| ------------- | ------------------- | ---------- | --------------------------------------- |
+| `draft`       | `submit_for_review` | `pending`  | Spec content is non-empty               |
+| `pending`     | `approve`           | `approved` | Reviewer action                         |
+| `pending`     | `deny`              | `denied`   | Reviewer action                         |
+| `denied`      | `revise`            | `draft`    | New content provided                    |
+| `approved`    | `revise`            | `draft`    | Re-opening an approved spec for changes |
 
 **Invalid transitions** (must throw `InvalidTransitionError`):
+
 - `draft` -> `approved` (must pass through `pending`)
 - `draft` -> `denied` (must pass through `pending`)
 - `pending` -> `draft` (must explicitly approve or deny first, then revise)
@@ -728,15 +736,15 @@ type PRState = "open" | "draft" | "closed" | "merged";
 
 #### Transition Table (observed)
 
-| Current State | Event | Next State |
-|---|---|---|
-| `draft` | `ready_for_review` | `open` |
-| `draft` | `close` | `closed` |
-| `open` | `merge` | `merged` |
-| `open` | `close` | `closed` |
-| `open` | `convert_to_draft` | `draft` |
-| `closed` | `reopen` | `open` |
-| `merged` | *(none)* | *(terminal)* |
+| Current State | Event              | Next State   |
+| ------------- | ------------------ | ------------ |
+| `draft`       | `ready_for_review` | `open`       |
+| `draft`       | `close`            | `closed`     |
+| `open`        | `merge`            | `merged`     |
+| `open`        | `close`            | `closed`     |
+| `open`        | `convert_to_draft` | `draft`      |
+| `closed`      | `reopen`           | `open`       |
+| `merged`      | _(none)_           | _(terminal)_ |
 
 Specstar does not enforce these transitions; it accepts whatever state GitHub reports. Invalid observed states (e.g., `merged` -> `open`) are logged as warnings but not rejected.
 
@@ -760,25 +768,25 @@ function assignSection(
 
 #### Decision Table (evaluated top-to-bottom, first match wins)
 
-| # | Condition | Section |
-|---|---|---|
-| 1 | Any linked session has `status === "approval"` | `attention` |
-| 2 | Any linked session has `status === "error"` | `attention` |
-| 3 | Any linked session has `status === "shutdown"` AND issue state is not "Done"/"Cancelled" (completed session needing review) | `attention` |
-| 4 | Linked spec has `status === "pending"` | `attention` |
-| 5 | Any linked session has `status === "working"` | `active` |
-| 6 | Any linked session has `status === "idle"` or `status === "starting"` | `active` |
-| 7 | Linked PR has `state === "open"` or `state === "draft"` | `active` |
-| 8 | Issue `state` is "In Progress" (case-insensitive match) | `active` |
-| 9 | fallback | `backlog` |
+| #   | Condition                                                                                                                   | Section     |
+| --- | --------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| 1   | Any linked session has `status === "approval"`                                                                              | `attention` |
+| 2   | Any linked session has `status === "error"`                                                                                 | `attention` |
+| 3   | Any linked session has `status === "shutdown"` AND issue state is not "Done"/"Cancelled" (completed session needing review) | `attention` |
+| 4   | Linked spec has `status === "pending"`                                                                                      | `attention` |
+| 5   | Any linked session has `status === "working"`                                                                               | `active`    |
+| 6   | Any linked session has `status === "idle"` or `status === "starting"`                                                       | `active`    |
+| 7   | Linked PR has `state === "open"` or `state === "draft"`                                                                     | `active`    |
+| 8   | Issue `state` is "In Progress" (case-insensitive match)                                                                     | `active`    |
+| 9   | fallback                                                                                                                    | `backlog`   |
 
 #### Sort Order Within Sections
 
-| Section | Primary Sort | Secondary Sort |
-|---|---|---|
-| `attention` | Badge urgency (see Section 6) descending | `updatedAt` descending |
-| `active` | `lastActivityAt` descending (from most recent session or PR) | `updatedAt` descending |
-| `backlog` | `priority` ascending (1=Urgent first) | `updatedAt` descending |
+| Section     | Primary Sort                                                 | Secondary Sort         |
+| ----------- | ------------------------------------------------------------ | ---------------------- |
+| `attention` | Badge urgency (see Section 6) descending                     | `updatedAt` descending |
+| `active`    | `lastActivityAt` descending (from most recent session or PR) | `updatedAt` descending |
+| `backlog`   | `priority` ascending (1=Urgent first)                        | `updatedAt` descending |
 
 ---
 
@@ -788,46 +796,55 @@ function assignSection(
 
 ```typescript
 type StatusBadge =
-  | "apprvl"   // Session needs tool approval
-  | "error"    // Session errored
-  | "done"     // Session completed, needs review
-  | "wrkng"    // Session actively working
-  | "review"   // PR open, awaiting review
-  | "ci:fail"  // PR CI failing
-  | "spec"     // Spec drafted, pending approval
-  | "idle"     // Session exists, idle
-  | "draft"    // PR in draft
-  | "ci:pass"  // PR CI passing, no review yet
-  | "merged"   // PR merged
-  | "--";      // No active artifacts
+  | "apprvl" // Session needs tool approval
+  | "error" // Session errored
+  | "done" // Session completed, needs review
+  | "wrkng" // Session actively working
+  | "review" // PR open, awaiting review
+  | "ci:fail" // PR CI failing
+  | "spec" // Spec drafted, pending approval
+  | "idle" // Session exists, idle
+  | "draft" // PR in draft
+  | "ci:pass" // PR CI passing, no review yet
+  | "merged" // PR merged
+  | "--"; // No active artifacts
 ```
 
 ### 6.2 Priority Order
 
 Numeric priority (lower = more urgent):
 
-| Priority | Badge | Meaning |
-|---|---|---|
-| 0 | `apprvl` | Session needs tool approval |
-| 1 | `error` | Session errored |
-| 2 | `done` | Session completed, PR ready for review |
-| 3 | `wrkng` | Session actively working |
-| 4 | `review` | PR open, awaiting review |
-| 5 | `ci:fail` | PR CI failing |
-| 6 | `spec` | Spec pending approval |
-| 7 | `idle` | Session idle |
-| 8 | `draft` | PR in draft |
-| 9 | `ci:pass` | PR CI passing |
-| 10 | `merged` | PR merged |
-| 11 | `--` | No active artifacts |
+| Priority | Badge     | Meaning                                |
+| -------- | --------- | -------------------------------------- |
+| 0        | `apprvl`  | Session needs tool approval            |
+| 1        | `error`   | Session errored                        |
+| 2        | `done`    | Session completed, PR ready for review |
+| 3        | `wrkng`   | Session actively working               |
+| 4        | `review`  | PR open, awaiting review               |
+| 5        | `ci:fail` | PR CI failing                          |
+| 6        | `spec`    | Spec pending approval                  |
+| 7        | `idle`    | Session idle                           |
+| 8        | `draft`   | PR in draft                            |
+| 9        | `ci:pass` | PR CI passing                          |
+| 10       | `merged`  | PR merged                              |
+| 11       | `--`      | No active artifacts                    |
 
 ### 6.3 Resolution Function
 
 ```typescript
 const BADGE_PRIORITY: Record<StatusBadge, number> = {
-  "apprvl": 0, "error": 1, "done": 2, "wrkng": 3,
-  "review": 4, "ci:fail": 5, "spec": 6, "idle": 7,
-  "draft": 8, "ci:pass": 9, "merged": 10, "--": 11,
+  apprvl: 0,
+  error: 1,
+  done: 2,
+  wrkng: 3,
+  review: 4,
+  "ci:fail": 5,
+  spec: 6,
+  idle: 7,
+  draft: 8,
+  "ci:pass": 9,
+  merged: 10,
+  "--": 11,
 };
 
 function resolveBadge(
@@ -844,12 +861,22 @@ function resolveBadge(
   // Session-derived badges
   for (const session of linked.sessions) {
     switch (session.status) {
-      case "approval": candidates.push("apprvl"); break;
-      case "error":    candidates.push("error"); break;
-      case "shutdown": candidates.push("done"); break;
-      case "working":  candidates.push("wrkng"); break;
+      case "approval":
+        candidates.push("apprvl");
+        break;
+      case "error":
+        candidates.push("error");
+        break;
+      case "shutdown":
+        candidates.push("done");
+        break;
+      case "working":
+        candidates.push("wrkng");
+        break;
       case "idle":
-      case "starting": candidates.push("idle"); break;
+      case "starting":
+        candidates.push("idle");
+        break;
     }
   }
 
@@ -872,9 +899,7 @@ function resolveBadge(
   if (candidates.length === 0) return "--";
 
   // Return highest priority (lowest number)
-  return candidates.reduce((best, c) =>
-    BADGE_PRIORITY[c] < BADGE_PRIORITY[best] ? c : best
-  );
+  return candidates.reduce((best, c) => (BADGE_PRIORITY[c] < BADGE_PRIORITY[best] ? c : best));
 }
 ```
 
@@ -883,13 +908,19 @@ function resolveBadge(
 ```typescript
 function resolveSessionBadge(session: WorkerSession): StatusBadge {
   switch (session.status) {
-    case "approval": return "apprvl";
-    case "error":    return "error";
-    case "working":  return "wrkng";
+    case "approval":
+      return "apprvl";
+    case "error":
+      return "error";
+    case "working":
+      return "wrkng";
     case "idle":
-    case "starting": return "idle";
-    case "shutdown": return "--";
-    default:         return "--";
+    case "starting":
+      return "idle";
+    case "shutdown":
+      return "--";
+    default:
+      return "--";
   }
 }
 
@@ -1043,23 +1074,23 @@ interface SpecstarKeybindings {
 
 **Default values:**
 
-| Key | Default |
-|---|---|
-| `togglePane` | `"tab"` |
-| `openCommandPalette` | `"/"` |
-| `refreshAll` | `"ctrl+r"` |
-| `quit` | `"ctrl+q"` |
-| `selectUp` | `"up"` |
-| `selectDown` | `"down"` |
-| `primaryAction` | `"enter"` |
-| `tabNext` | `"right"` |
-| `tabPrev` | `"left"` |
-| `approve` | `"a"` |
-| `deny` | `"x"` |
-| `newSession` | `"n"` |
-| `comment` | `"c"` |
-| `openExternal` | `"e"` |
-| `refreshCard` | `"r"` |
+| Key                  | Default    |
+| -------------------- | ---------- |
+| `togglePane`         | `"tab"`    |
+| `openCommandPalette` | `"/"`      |
+| `refreshAll`         | `"ctrl+r"` |
+| `quit`               | `"ctrl+q"` |
+| `selectUp`           | `"up"`     |
+| `selectDown`         | `"down"`   |
+| `primaryAction`      | `"enter"`  |
+| `tabNext`            | `"right"`  |
+| `tabPrev`            | `"left"`   |
+| `approve`            | `"a"`      |
+| `deny`               | `"x"`      |
+| `newSession`         | `"n"`      |
+| `comment`            | `"c"`      |
+| `openExternal`       | `"e"`      |
+| `refreshCard`        | `"r"`      |
 
 ---
 
@@ -1216,14 +1247,14 @@ type WorkerCommand =
 
 ### 8.4 Event Emission Summary
 
-| Event | Emitted When |
-|---|---|
-| `session_ready` | Worker finishes creating the `AgentSession` and transitions `starting` -> `idle` |
-| `status_change` | Any `WorkerStatus` transition occurs |
-| `stream_delta` | Agent streams a text chunk during a turn |
-| `tool_execution` | A tool call starts or completes |
-| `approval_needed` | Custom tool approval handler intercepts a tool call requiring human approval |
-| `turn_complete` | Agent finishes a full turn (prompt -> response cycle) |
-| `error` | Session encounters an unrecoverable or recoverable error |
-| `shutdown` | Session terminates for any reason |
-| `token_update` | Periodic token usage update (batched, not per-token) |
+| Event             | Emitted When                                                                     |
+| ----------------- | -------------------------------------------------------------------------------- |
+| `session_ready`   | Worker finishes creating the `AgentSession` and transitions `starting` -> `idle` |
+| `status_change`   | Any `WorkerStatus` transition occurs                                             |
+| `stream_delta`    | Agent streams a text chunk during a turn                                         |
+| `tool_execution`  | A tool call starts or completes                                                  |
+| `approval_needed` | Custom tool approval handler intercepts a tool call requiring human approval     |
+| `turn_complete`   | Agent finishes a full turn (prompt -> response cycle)                            |
+| `error`           | Session encounters an unrecoverable or recoverable error                         |
+| `shutdown`        | Session terminates for any reason                                                |
+| `token_update`    | Periodic token usage update (batched, not per-token)                             |

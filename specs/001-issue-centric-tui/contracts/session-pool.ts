@@ -29,13 +29,7 @@ export type SessionId = string & { readonly __brand: "SessionId" };
  * Worker session status.
  * Transitions are enforced; invalid transitions MUST throw.
  */
-export type WorkerStatus =
-  | "starting"
-  | "idle"
-  | "working"
-  | "approval"
-  | "error"
-  | "shutdown";
+export type WorkerStatus = "starting" | "idle" | "working" | "approval" | "error" | "shutdown";
 
 // ---------------------------------------------------------------------------
 // Domain types
@@ -98,11 +92,34 @@ export interface SessionNotification {
  * All payloads MUST be JSON-serializable (Constitution: immutable events).
  */
 export type WorkerEvent =
-  | { readonly type: "status_changed"; readonly sessionId: SessionId; readonly status: WorkerStatus }
-  | { readonly type: "activity"; readonly sessionId: SessionId; readonly lastActivityAt: string; readonly tokenCount: number }
-  | { readonly type: "approval_needed"; readonly sessionId: SessionId; readonly toolName: string; readonly args: string }
-  | { readonly type: "notification"; readonly sessionId: SessionId; readonly notification: SessionNotification }
-  | { readonly type: "error"; readonly sessionId: SessionId; readonly message: string; readonly stack?: string }
+  | {
+      readonly type: "status_changed";
+      readonly sessionId: SessionId;
+      readonly status: WorkerStatus;
+    }
+  | {
+      readonly type: "activity";
+      readonly sessionId: SessionId;
+      readonly lastActivityAt: string;
+      readonly tokenCount: number;
+    }
+  | {
+      readonly type: "approval_needed";
+      readonly sessionId: SessionId;
+      readonly toolName: string;
+      readonly args: string;
+    }
+  | {
+      readonly type: "notification";
+      readonly sessionId: SessionId;
+      readonly notification: SessionNotification;
+    }
+  | {
+      readonly type: "error";
+      readonly sessionId: SessionId;
+      readonly message: string;
+      readonly stack?: string;
+    }
   | { readonly type: "shutdown_complete"; readonly sessionId: SessionId };
 
 /**

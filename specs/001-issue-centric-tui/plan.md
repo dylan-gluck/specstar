@@ -21,7 +21,7 @@ Replace the four-card grid dashboard (Linear, Sessions, GitHub PRs, Worktrees) w
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 ### I. Contract-First Design
 
@@ -66,13 +66,13 @@ Replace the four-card grid dashboard (Linear, Sessions, GitHub PRs, Worktrees) w
 
 All Phase 1 artifacts have been produced. Re-checking each principle against the delivered design:
 
-| Principle | Artifact | Verification | Status |
-|-----------|----------|--------------|--------|
-| I. Contract-First | `contracts/*.ts` (7 files) | Every service boundary has a versioned TypeScript interface with JSDoc. Types are self-contained per file. Branded types for IDs. Discriminated unions for events/errors. | PASS |
-| II. SOLID | `contracts/*.ts`, `data-model.md` | Each contract file governs a single bounded context. `enrichment.ts` uses `import type` only from other contracts (composition layer). No concrete dependencies at boundaries. | PASS |
-| III. Service-Based | `data-model.md` Section 4 (SQLite schema) | 6 tables, each owned by one service. No cross-table FKs. Enrichment is computed at application layer by branch matching, not stored joins. | PASS |
-| IV. Explicit State Machines | `data-model.md` Section 5 | WorkerStatus (6 states, 14 transitions, invalid transitions enumerated). SpecStatus (4 states, 5 transitions). PRState (4 states, observed-only). IssueSection classifier (9-rule decision table). All with guard conditions. | PASS |
-| V. Event-Driven Actor | `contracts/session-pool.ts` | `WorkerEvent` union (9 event types). `MainToWorkerCommand` union (5 command types). All events are `readonly`, timestamped, discriminated by `type` field. Worker isolation via Bun Workers. | PASS |
+| Principle                   | Artifact                                  | Verification                                                                                                                                                                                                                  | Status |
+| --------------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| I. Contract-First           | `contracts/*.ts` (7 files)                | Every service boundary has a versioned TypeScript interface with JSDoc. Types are self-contained per file. Branded types for IDs. Discriminated unions for events/errors.                                                     | PASS   |
+| II. SOLID                   | `contracts/*.ts`, `data-model.md`         | Each contract file governs a single bounded context. `enrichment.ts` uses `import type` only from other contracts (composition layer). No concrete dependencies at boundaries.                                                | PASS   |
+| III. Service-Based          | `data-model.md` Section 4 (SQLite schema) | 6 tables, each owned by one service. No cross-table FKs. Enrichment is computed at application layer by branch matching, not stored joins.                                                                                    | PASS   |
+| IV. Explicit State Machines | `data-model.md` Section 5                 | WorkerStatus (6 states, 14 transitions, invalid transitions enumerated). SpecStatus (4 states, 5 transitions). PRState (4 states, observed-only). IssueSection classifier (9-rule decision table). All with guard conditions. | PASS   |
+| V. Event-Driven Actor       | `contracts/session-pool.ts`               | `WorkerEvent` union (9 event types). `MainToWorkerCommand` union (5 command types). All events are `readonly`, timestamped, discriminated by `type` field. Worker isolation via Bun Workers.                                  | PASS   |
 
 **Post-Design Gate Result: PASS** -- No violations introduced during design phase.
 
@@ -157,7 +157,7 @@ test/
 ```
 
 scripts/
-├── generate-schema.ts           # ts-json-schema-generator: SpecstarConfig -> specstar.schema.json
+├── generate-schema.ts # ts-json-schema-generator: SpecstarConfig -> specstar.schema.json
 
 Agent Skills:
 ├── Coding agents: activate `opentui` skill for implementation tasks
@@ -170,5 +170,5 @@ Agent Skills:
 > No constitutional violations identified. Table left empty.
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| (none)    | --         | --                                  |
+| --------- | ---------- | ------------------------------------ |
+| (none)    | --         | --                                   |

@@ -30,9 +30,9 @@
 
 **Purpose**: Project initialization, dependency installation, and tooling configuration
 
-- [ ] T001 Create project directory structure per implementation plan: `src/tui/`, `src/integrations/linear/`, `src/integrations/github/`, `src/integrations/notion/`, `src/sessions/`, `src/workflows/builtins/`, `src/memory/`, `test/unit/`, `test/contract/`, `test/integration/`, `scripts/`
-- [ ] T002 Initialize Bun TypeScript project with all dependencies in package.json (`@opentui/solid` ^0.1.82, `@opentui-ui/dialog`, `@opentui-ui/toast`, `@oh-my-pi/pi-coding-agent` ^13.2.1, `solid-js` ^1.9.11, `ts-json-schema-generator` as devDep) and configure tsconfig.json with strict mode, JSX preserve, and Bun types
-- [ ] T003 [P] Configure linting (oxlint) and formatting (oxfmt) with dev scripts in package.json (`lint`, `lint:fix`, `fmt`, `fmt:check`)
+- [x] T001 Create project directory structure per implementation plan: `src/tui/`, `src/integrations/linear/`, `src/integrations/github/`, `src/integrations/notion/`, `src/sessions/`, `src/workflows/builtins/`, `src/memory/`, `test/unit/`, `test/contract/`, `test/integration/`, `scripts/`
+- [x] T002 Initialize Bun TypeScript project with all dependencies in package.json (`@opentui/solid` ^0.1.82, `@opentui-ui/dialog`, `@opentui-ui/toast`, `@oh-my-pi/pi-coding-agent` ^13.2.1, `solid-js` ^1.9.11, `ts-json-schema-generator` as devDep) and configure tsconfig.json with strict mode, JSX preserve, and Bun types
+- [x] T003 [P] Configure linting (oxlint) and formatting (oxfmt) with dev scripts in package.json (`lint`, `lint:fix`, `fmt`, `fmt:check`)
 
 ---
 
@@ -250,6 +250,7 @@ Foundation ──► US1 ──► US2 ──┬──► US3 ──► US5
 ### Parallel Opportunities
 
 **Phase 2 (Foundational)**: 8 of 13 tasks are parallelizable:
+
 - T005 (db.ts), T006 (theme.ts), T008 (Linear), T009 (GitHub), T011 (Notion), T012 (Memory), T015 (schema script), T016 (build script) can all run in parallel after T004 completes
 
 **Phase 3 (US1)**: T020 (status-bar.tsx) parallel with T019 (issue-list.tsx)
@@ -261,6 +262,7 @@ Foundation ──► US1 ──► US2 ──┬──► US3 ──► US5
 **Phase 7 (US5)**: T036 (Linear commands), T037 (Session commands), T038 (Notion commands), T040 (built-in workflows) all parallel with each other
 
 **Cross-story parallelism** (with multiple developers after US2 completes):
+
 - Developer A: US3 (session management)
 - Developer B: US4 (PR review) + US6 (specifications) -- both enhance US2 tabs
 - US4 and US6 can be done in parallel since they modify different files (review-tab.tsx vs spec-tab.tsx)

@@ -2,14 +2,14 @@
 
 ## Prerequisites
 
-| Requirement | Notes |
-|---|---|
-| [Bun](https://bun.sh) >= 1.2 | Runtime, bundler, test runner, SQLite |
-| [Oh-my-pi](https://github.com/can1357/oh-my-pi) | Coding agent — must be installed and configured (`omp` on PATH) |
-| Git | Repository with remote configured |
-| Linear API key | `lin_api_...` — obtain from Linear Settings > API |
-| GitHub CLI (`gh`) | Authenticated — run `gh auth status` to verify |
-| Notion API key + database ID | `ntn_...` — create an internal integration at notion.so/my-integrations |
+| Requirement                                     | Notes                                                                   |
+| ----------------------------------------------- | ----------------------------------------------------------------------- |
+| [Bun](https://bun.sh) >= 1.2                    | Runtime, bundler, test runner, SQLite                                   |
+| [Oh-my-pi](https://github.com/can1357/oh-my-pi) | Coding agent — must be installed and configured (`omp` on PATH)         |
+| Git                                             | Repository with remote configured                                       |
+| Linear API key                                  | `lin_api_...` — obtain from Linear Settings > API                       |
+| GitHub CLI (`gh`)                               | Authenticated — run `gh auth status` to verify                          |
+| Notion API key + database ID                    | `ntn_...` — create an internal integration at notion.so/my-integrations |
 
 ## Installation
 
@@ -60,11 +60,11 @@ Project-level config merges onto global. Nested objects are shallow-merged; arra
 
 ### Environment variables
 
-| Variable | Purpose |
-|---|---|
+| Variable                  | Purpose                   |
+| ------------------------- | ------------------------- |
 | `SPECSTAR_LINEAR_API_KEY` | Linear API authentication |
 | `SPECSTAR_NOTION_API_KEY` | Notion API authentication |
-| `SPECSTAR_CONFIG_FILE` | Config file path override |
+| `SPECSTAR_CONFIG_FILE`    | Config file path override |
 
 ### Setup wizard
 
@@ -73,6 +73,7 @@ specstar setup
 ```
 
 Interactive wizard that:
+
 1. Detects GitHub repo from git remote
 2. Prompts for Linear API key, validates it, lists teams for selection
 3. Prompts for Notion API key and database selection
@@ -106,7 +107,7 @@ Compile a standalone binary:
 
 ```ts
 // build.ts
-import solidPlugin from "@opentui/solid/bun-plugin"
+import solidPlugin from "@opentui/solid/bun-plugin";
 
 await Bun.build({
   entrypoints: ["./src/index.tsx"],
@@ -115,7 +116,7 @@ await Bun.build({
     target: "bun-darwin-arm64",
     outfile: "./specstar",
   },
-})
+});
 ```
 
 ```bash

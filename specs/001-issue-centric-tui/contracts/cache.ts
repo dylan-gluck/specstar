@@ -27,9 +27,7 @@ export type KeyExtractor<T> = (item: T) => string;
 // Errors
 // ---------------------------------------------------------------------------
 
-export type CacheError =
-  | CacheCorruptionError
-  | CacheWriteError;
+export type CacheError = CacheCorruptionError | CacheWriteError;
 
 export interface CacheCorruptionError {
   readonly type: "cache_corruption";

@@ -89,10 +89,7 @@ export interface GithubNetworkError {
   readonly message: string;
 }
 
-export type WorktreeError =
-  | WorktreeBranchExistsError
-  | WorktreeNotFoundError
-  | WorktreeGitError;
+export type WorktreeError = WorktreeBranchExistsError | WorktreeNotFoundError | WorktreeGitError;
 
 export interface WorktreeBranchExistsError {
   readonly type: "worktree_branch_exists";
