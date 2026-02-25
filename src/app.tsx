@@ -76,6 +76,19 @@ export function App(props: AppProps) {
   const [worktrees, setWorktrees] = createSignal<readonly Worktree[]>([]);
   const [sessions, setSessions] = createSignal<readonly WorkerSession[]>([]);
 
+  type IntegrationStatus = {
+    linear: string | null;
+    github: string | null;
+    notion: string | null;
+    worktrees: string | null;
+  };
+  const [integrationErrors, setIntegrationErrors] = createSignal<IntegrationStatus>({
+    linear: null,
+    github: null,
+    notion: null,
+    worktrees: null,
+  });
+
   // -------------------------------------------------------------------------
   // Session pool
   // -------------------------------------------------------------------------
@@ -237,6 +250,8 @@ export function App(props: AppProps) {
   // Integration clients (created lazily based on config)
   // -------------------------------------------------------------------------
 
+  const hasAnyIntegration = Boolean(config.linear || config.github || config.notion);
+
   const linearClient = config.linear
     ? createLinearClient(config.linear.apiKey, config.linear.teamId)
     : undefined;
@@ -269,8 +284,11 @@ export function App(props: AppProps) {
       if (issueCache.update(fresh)) {
         setIssues(fresh);
       }
+      setIntegrationErrors((prev) => ({ ...prev, linear: null }));
     } catch (err) {
-      toast.error(`Linear: ${err instanceof Error ? err.message : "connection error"}`);
+      const msg = err instanceof Error ? err.message : "connection error";
+      setIntegrationErrors((prev) => ({ ...prev, linear: msg }));
+      toast.error(`Linear: connection error (r to retry)`);
     }
   }
 
@@ -282,17 +300,29 @@ export function App(props: AppProps) {
       if (prCache.update(fresh)) {
         setPrs(fresh);
       }
+      setIntegrationErrors((prev) => ({ ...prev, github: null }));
     } catch (err) {
-      toast.error(`GitHub: ${err instanceof Error ? err.message : "connection error"}`);
+      const msg = err instanceof Error ? err.message : "connection error";
+      setIntegrationErrors((prev) => ({ ...prev, github: msg }));
+      toast.error(`GitHub: connection error (r to retry)`);
     }
   }
+
+  let lastWorktreeJson = "";
 
   async function refreshWorktrees() {
     try {
       const fresh = await worktreeManager.list();
-      setWorktrees(fresh);
+      const json = JSON.stringify(fresh);
+      if (json !== lastWorktreeJson) {
+        lastWorktreeJson = json;
+        setWorktrees(fresh);
+      }
+      setIntegrationErrors((prev) => ({ ...prev, worktrees: null }));
     } catch (err) {
-      toast.error(`Worktrees: ${err instanceof Error ? err.message : "connection error"}`);
+      const msg = err instanceof Error ? err.message : "connection error";
+      setIntegrationErrors((prev) => ({ ...prev, worktrees: msg }));
+      toast.error(`Worktrees: connection error (r to retry)`);
     }
   }
 
@@ -303,9 +333,17 @@ export function App(props: AppProps) {
       if (specCache.update(fresh)) {
         setSpecs(fresh);
       }
+      setIntegrationErrors((prev) => ({ ...prev, notion: null }));
     } catch (err) {
-      toast.error(`Notion: ${err instanceof Error ? err.message : "connection error"}`);
+      const msg = err instanceof Error ? err.message : "connection error";
+      setIntegrationErrors((prev) => ({ ...prev, notion: msg }));
+      toast.error(`Notion: connection error (r to retry)`);
     }
+  }
+
+  async function handleRetryAll() {
+    await Promise.all([refreshLinear(), refreshGithub(), refreshWorktrees(), refreshNotion()]);
+    toast.success("Refreshed all integrations");
   }
 
   // Initial fetch
@@ -435,9 +473,12 @@ export function App(props: AppProps) {
         handleDenySpec={handleDenySpec}
         handleRefreshSpec={handleRefreshSpec}
         notionClient={notionClient}
+        hasAnyIntegration={hasAnyIntegration}
         refreshLinear={refreshLinear}
         refreshGithub={refreshGithub}
         refreshNotion={refreshNotion}
+        integrationErrors={integrationErrors}
+        handleRetryAll={handleRetryAll}
       />
       <Toaster position="bottom-right" />
     </DialogProvider>
@@ -481,8 +522,16 @@ function AppInner(props: {
   handleRefreshSpec: (specId: NotionPageId) => void;
   notionClient: ReturnType<typeof createNotionClient> | undefined;
   refreshLinear: () => Promise<void>;
+  hasAnyIntegration: boolean;
   refreshGithub: () => Promise<void>;
   refreshNotion: () => Promise<void>;
+  integrationErrors: () => {
+    linear: string | null;
+    github: string | null;
+    notion: string | null;
+    worktrees: string | null;
+  };
+  handleRetryAll: () => Promise<void>;
 }) {
   // useDialog() is available here because AppInner renders inside DialogProvider
   const dialog = useDialog();
@@ -605,6 +654,7 @@ function AppInner(props: {
       onTabCycle={props.handleTabCycle}
       onCommandPalette={handleCommandPalette}
       theme={() => props.theme}
+      keybindings={props.config.keybindings}
       leftPane={
         <IssueList
           model={props.issueListModel}
@@ -612,6 +662,7 @@ function AppInner(props: {
           onSelect={props.setSelectedIndex}
           theme={props.theme}
           focused={() => props.focusedPane() === "left"}
+          keybindings={props.config.keybindings}
         />
       }
       rightPane={
@@ -634,6 +685,7 @@ function AppInner(props: {
           onDenySpec={props.handleDenySpec}
           onRefreshSpec={props.handleRefreshSpec}
           onViewSpecFullScreen={handleViewSpecFullScreen}
+          noIntegrations={!props.hasAnyIntegration}
         />
       }
       statusBar={
@@ -643,6 +695,7 @@ function AppInner(props: {
           attentionCount={props.attentionCount}
           focusedPane={props.focusedPane}
           theme={props.theme}
+          integrationErrors={props.integrationErrors}
         />
       }
     />

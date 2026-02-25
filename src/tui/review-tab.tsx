@@ -170,14 +170,19 @@ function FileIndex(props: { readonly theme: ResolvedTheme; readonly diffLineCoun
   );
 }
 
-function DiffSection(props: { readonly theme: ResolvedTheme }) {
+function DiffSection(props: { readonly theme: ResolvedTheme; readonly failed?: boolean }) {
   return (
     <box flexDirection="column">
       <text fg={props.theme.foregroundBright} attributes={TextAttributes.BOLD}>
         Diff
       </text>
-      <text fg={props.theme.muted}>Diff content will be loaded here.</text>
-      <text fg={props.theme.muted}>Press r to refresh.</text>
+      <Show when={props.failed}>
+        <text fg={props.theme.error}>Failed to load diff. Press r to retry.</text>
+      </Show>
+      <Show when={!props.failed}>
+        <text fg={props.theme.muted}>Diff content will be loaded here.</text>
+        <text fg={props.theme.muted}>Press r to refresh.</text>
+      </Show>
     </box>
   );
 }

@@ -26,6 +26,7 @@ export interface IssueListProps {
   readonly onSelect: (index: number) => void;
   readonly theme: ResolvedTheme;
   readonly focused: Accessor<boolean>;
+  readonly keybindings?: import("../types.js").SpecstarKeybindings;
 }
 
 // ---------------------------------------------------------------------------
@@ -143,20 +144,14 @@ export function IssueList(props: IssueListProps) {
     if (count === 0) return;
 
     const current = props.selectedIndex();
+    const kb = props.keybindings;
 
-    switch (key.name) {
-      case "j":
-      case "down": {
-        const next = Math.min(count - 1, current + 1);
-        if (next !== current) props.onSelect(next);
-        break;
-      }
-      case "k":
-      case "up": {
-        const next = Math.max(0, current - 1);
-        if (next !== current) props.onSelect(next);
-        break;
-      }
+    if (key.name === (kb?.selectDown ?? "down") || key.name === "j") {
+      const next = Math.min(count - 1, current + 1);
+      if (next !== current) props.onSelect(next);
+    } else if (key.name === (kb?.selectUp ?? "up") || key.name === "k") {
+      const next = Math.max(0, current - 1);
+      if (next !== current) props.onSelect(next);
     }
   });
 
@@ -172,7 +167,7 @@ export function IssueList(props: IssueListProps) {
   const unlinkedOffset = createMemo(() => backlogOffset() + backlogItems().length);
 
   return (
-    <scrollbox flexGrow={1}>
+    <scrollbox flexGrow={1} viewportCulling={true}>
       <Show when={totalItems() === 0}>
         <box justifyContent="center">
           <text fg={t.muted}>{"No issues found"}</text>

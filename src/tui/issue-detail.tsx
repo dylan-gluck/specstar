@@ -50,6 +50,7 @@ export interface IssueDetailProps {
   readonly onDenySpec?: (specId: NotionPageId) => void;
   readonly onRefreshSpec?: (specId: NotionPageId) => void;
   readonly onViewSpecFullScreen?: (spec: NotionSpec) => void;
+  readonly noIntegrations?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -153,8 +154,23 @@ export function IssueDetail(props: IssueDetailProps) {
     <box flexDirection="column" flexGrow={1}>
       {/* Empty state */}
       <Show when={current() === undefined}>
-        <box flexGrow={1} justifyContent="center" alignItems="center">
-          <text fg={t.muted}>Select an issue to view details</text>
+        <box flexGrow={1} justifyContent="center" alignItems="center" flexDirection="column">
+          <Show
+            when={props.noIntegrations}
+            fallback={<text fg={t.muted}>Select an issue to view details</text>}
+          >
+            <text fg={t.foregroundBright} attributes={TextAttributes.BOLD}>
+              No integrations configured
+            </text>
+            <text fg={t.muted}> </text>
+            <text fg={t.muted}>Add integration settings to your config file:</text>
+            <text fg={t.info}> .specstar.json</text>
+            <text fg={t.muted}> </text>
+            <text fg={t.muted}>Required: linear.apiKey, linear.teamId</text>
+            <text fg={t.muted}>Optional: github.repo, notion.apiKey</text>
+            <text fg={t.muted}> </text>
+            <text fg={t.muted}>Run `specstar setup` for guided configuration.</text>
+          </Show>
         </box>
       </Show>
 

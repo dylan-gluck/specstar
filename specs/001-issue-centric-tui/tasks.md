@@ -200,11 +200,11 @@
 
 **Purpose**: Improvements that affect multiple user stories, hardening, and final validation
 
-- [ ] T044 [P] Add graceful error handling for unreachable APIs: cached data remains visible, status bar shows "[Integration]: connection error (r to retry)", toast notification on connection failure, automatic retry on `r` keypress -- across src/integrations/linear/client.ts, src/integrations/github/client.ts, and src/integrations/notion/client.ts
-- [ ] T045 [P] Implement configurable keybinding system: load keybinding overrides from config (SpecstarKeybindings), merge with defaults, validate against schema, and wire into all keyboard handlers in src/app.tsx per contracts/config.ts and FR-019/FR-026
-- [ ] T046 [P] Implement delta-based re-rendering: ensure `IntegrationCache.update()` return value gates signal updates, add `viewportCulling={true}` to issue list `<scrollbox>`, and verify no visual flicker on data refresh in src/app.tsx and src/tui/issue-list.tsx
-- [ ] T047 [P] Handle edge cases: selected issue disappearing from filter (move to nearest neighbor + toast), multiple PRs for one branch (show most recent + note), diff load failure (show metadata + "Failed to load diff. Press `r` to retry."), no integrations configured (show setup instructions) -- across src/tui/ components
-- [ ] T048 Run quickstart.md validation: verify all development commands (`bun run dev`, `bun run fmt`, `bun run lint`, `bun test`), schema generation (`bun run schema`), build (`bun run build`), and configuration file discovery chain work end-to-end
+- [x] T044 [P] Add graceful error handling for unreachable APIs: cached data remains visible, status bar shows "[Integration]: connection error (r to retry)", toast notification on connection failure, automatic retry on `r` keypress -- across src/integrations/linear/client.ts, src/integrations/github/client.ts, and src/integrations/notion/client.ts
+- [x] T045 [P] Implement configurable keybinding system: load keybinding overrides from config (SpecstarKeybindings), merge with defaults, validate against schema, and wire into all keyboard handlers in src/app.tsx per contracts/config.ts and FR-019/FR-026
+- [x] T046 [P] Implement delta-based re-rendering: ensure `IntegrationCache.update()` return value gates signal updates, add `viewportCulling={true}` to issue list `<scrollbox>`, and verify no visual flicker on data refresh in src/app.tsx and src/tui/issue-list.tsx
+- [x] T047 [P] Handle edge cases: selected issue disappearing from filter (move to nearest neighbor + toast), multiple PRs for one branch (show most recent + note), diff load failure (show metadata + "Failed to load diff. Press `r` to retry."), no integrations configured (show setup instructions) -- across src/tui/ components
+- [x] T048 Run quickstart.md validation: verify all development commands (`bun run dev`, `bun run fmt`, `bun run lint`, `bun test`), schema generation (`bun run schema`), build (`bun run build`), and configuration file discovery chain work end-to-end
 
 ---
 

@@ -15,16 +15,18 @@ export interface LayoutProps {
   readonly onTabCycle?: (direction: "next" | "prev") => void;
   readonly onCommandPalette?: () => void;
   readonly theme: Accessor<ResolvedTheme>;
+  readonly keybindings?: import("../types.js").SpecstarKeybindings;
 }
 
 export function Layout(props: LayoutProps) {
   useKeyboard((key) => {
-    if (key.name === "tab") {
+    const kb = props.keybindings;
+    if (key.name === (kb?.togglePane ?? "tab")) {
       props.onFocusChange(props.focusedPane() === "left" ? "right" : "left");
       return;
     }
 
-    if (key.name === "/") {
+    if (key.name === (kb?.openCommandPalette ?? "/")) {
       props.onCommandPalette?.();
       return;
     }
@@ -44,11 +46,11 @@ export function Layout(props: LayoutProps) {
       return;
     }
 
-    if (key.name === "h" || key.name === "left") {
+    if (key.name === (kb?.tabPrev ?? "left") || key.name === "h") {
       props.onTabCycle?.("prev");
       return;
     }
-    if (key.name === "l" || key.name === "right") {
+    if (key.name === (kb?.tabNext ?? "right") || key.name === "l") {
       props.onTabCycle?.("next");
       return;
     }
