@@ -136,8 +136,8 @@ function IssueOverview(props: {
   readonly onOpenSessionDetail?: (sessionId: SessionId) => void;
 }) {
   const t = props.theme;
-  const li = props.issue.issue;
-  const p = li.priority;
+  const li = () => props.issue.issue;
+  const p = () => li().priority;
 
   const [selectedIdx, setSelectedIdx] = createSignal(0);
 
@@ -188,21 +188,23 @@ function IssueOverview(props: {
       {/* ── Metadata ────────────────────────────────────────── */}
       <box flexDirection="row">
         <text fg={t.foregroundBright} attributes={TextAttributes.BOLD}>
-          {li.identifier}
+          {li().identifier}
         </text>
-        <text fg={t.muted}>{`  ${li.state.name}`}</text>
+        <text fg={t.muted}>{`  ${li().state.name}`}</text>
       </box>
 
       <MetadataRow label="Priority" theme={t}>
-        <text fg={priorityColor(p, t)}>{priorityLabel(p)}</text>
+        <text fg={priorityColor(p(), t)}>{priorityLabel(p())}</text>
       </MetadataRow>
 
       <MetadataRow label="Assignee" theme={t}>
-        <text fg={li.assignee ? t.foreground : t.muted}>{li.assignee?.name ?? "Unassigned"}</text>
+        <text fg={li().assignee ? t.foreground : t.muted}>
+          {li().assignee?.name ?? "Unassigned"}
+        </text>
       </MetadataRow>
 
       <MetadataRow label="Branch" theme={t}>
-        <text fg={li.branch ? t.foreground : t.muted}>{li.branch ?? "No branch"}</text>
+        <text fg={li().branch ? t.foreground : t.muted}>{li().branch ?? "No branch"}</text>
       </MetadataRow>
 
       <MetadataRow label="Worktree" theme={t}>
@@ -219,12 +221,12 @@ function IssueOverview(props: {
       </MetadataRow>
 
       <MetadataRow label="URL" theme={t}>
-        <text fg={t.info}>{li.url}</text>
+        <text fg={t.info}>{li().url}</text>
       </MetadataRow>
 
       {/* ── Description ─────────────────────────────────────── */}
       <SectionHeader label="Description" theme={t} />
-      <Show when={li.description} fallback={<text fg={t.muted}>{"No description"}</text>}>
+      <Show when={li().description} fallback={<text fg={t.muted}>{"No description"}</text>}>
         {(desc: Accessor<string>) => <markdown content={desc()} syntaxStyle={props.syntaxStyle} />}
       </Show>
 

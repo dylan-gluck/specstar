@@ -42,13 +42,13 @@ export type StatusBadge =
   | "error"
   | "done"
   | "wrkng"
-  | "idle"
   | "review"
-  | "draft"
   | "ci:fail"
+  | "spec"
+  | "idle"
+  | "draft"
   | "ci:pass"
   | "merged"
-  | "spec"
   | "--";
 
 // ---------------------------------------------------------------------------

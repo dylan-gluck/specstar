@@ -60,14 +60,9 @@ export class WorkerSessionHandle {
     } catch (err) {
       this._status = "error";
       this._worker = null;
-      const message = err instanceof Error ? err.message : String(err);
-      this._emit({
-        type: "error",
-        sessionId: this.id,
-        message: `Worker creation failed: ${message}`,
-        stack: err instanceof Error ? err.stack : undefined,
-      });
-      return;
+      // No listeners are registered yet — emit would be dropped.
+      // Re-throw so pool.spawn() can catch and report failure.
+      throw err;
     }
 
     this._worker.onmessage = (evt: MessageEvent<WorkerEvent>) => {

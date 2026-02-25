@@ -96,7 +96,7 @@ function formatTime(iso: string): string {
 
 export function SessionDetail(props: SessionDetailProps) {
   const t = props.theme;
-  const s = props.session;
+  const s = () => props.session;
 
   useDialogKeyboard((key) => {
     if (key.name === "escape") {
@@ -104,23 +104,23 @@ export function SessionDetail(props: SessionDetailProps) {
       return;
     }
 
-    if (key.name === "a" && s.status === "approval") {
+    if (key.name === "a" && s().status === "approval") {
       props.onApprove();
       return;
     }
 
-    if (key.name === "x" && s.status === "approval") {
+    if (key.name === "x" && s().status === "approval") {
       props.onReject();
       return;
     }
 
-    if (key.name === "p" && s.status !== "shutdown") {
+    if (key.name === "p" && s().status !== "shutdown") {
       props.onRequestPrompt?.();
       return;
     }
 
     if ((key.ctrl && key.name === "c") || key.name === "q") {
-      if (s.status === "working") {
+      if (s().status === "working") {
         toast.warning("Aborting session...");
         props.onAbort();
       } else {
@@ -134,26 +134,26 @@ export function SessionDetail(props: SessionDetailProps) {
       {/* Header */}
       <box flexDirection="row" paddingX={1} gap={2}>
         <text fg={t.foregroundBright} attributes={TextAttributes.BOLD}>
-          {s.name}
+          {s().name}
         </text>
-        <text fg={statusColor(s.status, t)}>{s.status}</text>
-        <text fg={t.muted}>{`${s.tokenCount} tokens`}</text>
-        <text fg={t.muted}>{`started ${formatTime(s.startedAt)}`}</text>
+        <text fg={statusColor(s().status, t)}>{s().status}</text>
+        <text fg={t.muted}>{`${s().tokenCount} tokens`}</text>
+        <text fg={t.muted}>{`started ${formatTime(s().startedAt)}`}</text>
       </box>
 
       {/* Conversation history placeholder */}
       <box flexGrow={1} flexDirection="column" paddingX={1} paddingY={1}>
-        <Show when={s.status !== "shutdown"} fallback={<text fg={t.muted}>Session ended.</text>}>
+        <Show when={s().status !== "shutdown"} fallback={<text fg={t.muted}>Session ended.</text>}>
           <text fg={t.muted}>Session output will appear here when streaming is implemented.</text>
         </Show>
 
-        <Show when={s.status === "error"}>
+        <Show when={s().status === "error"}>
           <text fg={t.error}>Session encountered an error.</text>
         </Show>
       </box>
 
       {/* Approval banner */}
-      <Show when={s.status === "approval"}>
+      <Show when={s().status === "approval"}>
         <box paddingX={1} width="100%" backgroundColor={t.warning}>
           <text fg={t.background} attributes={TextAttributes.BOLD}>
             Tool approval needed. Press a to approve, x to reject.
@@ -164,7 +164,7 @@ export function SessionDetail(props: SessionDetailProps) {
       {/* Footer / prompt area */}
       <box paddingX={1} width="100%">
         <Show
-          when={s.status !== "shutdown"}
+          when={s().status !== "shutdown"}
           fallback={<text fg={t.muted}>Press Esc to close</text>}
         >
           <text fg={t.muted}>Press p to send a prompt, Esc to close</text>

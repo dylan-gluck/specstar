@@ -46,13 +46,13 @@ export function createMemoryStore(db: Database): MemoryStore {
 
   const searchAll = db.query<MemoryRow, [string, string]>(
     `SELECT id, category, key, value, updated_at FROM memory_entries
-		 WHERE (key LIKE ? OR value LIKE ?)
+		 WHERE (key LIKE ? ESCAPE '\\' OR value LIKE ? ESCAPE '\\')
 		 ORDER BY updated_at DESC`,
   );
 
   const searchByCategory = db.query<MemoryRow, [string, string, MemoryCategory]>(
     `SELECT id, category, key, value, updated_at FROM memory_entries
-		 WHERE (key LIKE ? OR value LIKE ?) AND category = ?
+		 WHERE (key LIKE ? ESCAPE '\\' OR value LIKE ? ESCAPE '\\') AND category = ?
 		 ORDER BY updated_at DESC`,
   );
 
@@ -72,7 +72,8 @@ export function createMemoryStore(db: Database): MemoryStore {
     },
 
     search(query: string, category?: MemoryCategory): readonly MemoryEntry[] {
-      const pattern = `%${query}%`;
+      const escaped = query.replace(/%/g, "\\%").replace(/_/g, "\\_");
+      const pattern = `%${escaped}%`;
       const rows =
         category != null
           ? searchByCategory.all(pattern, pattern, category)

@@ -48,7 +48,7 @@ export interface WorkerSessionOptions {
   /** Model override. */
   readonly model?: string;
   /** Thinking level override. */
-  readonly thinkingLevel?: string;
+  readonly thinkingLevel?: "none" | "low" | "medium" | "high";
   /** Criteria the agent uses to determine when work is complete. */
   readonly completionCriteria?: string;
 }

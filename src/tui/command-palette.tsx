@@ -163,11 +163,11 @@ export function CommandPalette(props: CommandPaletteProps) {
 
     if (len === 0) return;
 
-    if (key.name === "j" || key.name === "down") {
+    if (key.name === "down") {
       setSelectedIndex((i) => (i + 1) % len);
       return;
     }
-    if (key.name === "k" || key.name === "up") {
+    if (key.name === "up") {
       setSelectedIndex((i) => (i - 1 + len) % len);
       return;
     }
@@ -260,7 +260,7 @@ export function CommandPalette(props: CommandPaletteProps) {
 
       {/* Footer hint */}
       <text fg={t.muted} marginTop={1}>
-        {"j/k to move, Enter to select, Esc to close"}
+        {"Up/Down to move, Enter to select, Esc to close"}
       </text>
     </box>
   );

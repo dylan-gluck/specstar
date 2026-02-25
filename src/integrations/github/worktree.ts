@@ -200,16 +200,25 @@ export function createWorktreeManager(worktreeBase: string): WorktreeManager {
       }
 
       // Read back the created worktree's state
-      const dirty = await isDirty(wtPath);
-      const logOutput = await runGit(["-C", wtPath, "log", "-1", "--format=%H"]);
-      const branchOutput = await runGit(["-C", wtPath, "rev-parse", "--abbrev-ref", "HEAD"]);
+      try {
+        const dirty = await isDirty(wtPath);
+        const logOutput = await runGit(["-C", wtPath, "log", "-1", "--format=%H"]);
+        const branchOutput = await runGit(["-C", wtPath, "rev-parse", "--abbrev-ref", "HEAD"]);
 
-      return {
-        path: worktreePath(wtPath),
-        branch: branchOutput.trim(),
-        commit: logOutput.trim(),
-        dirty,
-      };
+        return {
+          path: worktreePath(wtPath),
+          branch: branchOutput.trim(),
+          commit: logOutput.trim(),
+          dirty,
+        };
+      } catch (err) {
+        try {
+          await runGit(["worktree", "remove", "--force", wtPath]);
+        } catch {
+          // Best-effort cleanup
+        }
+        throw err;
+      }
     },
 
     async remove(path: WorktreePath): Promise<void> {

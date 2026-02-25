@@ -11,6 +11,7 @@ import { render } from "@opentui/solid";
 import { loadConfig } from "./config.js";
 import { initDatabase } from "./db.js";
 import { App } from "./app.js";
+import { createSessionPool } from "./sessions/pool.js";
 
 const VERSION = "0.1.0";
 
@@ -40,9 +41,13 @@ for (let i = 0; i < args.length; i++) {
     console.log(VERSION);
     process.exit(0);
   }
-  if (arg === "--config" && i + 1 < args.length) {
+  if (arg === "--config") {
+    if (i + 1 >= args.length) {
+      console.error("Error: --config requires a path argument");
+      process.exit(1);
+    }
     process.env["SPECSTAR_CONFIG_FILE"] = args[i + 1];
-    i++; // skip value
+    i++;
   }
 }
 
@@ -52,6 +57,7 @@ for (let i = 0; i < args.length; i++) {
 
 const config = loadConfig();
 const db = initDatabase();
+const pool = createSessionPool({ maxConcurrent: config.sessions.maxConcurrent });
 
 // ---------------------------------------------------------------------------
 // Graceful shutdown
@@ -59,9 +65,14 @@ const db = initDatabase();
 
 function shutdown() {
   try {
+    void pool.shutdownAll();
+  } catch {
+    /* best-effort */
+  }
+  try {
     db.close();
   } catch {
-    // best-effort
+    /* best-effort */
   }
   process.exit(0);
 }
@@ -73,4 +84,4 @@ process.on("SIGTERM", shutdown);
 // Render
 // ---------------------------------------------------------------------------
 
-render(() => <App config={config} db={db} />);
+render(() => <App config={config} db={db} pool={pool} />);

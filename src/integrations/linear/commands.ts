@@ -1,5 +1,8 @@
 import type { PaletteCommand, PaletteContext } from "../../tui/palette-types.js";
-
+import type {
+  LinearClient,
+  LinearIssueId,
+} from "../../../specs/001-issue-centric-tui/contracts/linear.js";
 const captureIssue: PaletteCommand = {
   id: "linear.capture-issue",
   label: "Capture Issue",
@@ -46,48 +49,64 @@ const refineTicket: PaletteCommand = {
   },
 };
 
-const updateState: PaletteCommand = {
-  id: "linear.update-state",
-  label: "Update Issue State",
-  category: "Issue",
-  description: "Change the state of the selected Linear issue",
-  isVisible: (ctx) => ctx.selectedIssue !== undefined,
-  async execute(ctx: PaletteContext) {
-    try {
-      const stateName = await ctx.promptInput(
-        "New state name",
-        "e.g. In Progress, Done, Cancelled",
-      );
-      if (stateName === undefined) return;
-
-      ctx.toast.success(`Issue state updated to "${stateName}"`);
-    } catch (err) {
-      ctx.toast.error(
-        `Failed to update state: ${err instanceof Error ? err.message : String(err)}`,
-      );
-    }
-  },
-};
-
-const addComment: PaletteCommand = {
-  id: "linear.add-comment",
-  label: "Add Comment",
-  category: "Issue",
-  description: "Post a comment on the selected Linear issue",
-  isVisible: (ctx) => ctx.selectedIssue !== undefined,
-  async execute(ctx: PaletteContext) {
-    try {
-      const body = await ctx.promptInput("Comment body");
-      if (body === undefined) return;
-
-      ctx.toast.success("Comment added to issue");
-    } catch (err) {
-      ctx.toast.error(`Failed to add comment: ${err instanceof Error ? err.message : String(err)}`);
-    }
-  },
-};
-
 /** Returns all Linear issue command palette actions. */
-export function getLinearCommands(): readonly PaletteCommand[] {
+export function getLinearCommands(client?: LinearClient): readonly PaletteCommand[] {
+  const updateState: PaletteCommand = {
+    id: "linear.update-state",
+    label: "Update Issue State",
+    category: "Issue",
+    description: "Change the state of the selected Linear issue",
+    isVisible: (ctx) => ctx.selectedIssue !== undefined,
+    async execute(ctx: PaletteContext) {
+      if (!client) {
+        ctx.toast.info("Linear client not configured");
+        return;
+      }
+      const issue = ctx.selectedIssue;
+      if (!issue) return;
+      try {
+        const stateName = await ctx.promptInput(
+          "New state name",
+          "e.g. In Progress, Done, Cancelled",
+        );
+        if (stateName === undefined) return;
+        await client.updateIssue(issue.issue.id as LinearIssueId, { stateId: stateName });
+        ctx.toast.success(`Issue state updated to "${stateName}"`);
+        await ctx.refreshLinear();
+      } catch (err) {
+        ctx.toast.error(
+          `Failed to update state: ${err instanceof Error ? err.message : String(err)}`,
+        );
+      }
+    },
+  };
+
+  const addComment: PaletteCommand = {
+    id: "linear.add-comment",
+    label: "Add Comment",
+    category: "Issue",
+    description: "Post a comment on the selected Linear issue",
+    isVisible: (ctx) => ctx.selectedIssue !== undefined,
+    async execute(ctx: PaletteContext) {
+      if (!client) {
+        ctx.toast.info("Linear client not configured");
+        return;
+      }
+      const issue = ctx.selectedIssue;
+      if (!issue) return;
+      try {
+        const body = await ctx.promptInput("Comment body");
+        if (body === undefined) return;
+        await client.addComment(issue.issue.id as LinearIssueId, body);
+        ctx.toast.success("Comment added to issue");
+        await ctx.refreshLinear();
+      } catch (err) {
+        ctx.toast.error(
+          `Failed to add comment: ${err instanceof Error ? err.message : String(err)}`,
+        );
+      }
+    },
+  };
+
   return [captureIssue, refineTicket, updateState, addComment];
 }

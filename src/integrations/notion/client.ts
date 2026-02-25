@@ -13,6 +13,7 @@ import type {
 
 const API_BASE = "https://api.notion.com/v1";
 const NOTION_VERSION = "2022-06-28";
+const NOTION_BLOCK_LIMIT = 100;
 
 // ---------------------------------------------------------------------------
 // Internal Notion API response shapes (minimal)
@@ -425,7 +426,8 @@ export function createNotionClient(apiKey: string, databaseId: string): NotionCl
     },
 
     async createSpec(issueId: string, title: string, content: string): Promise<NotionSpec> {
-      const children = markdownToBlocks(content);
+      const allChildren = markdownToBlocks(content);
+      const firstChunk = allChildren.slice(0, NOTION_BLOCK_LIMIT);
       const body = {
         parent: { database_id: defaultDbId },
         properties: {
@@ -433,7 +435,7 @@ export function createNotionClient(apiKey: string, databaseId: string): NotionCl
           "Issue ID": { rich_text: [{ type: "text", text: { content: issueId } }] },
           Status: { select: { name: "draft" } },
         },
-        children,
+        children: firstChunk,
       };
 
       const res = await notionFetch(apiKey, "/pages", {
@@ -441,6 +443,16 @@ export function createNotionClient(apiKey: string, databaseId: string): NotionCl
         body: JSON.stringify(body),
       });
       const page = (await res.json()) as NotionPage;
+
+      // Append remaining blocks in chunks
+      for (let i = NOTION_BLOCK_LIMIT; i < allChildren.length; i += NOTION_BLOCK_LIMIT) {
+        const chunk = allChildren.slice(i, i + NOTION_BLOCK_LIMIT);
+        await notionFetch(apiKey, `/blocks/${page.id}/children`, {
+          method: "PATCH",
+          body: JSON.stringify({ children: chunk }),
+        });
+      }
+
       return {
         ...pageToSpec(page),
         content,
@@ -448,8 +460,8 @@ export function createNotionClient(apiKey: string, databaseId: string): NotionCl
     },
 
     async updateSpec(pageId: NotionPageId, content: string): Promise<void> {
-      // First, get existing children to delete them
-      const existingBlocks: NotionBlock[] = [];
+      // Fetch existing block IDs before any mutations
+      const existingBlockIds: string[] = [];
       let cursor: string | null = null;
       let hasMore = true;
 
@@ -457,23 +469,30 @@ export function createNotionClient(apiKey: string, databaseId: string): NotionCl
         const path = `/blocks/${pageId}/children${cursor ? `?start_cursor=${cursor}` : ""}`;
         const blocksRes = await notionFetch(apiKey, path, { method: "GET" });
         const data = (await blocksRes.json()) as NotionBlockChildrenResponse;
-        existingBlocks.push(...data.results);
+        for (const block of data.results) {
+          existingBlockIds.push(block.id);
+        }
         hasMore = data.has_more;
         cursor = data.next_cursor;
       }
 
-      // Delete each existing block
-      for (const block of existingBlocks) {
-        await notionFetch(apiKey, `/blocks/${block.id}`, { method: "DELETE" });
-      }
-
-      // Append new content blocks
+      // Append new content blocks first (preserves old content on failure)
       const children = markdownToBlocks(content);
-      if (children.length > 0) {
+      for (let i = 0; i < children.length; i += NOTION_BLOCK_LIMIT) {
+        const chunk = children.slice(i, i + NOTION_BLOCK_LIMIT);
         await notionFetch(apiKey, `/blocks/${pageId}/children`, {
           method: "PATCH",
-          body: JSON.stringify({ children }),
+          body: JSON.stringify({ children: chunk }),
         });
+      }
+
+      // Delete old blocks (best-effort: content is safely duplicated if this fails)
+      for (const blockId of existingBlockIds) {
+        try {
+          await notionFetch(apiKey, `/blocks/${blockId}`, { method: "DELETE" });
+        } catch {
+          // Old block deletion is best-effort; content is preserved
+        }
       }
     },
 

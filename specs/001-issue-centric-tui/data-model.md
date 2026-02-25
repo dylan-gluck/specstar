@@ -12,6 +12,13 @@
 The primary entity. Sourced from Linear API, cached in SQLite `issues` table.
 
 ```typescript
+/** Linear workflow state object from the Linear API. */
+interface LinearState {
+  id: string;
+  name: string;
+  type: "triage" | "backlog" | "unstarted" | "started" | "completed" | "canceled";
+}
+
 interface LinearIssue {
   /** Linear issue UUID. */
   id: string;
@@ -19,8 +26,8 @@ interface LinearIssue {
   identifier: string;
   title: string;
   description: string | null;
-  /** Linear workflow state name, e.g. "In Progress", "Todo". */
-  state: string;
+  /** Linear workflow state. */
+  state: LinearState;
   /** 0 = No priority, 1 = Urgent, 2 = High, 3 = Medium, 4 = Low. */
   priority: number;
   assignee: string | null;
@@ -231,9 +238,8 @@ A session that does not match any tracked issue.
 
 ```typescript
 interface UnlinkedSession {
-  kind: "session";
+  type: "session";
   session: WorkerSession;
-  badge: StatusBadge;
 }
 ```
 
@@ -243,9 +249,8 @@ A PR that does not match any tracked issue.
 
 ```typescript
 interface UnlinkedPR {
-  kind: "pr";
+  type: "pr";
   pr: GithubPR;
-  badge: StatusBadge;
 }
 ```
 
@@ -461,18 +466,16 @@ const unlinked: UnlinkedItem[] = [
     .filter((pr) => !linkedPRNumbers.has(pr.number))
     .map(
       (pr): UnlinkedPR => ({
-        kind: "pr",
+        type: "pr",
         pr,
-        badge: resolvePRBadge(pr),
       }),
     ),
   ...sessions
     .filter((s) => !linkedSessionIds.has(s.id))
     .map(
       (s): UnlinkedSession => ({
-        kind: "session",
+        type: "session",
         session: s,
-        badge: resolveSessionBadge(s),
       }),
     ),
 ];
@@ -522,7 +525,7 @@ CREATE TABLE issues (
   identifier    TEXT NOT NULL,         -- e.g. "AUTH-142"
   title         TEXT NOT NULL,
   description   TEXT,
-  state         TEXT NOT NULL,
+  state         TEXT NOT NULL,          -- JSON: LinearState { id, name, type }
   priority      INTEGER NOT NULL,
   assignee      TEXT,
   branch        TEXT,
@@ -768,17 +771,17 @@ function assignSection(
 
 #### Decision Table (evaluated top-to-bottom, first match wins)
 
-| #   | Condition                                                                                                                   | Section     |
-| --- | --------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| 1   | Any linked session has `status === "approval"`                                                                              | `attention` |
-| 2   | Any linked session has `status === "error"`                                                                                 | `attention` |
-| 3   | Any linked session has `status === "shutdown"` AND issue state is not "Done"/"Cancelled" (completed session needing review) | `attention` |
-| 4   | Linked spec has `status === "pending"`                                                                                      | `attention` |
-| 5   | Any linked session has `status === "working"`                                                                               | `active`    |
-| 6   | Any linked session has `status === "idle"` or `status === "starting"`                                                       | `active`    |
-| 7   | Linked PR has `state === "open"` or `state === "draft"`                                                                     | `active`    |
-| 8   | Issue `state` is "In Progress" (case-insensitive match)                                                                     | `active`    |
-| 9   | fallback                                                                                                                    | `backlog`   |
+| #   | Condition                                                                                                                                  | Section     |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
+| 1   | Any linked session has `status === "approval"`                                                                                             | `attention` |
+| 2   | Any linked session has `status === "error"`                                                                                                | `attention` |
+| 3   | Any linked session has `status === "shutdown"` AND `issue.state.type` is not `"completed"`/`"canceled"` (completed session needing review) | `attention` |
+| 4   | Linked spec has `status === "pending"`                                                                                                     | `attention` |
+| 5   | Any linked session has `status === "working"`                                                                                              | `active`    |
+| 6   | Any linked session has `status === "idle"` or `status === "starting"`                                                                      | `active`    |
+| 7   | Linked PR has `state === "open"` or `state === "draft"`                                                                                    | `active`    |
+| 8   | `issue.state.type === "started"`                                                                                                           | `active`    |
+| 9   | fallback                                                                                                                                   | `backlog`   |
 
 #### Sort Order Within Sections
 

@@ -174,16 +174,20 @@ export function createWorkflowEngine(config: WorkflowEngineConfig): WorkflowEngi
         }
 
         if (aborted) {
-          overallStatus = "aborted";
-          emit({ type: "workflow_aborted", workflowId: def.id });
+          // Don't emit again — abort() already emitted workflow_aborted
         } else {
           overallStatus = "completed";
           emit({ type: "workflow_completed", workflowId: def.id });
         }
       } catch (err) {
-        overallStatus = "failed";
-        const message = err instanceof Error ? err.message : String(err);
-        emit({ type: "workflow_failed", workflowId: def.id, error: message });
+        if (aborted) {
+          // Step failed because of abort — don't override with "failed"
+          // abort() already emitted workflow_aborted
+        } else {
+          overallStatus = "failed";
+          const message = err instanceof Error ? err.message : String(err);
+          emit({ type: "workflow_failed", workflowId: def.id, error: message });
+        }
       }
     })();
 
@@ -204,6 +208,7 @@ export function createWorkflowEngine(config: WorkflowEngineConfig): WorkflowEngi
         return { ...stepStatuses };
       },
       async abort() {
+        if (aborted || overallStatus === "completed" || overallStatus === "failed") return;
         aborted = true;
         overallStatus = "aborted";
         emit({ type: "workflow_aborted", workflowId: def.id });
@@ -243,6 +248,14 @@ function validate(def: WorkflowDefinition): void {
   }
 
   for (const step of def.steps) {
+    if (typeof step.id !== "string" || !step.id) {
+      issues.push("Each step must have a non-empty string id.");
+      continue;
+    }
+    if (!Array.isArray(step.dependsOn)) {
+      issues.push(`Step "${step.id}": dependsOn must be an array`);
+      continue;
+    }
     for (const dep of step.dependsOn) {
       if (!stepIds.has(dep)) {
         issues.push(`Step "${step.id}" depends on unknown step "${dep}".`);
@@ -285,8 +298,9 @@ function computeWaves(def: WorkflowDefinition): string[][] {
   const dependents = new Map<string, string[]>();
 
   for (const step of def.steps) {
-    inDegree.set(step.id, step.dependsOn.length);
-    for (const dep of step.dependsOn) {
+    const deps = Array.isArray(step.dependsOn) ? step.dependsOn : [];
+    inDegree.set(step.id, deps.length);
+    for (const dep of deps) {
       const list = dependents.get(dep) ?? [];
       list.push(step.id);
       dependents.set(dep, list);

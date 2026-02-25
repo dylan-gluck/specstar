@@ -67,13 +67,16 @@ function discoverPaths(cwd: string): string[] {
 
   const home = process.env["HOME"];
 
+  const xdg = process.env["XDG_CONFIG_HOME"];
+  if (xdg) {
+    paths.push(join(xdg, "specstar", "config.json"));
+  } else if (home) {
+    paths.push(join(home, ".config", "specstar", "config.json"));
+  }
+
   if (home) {
     // 3. ~/.specstar.json
     paths.push(join(home, ".specstar.json"));
-
-    // 2. XDG config
-    const xdgHome = process.env["XDG_CONFIG_HOME"] ?? join(home, ".config");
-    paths.push(join(xdgHome, "specstar", "config.json"));
   }
 
   // 1. Explicit env var (highest priority — merged last)

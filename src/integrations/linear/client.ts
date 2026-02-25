@@ -224,7 +224,8 @@ export function createLinearClient(apiKey: string, teamId: string): LinearClient
       const issueFilter: Record<string, unknown> = {};
 
       if (filter?.assigneeId) {
-        issueFilter.assignee = { isMe: { eq: true } };
+        issueFilter.assignee =
+          filter.assigneeId === "me" ? { isMe: { eq: true } } : { id: { eq: filter.assigneeId } };
       }
 
       if (filter?.stateTypes && filter.stateTypes.length > 0) {

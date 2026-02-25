@@ -1,5 +1,5 @@
 /**
- * Base16 semantic theme mapping with ANSI fallback and hex override support.
+ * Base16 semantic theme mapping with hex color defaults and override support.
  *
  * Maps 12 semantic color roles to base16 terminal palette slots by default.
  * Users can override individual roles with hex colors in their config.
@@ -46,54 +46,39 @@ export interface ResolvedTheme {
 }
 
 // ---------------------------------------------------------------------------
-// ANSI escape code helpers
-// ---------------------------------------------------------------------------
-
-/** Standard ANSI foreground color (0-7 -> 30-37, 8-15 -> 90-97). */
-function ansiStandard(n: number): string {
-  if (n < 8) return `\x1b[${30 + n}m`;
-  return `\x1b[${90 + (n - 8)}m`;
-}
-
-/** Extended 256-color ANSI foreground. */
-function ansiExtended(n: number): string {
-  return `\x1b[38;5;${n}m`;
-}
-
-// ---------------------------------------------------------------------------
-// Default ANSI color mapping (base16 slots)
+// Default hex color mapping (Base16 Default Dark palette)
 // ---------------------------------------------------------------------------
 
 /**
- * Default theme using ANSI color codes mapped to base16 terminal palette.
+ * Default theme using Base16 Default Dark hex colors.
  *
- * | Semantic Role      | Base16 | ANSI |
- * | background         | base00 | 0    |
- * | backgroundAlt      | base01 | 18   |
- * | selection          | base02 | 19   |
- * | muted              | base03 | 8    |
- * | foreground         | base05 | 7    |
- * | foregroundBright   | base06 | 15   |
- * | error              | base08 | 1    |
- * | warning            | base09 | 3    |
- * | success            | base0B | 2    |
- * | info               | base0D | 4    |
- * | accent             | base0E | 5    |
- * | secondary          | base0C | 6    |
+ * | Semantic Role      | Base16 | Hex     |
+ * | background         | base00 | #181818 |
+ * | backgroundAlt      | base01 | #282828 |
+ * | selection          | base02 | #383838 |
+ * | muted              | base03 | #585858 |
+ * | foreground         | base05 | #d8d8d8 |
+ * | foregroundBright   | base06 | #f8f8f8 |
+ * | error              | base08 | #ab4642 |
+ * | warning            | base09 | #f7ca88 |
+ * | success            | base0B | #a1b56c |
+ * | info               | base0D | #7cafc2 |
+ * | accent             | base0E | #ba8baf |
+ * | secondary          | base0C | #86c1b9 |
  */
 export const DEFAULT_THEME: ResolvedTheme = {
-  background: ansiStandard(0),
-  backgroundAlt: ansiExtended(18),
-  selection: ansiExtended(19),
-  muted: ansiStandard(8),
-  foreground: ansiStandard(7),
-  foregroundBright: ansiStandard(15),
-  error: ansiStandard(1),
-  warning: ansiStandard(3),
-  success: ansiStandard(2),
-  info: ansiStandard(4),
-  accent: ansiStandard(5),
-  secondary: ansiStandard(6),
+  background: "#181818",
+  backgroundAlt: "#282828",
+  selection: "#383838",
+  muted: "#585858",
+  foreground: "#d8d8d8",
+  foregroundBright: "#f8f8f8",
+  error: "#ab4642",
+  warning: "#f7ca88",
+  success: "#a1b56c",
+  info: "#7cafc2",
+  accent: "#ba8baf",
+  secondary: "#86c1b9",
 };
 
 // ---------------------------------------------------------------------------
@@ -118,9 +103,9 @@ const SEMANTIC_KEYS: readonly SemanticColor[] = [
 /**
  * Resolve a theme configuration into concrete color values.
  *
- * - If `config` is absent or empty, all colors resolve to ANSI defaults.
+ * - If `config` is absent or empty, all colors resolve to hex defaults.
  * - If a role has a hex override (e.g. `"#ff5555"`), that value is used as-is.
- * - Otherwise the ANSI default for that role is used.
+ * - Otherwise the hex default for that role is used.
  */
 export function resolveTheme(config?: ThemeConfig): ResolvedTheme {
   if (!config) return DEFAULT_THEME;

@@ -36,7 +36,6 @@ import { IssueList, getFlatItems } from "./tui/issue-list.js";
 import { StatusBar } from "./tui/status-bar.js";
 import { IssueDetail } from "./tui/issue-detail.js";
 import type { DetailTab } from "./tui/issue-detail.js";
-import { createSessionPool } from "./sessions/pool.js";
 import type { SessionPoolWithHandles } from "./sessions/pool.js";
 import { showSessionDetail } from "./tui/session-detail.js";
 import { showPromptOverlay } from "./tui/input-overlay.js";
@@ -56,6 +55,7 @@ import type { EnrichedIssue, UnlinkedItem } from "./types.js";
 export interface AppProps {
   readonly config: SpecstarConfig;
   readonly db: Database;
+  readonly pool: SessionPoolWithHandles;
 }
 
 // ---------------------------------------------------------------------------
@@ -63,7 +63,7 @@ export interface AppProps {
 // ---------------------------------------------------------------------------
 
 export function App(props: AppProps) {
-  const { config, db } = props;
+  const { config, db, pool } = props;
   const theme = resolveTheme(config.theme);
 
   // -------------------------------------------------------------------------
@@ -90,12 +90,8 @@ export function App(props: AppProps) {
   });
 
   // -------------------------------------------------------------------------
-  // Session pool
+  // Session pool subscription
   // -------------------------------------------------------------------------
-
-  const pool: SessionPoolWithHandles = createSessionPool({
-    maxConcurrent: config.sessions.maxConcurrent,
-  });
 
   // Subscribe to pool changes to keep the sessions signal in sync
   pool.subscribe({
@@ -405,6 +401,7 @@ export function App(props: AppProps) {
   createEffect(() => {
     const model = issueListModel();
     const flatItems = getFlatItems(model);
+    const currentIdx = selectedIndex(); // Always read — unconditional tracking
 
     if (lastSelectedIssueId && flatItems.length > 0) {
       const newIndex = flatItems.findIndex(
@@ -413,9 +410,7 @@ export function App(props: AppProps) {
       if (newIndex >= 0) {
         setSelectedIndex(newIndex);
       } else {
-        // Selected issue disappeared -- move to nearest neighbor
-        const current = selectedIndex();
-        const clamped = Math.min(current, flatItems.length - 1);
+        const clamped = Math.min(currentIdx, flatItems.length - 1);
         setSelectedIndex(Math.max(0, clamped));
         if (flatItems.length > 0) {
           toast("Selected issue moved or removed");
@@ -479,6 +474,8 @@ export function App(props: AppProps) {
         refreshNotion={refreshNotion}
         integrationErrors={integrationErrors}
         handleRetryAll={handleRetryAll}
+        githubClientPromise={githubClientPromise}
+        linearClient={linearClient}
       />
       <Toaster position="bottom-right" />
     </DialogProvider>
@@ -521,6 +518,8 @@ function AppInner(props: {
   handleDenySpec: (specId: NotionPageId) => void;
   handleRefreshSpec: (specId: NotionPageId) => void;
   notionClient: ReturnType<typeof createNotionClient> | undefined;
+  githubClientPromise?: ReturnType<typeof createGithubClient>;
+  linearClient?: ReturnType<typeof createLinearClient>;
   refreshLinear: () => Promise<void>;
   hasAnyIntegration: boolean;
   refreshGithub: () => Promise<void>;
@@ -567,9 +566,9 @@ function AppInner(props: {
       theme: props.theme,
     });
     if (body === undefined) return;
-    if (!props.config.github) return;
+    if (!props.githubClientPromise) return;
     try {
-      const client = await createGithubClient(props.config.github.repo);
+      const client = await props.githubClientPromise;
       await client.comment(prNumber, body);
       toast.success("Comment posted");
     } catch (err: unknown) {
@@ -597,8 +596,8 @@ function AppInner(props: {
 
   // -- Command Palette --
   const allCommands: readonly PaletteCommand[] = [
-    ...getLinearCommands(),
-    ...getGithubCommands(),
+    ...getLinearCommands(props.linearClient),
+    ...getGithubCommands(props.githubClientPromise),
     ...getNotionCommands(),
     ...getSessionCommands(),
   ];

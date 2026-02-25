@@ -93,7 +93,7 @@ export interface NotionClient {
   /** Fetch full page content for a spec, including markdown body. */
   getSpec(pageId: NotionPageId): Promise<NotionSpec>;
 
-  /** Create a new spec document linked to a Linear issue. */
+  /** Create a new spec document linked to a Linear issue. Uses the configured default database ID. */
   createSpec(issueId: string, title: string, content: string): Promise<NotionSpec>;
 
   /** Update the markdown content of an existing spec. */

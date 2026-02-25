@@ -4,7 +4,6 @@ const result = await Bun.build({
   entrypoints: ["./src/index.tsx"],
   plugins: [solidPlugin],
   compile: {
-    target: "bun-darwin-arm64",
     outfile: "./specstar",
   },
 });

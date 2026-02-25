@@ -193,15 +193,18 @@ class IntegrationCache<T> implements IIntegrationCache<T> {
 
   load(): readonly T[] {
     try {
+      const temp = new Map<string, T>();
+      const result: T[] = [];
+
       if (this.hasRawJson) {
         const rows = this.db.query(`SELECT raw_json FROM ${this.tableName}`).all() as Array<{
           raw_json: string;
         }>;
 
-        this.items.clear();
         for (const row of rows) {
           const item = JSON.parse(row.raw_json) as T;
-          this.items.set(this.keyExtractor(item), item);
+          temp.set(this.keyExtractor(item), item);
+          result.push(item);
         }
       } else {
         const colList = this.snakeColumns.join(", ");
@@ -209,18 +212,26 @@ class IntegrationCache<T> implements IIntegrationCache<T> {
           Record<string, unknown>
         >;
 
-        this.items.clear();
         for (const row of rows) {
           const obj: Record<string, unknown> = {};
           for (let i = 0; i < this.columns.length; i++) {
             obj[this.columns[i]!] = row[this.snakeColumns[i]!];
           }
           const item = obj as T;
-          this.items.set(this.keyExtractor(item), item);
+          temp.set(this.keyExtractor(item), item);
+          result.push(item);
         }
       }
-      return [...this.items.values()];
-    } catch {
+
+      // Atomic swap on success
+      this.items.clear();
+      for (const [k, v] of temp) {
+        this.items.set(k, v);
+      }
+      return result;
+    } catch (err) {
+      // Don't touch this.items — preserve previous state
+      console.error(`Failed to load cache: ${err}`);
       return [];
     }
   }
@@ -264,6 +275,7 @@ class IntegrationCache<T> implements IIntegrationCache<T> {
           if (typeof val === "number") return val;
           if (typeof val === "string") return val;
           if (val === null || val === undefined) return null;
+          if (typeof val === "object" && val !== null) return JSON.stringify(val);
           return String(val);
         });
         stmt.run(...values);

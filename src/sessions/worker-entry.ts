@@ -121,9 +121,7 @@ async function handlePrompt(text: string): Promise<void> {
   }
 
   try {
-    postStatus("working");
     await agentSession.prompt(text);
-    postStatus("idle");
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     postError(`Prompt failed: ${message}`, err instanceof Error ? err.stack : undefined);

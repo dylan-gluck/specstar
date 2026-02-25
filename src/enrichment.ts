@@ -255,7 +255,7 @@ export function enrichIssues(
   // Step 4: Link specs to issues
   const issueSpecMap = new Map<string, NotionSpec>();
   for (const spec of specs) {
-    issueSpecMap.set(spec.issueId, spec);
+    if (spec.issueId) issueSpecMap.set(spec.issueId.toUpperCase(), spec);
   }
 
   // Step 5: Link worktrees to issues
@@ -275,7 +275,7 @@ export function enrichIssues(
   const enriched: EnrichedIssue[] = issues.map((issue) => {
     const linkedSessions = issueSessionsMap.get(issue.id) ?? [];
     const pr = issuePRMap.get(issue.id);
-    const spec = issueSpecMap.get(issue.id);
+    const spec = issueSpecMap.get(issue.identifier.toUpperCase());
     const worktree = issueWorktreeMap.get(issue.id);
 
     return {

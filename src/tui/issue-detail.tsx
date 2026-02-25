@@ -185,53 +185,47 @@ export function IssueDetail(props: IssueDetailProps) {
         />
 
         {/*
-         * Each tab wrapped in its own Show (keyed=false) so DOM nodes
-         * persist across tab switches, preserving scroll position.
+         * Each tab in its own Show. Note: Show (without callback form)
+         * destroys and recreates children on tab switch.
          */}
         <Show when={tab() === "overview"}>
-          <scrollbox flexGrow={1}>
-            <OverviewTab
-              issue={enrichedIssue}
-              unlinkedSession={unlinkedSession}
-              theme={t}
-              syntaxStyle={props.syntaxStyle}
-              focused={() => props.focused() && tab() === "overview"}
-              onApprove={props.onApproveSession}
-              onReject={props.onRejectSession}
-              onNewSession={props.onNewSession}
-              onOpenSessionDetail={props.onOpenSessionDetail}
-            />
-          </scrollbox>
+          <OverviewTab
+            issue={enrichedIssue}
+            unlinkedSession={unlinkedSession}
+            theme={t}
+            syntaxStyle={props.syntaxStyle}
+            focused={() => props.focused() && tab() === "overview"}
+            onApprove={props.onApproveSession}
+            onReject={props.onRejectSession}
+            onNewSession={props.onNewSession}
+            onOpenSessionDetail={props.onOpenSessionDetail}
+          />
         </Show>
 
         <Show when={tab() === "spec"}>
-          <scrollbox flexGrow={1}>
-            <SpecTab
-              spec={spec}
-              theme={t}
-              syntaxStyle={props.syntaxStyle}
-              focused={() => props.focused() && tab() === "spec"}
-              onApprove={props.onApproveSpec}
-              onDeny={props.onDenySpec}
-              onRefresh={props.onRefreshSpec}
-              onOpenExternal={props.onOpenExternal}
-              onViewFullScreen={props.onViewSpecFullScreen}
-            />
-          </scrollbox>
+          <SpecTab
+            spec={spec}
+            theme={t}
+            syntaxStyle={props.syntaxStyle}
+            focused={() => props.focused() && tab() === "spec"}
+            onApprove={props.onApproveSpec}
+            onDeny={props.onDenySpec}
+            onRefresh={props.onRefreshSpec}
+            onOpenExternal={props.onOpenExternal}
+            onViewFullScreen={props.onViewSpecFullScreen}
+          />
         </Show>
 
         <Show when={tab() === "review"}>
-          <scrollbox flexGrow={1}>
-            <ReviewTab
-              pr={pr}
-              theme={t}
-              focused={() => props.focused() && tab() === "review"}
-              onApprove={props.onApprovePR}
-              onComment={props.onCommentPR}
-              onOpenExternal={props.onOpenExternal}
-              onRefresh={props.onRefreshPR}
-            />
-          </scrollbox>
+          <ReviewTab
+            pr={pr}
+            theme={t}
+            focused={() => props.focused() && tab() === "review"}
+            onApprove={props.onApprovePR}
+            onComment={props.onCommentPR}
+            onOpenExternal={props.onOpenExternal}
+            onRefresh={props.onRefreshPR}
+          />
         </Show>
       </Show>
     </box>
