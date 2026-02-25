@@ -76,11 +76,11 @@
 
 ### Implementation for User Story 1
 
-- [ ] T017 [US1] Implement enrichment service with `enrichIssues()`, section classifier (`assignSection` per data-model.md Section 5.4 decision table: 9 rules), badge resolver (`resolveBadge` per Section 6: 12-level priority), identifier extraction regex (`/^([A-Z]+-\d+)/i` with slash-prefix handling), and standalone badge resolvers for unlinked items in src/enrichment.ts per contracts/enrichment.ts
-- [ ] T018 [US1] Implement master-detail layout component with flexbox `<box flexDirection="row">`, left pane `<scrollbox>` (30-35% width, min 28, max 50 cols), right pane `<box flexGrow={1}>`, and pane focus state signal in src/tui/layout.tsx
-- [ ] T019 [US1] Implement issue list component with 4 section headers (Attention/Active/Backlog/Unlinked), status badge rendering (color-coded per theme), `!` prefix for attention items, `[PR]`/`[S]` prefixes for unlinked items, keyboard navigation (j/k/up/down for selection), empty section hiding, and "No issues found" empty state in src/tui/issue-list.tsx
-- [ ] T020 [P] [US1] Implement status bar with app name, active session count, attention count (red when > 0), and context-sensitive keyboard hints for focused pane in src/tui/status-bar.tsx
-- [ ] T021 [US1] Wire enrichment pipeline into app root: on each polling refresh, call `enrichIssues()` with latest integration data, update `IssueListModel` signal, preserve selected issue across refreshes by matching on issue ID, show toast on selection displacement in src/app.tsx
+- [x] T017 [US1] Implement enrichment service with `enrichIssues()`, section classifier (`assignSection` per data-model.md Section 5.4 decision table: 9 rules), badge resolver (`resolveBadge` per Section 6: 12-level priority), identifier extraction regex (`/^([A-Z]+-\d+)/i` with slash-prefix handling), and standalone badge resolvers for unlinked items in src/enrichment.ts per contracts/enrichment.ts
+- [x] T018 [US1] Implement master-detail layout component with flexbox `<box flexDirection="row">`, left pane `<scrollbox>` (30-35% width, min 28, max 50 cols), right pane `<box flexGrow={1}>`, and pane focus state signal in src/tui/layout.tsx
+- [x] T019 [US1] Implement issue list component with 4 section headers (Attention/Active/Backlog/Unlinked), status badge rendering (color-coded per theme), `!` prefix for attention items, `[PR]`/`[S]` prefixes for unlinked items, keyboard navigation (j/k/up/down for selection), empty section hiding, and "No issues found" empty state in src/tui/issue-list.tsx
+- [x] T020 [P] [US1] Implement status bar with app name, active session count, attention count (red when > 0), and context-sensitive keyboard hints for focused pane in src/tui/status-bar.tsx
+- [x] T021 [US1] Wire enrichment pipeline into app root: on each polling refresh, call `enrichIssues()` with latest integration data, update `IssueListModel` signal, preserve selected issue across refreshes by matching on issue ID, show toast on selection displacement in src/app.tsx
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently. Issues display in grouped sections with correct badges. Keyboard navigation works. Status bar reflects current state.
 
