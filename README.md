@@ -19,6 +19,7 @@ Must have `bun` and `omp` installed and configured.
 * OpenTUI with Solidjs [bindings](https://opentui.com/docs/bindings/solid/)
 * Oh-my-pi [SDK](https://github.com/can1357/oh-my-pi/blob/main/docs/sdk.md)
 * Oh-my-pi [RPC](https://github.com/can1357/oh-my-pi/blob/main/docs/rpc.md)
+* Types to [JSON Schema](https://github.com/YousefED/typescript-json-schema) or [alternative](https://github.com/vega/ts-json-schema-generator)
 
 ## Build Script
 Bun [build](https://bun.com/docs/bundler) + Solid plugin
