@@ -39,5 +39,7 @@ coverage/
 *.tmp
 
 
-# Local skill symlinks
-.omp/skills/
+# Spec-driven development tooling (local-only)
+.omp/
+.specify/
+specs/
