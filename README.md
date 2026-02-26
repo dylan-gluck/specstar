@@ -1,10 +1,10 @@
 # Specstar
 
-Issue-centric TUI for spec-driven development. Specstar connects Linear issues, GitHub PRs, Notion specs, and AI coding agent sessions into a single terminal interface. Issues are the primary object; everything else (specs, PRs, sessions, worktrees) is context attached to an issue.
+Terminal UI for collaborative spec-driven development. Specstar mirrors how engineering teams already work: an issue gets refined, a technical spec is written, agent sessions implement iteratively against that spec, and a PR captures the result for review. Every artifact — issue, spec, session, worktree, PR — stays linked end-to-end so nothing falls through the cracks.
 
 ## Overview
 
-Specstar polls your integrations, links artifacts to issues through cross-integration enrichment, and surfaces what needs your attention. Agent sessions run in isolated git worktrees with human-in-the-loop approval at tool-call boundaries.
+Specstar connects Linear, GitHub, and Notion into a single interface that keeps your team's full development cycle visible. It polls each integration, cross-links artifacts to their parent issue, and surfaces what needs attention. Agent sessions run in isolated git worktrees with human-in-the-loop approval at every tool-call boundary, giving engineers control without context-switching.
 
 **Core capabilities:**
 
@@ -25,7 +25,7 @@ Specstar polls your integrations, links artifacts to issues through cross-integr
 ## Setup
 
 ```sh
-git clone <repo-url> && cd specstar
+git clone https://github.com/dylan-gluck/specstar.git && cd specstar
 bun install
 ```
 
@@ -51,6 +51,9 @@ Add `"$schema": "./specstar.schema.json"` (or the absolute path) to your config 
 | `SPECSTAR_NOTION_API_KEY` | `notion.apiKey` |
 
 #### Minimal configuration
+
+<details>
+<summary>Minimal configuration</summary>
 
 ```json
 {
@@ -96,11 +99,16 @@ Add `"$schema": "./specstar.schema.json"` (or the absolute path) to your config 
 }
 ```
 
+</details>
+
 `github.repo` is auto-detected from the git remote when omitted. `linear.states` and `linear.filter` are optional issue filters.
 
 #### Theme
 
 Theme defaults to the terminal's base16 palette. Override individual semantic color roles with hex values:
+
+<details>
+<summary>Theme overrides</summary>
 
 ```json
 {
@@ -111,6 +119,8 @@ Theme defaults to the terminal's base16 palette. Override individual semantic co
   }
 }
 ```
+
+</details>
 
 Available roles: `background`, `backgroundAlt`, `selection`, `muted`, `foreground`, `foregroundBright`, `error`, `warning`, `success`, `info`, `accent`, `secondary`.
 
@@ -247,6 +257,9 @@ Specstar maintains a SQLite database at `.specstar/cache.db` (WAL mode) with six
 
 ### Project structure
 
+<details>
+<summary>Project structure</summary>
+
 ```
 src/
   index.tsx          Entry point: CLI args, config, DB init, render
@@ -281,6 +294,8 @@ src/
     store.ts         SQLite-backed key-value store
 ```
 
+</details>
+
 ### Stack
 
 | Layer | Technology |
@@ -305,6 +320,7 @@ bun run lint:fix     # Run oxlint with auto-fix
 bun run fmt          # Format with oxfmt
 bun run fmt:check    # Check formatting without writing
 bun run schema       # Regenerate specstar.schema.json from config types
+```
 
 ### Build
 
